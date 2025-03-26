@@ -1,0 +1,318 @@
+'Game vars
+DIM headPosition, tailPosition AS UBYTE
+DIM growthLeft AS UBYTE
+DIM direction AS UBYTE
+DIM snakeX(MAX_SNAKE_INDEX) AS UBYTE
+DIM snakeY(MAX_SNAKE_INDEX) AS UBYTE
+DIM score AS UBYTE
+DIM maxScore AS UBYTE
+DIM fruitX, fruitY AS UBYTE
+DIM snakeLength AS UBYTE
+DIM difficultyIndex AS UBYTE
+DIM redefinedKeys AS UBYTE
+
+'Checks if the snake is colliding with the fruit to increase score and
+'put a new fruit
+SUB checkFruit()
+    IF(snakeX(headPosition) = fruitX AND snakeY(headPosition) = fruitY)
+        fruitSound()
+        score = score + FRUIT_INC_SCORE
+        IF(score > maxScore) maxScore = score
+        IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
+        putFruit()
+    END IF
+END SUB
+
+'Draws the score and max score numbers
+SUB drawScores()
+   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK FONT_COLOR; score;
+   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK FONT_COLOR; maxScore;
+END SUB
+
+'Checks if the snake has to die, either by bounds or by biting herself
+SUB checkDeath()
+    DIM snakeXPos, snakeYPos AS UBYTE
+
+    snakeXPos = snakeX(headPosition)
+    snakeYPos = snakeY(headPosition)
+    'Check bounds death
+    IF(snakeXPos < MIN_BOARD_X OR snakeXPos > MAX_BOARD_X OR snakeYPos < MIN_BOARD_Y OR snakeYPos > MAX_BOARD_Y)
+        setGameState(STATE_START_GAME_OVER)
+    END IF
+    'Check body death
+    FOR i = MIN_SNAKE_INDEX TO MAX_SNAKE_INDEX
+        IF(i <> headPosition AND snakeX(i) = snakeXPos AND snakeY(i) = snakeYPos)
+            setGameState(STATE_START_GAME_OVER)
+            EXIT FOR
+        END IF
+    NEXT i
+END SUB
+
+'Draws the snake tail in it's different positions
+SUB drawSnakeTail()
+    DIM tailChar AS STRING
+    DIM nextTailX, nextTailY, tailX, tailY AS UBYTE
+    DIM nextTailPosition AS UBYTE
+
+    nextTailPosition = tailPosition + NEXT_TAIL_INC
+    IF(nextTailPosition > MAX_SNAKE_INDEX) nextTailPosition = 0
+    nextTailX = snakeX(nextTailPosition)
+    nextTailY = snakeY(nextTailPosition)
+    tailX = snakeX(tailPosition)
+    tailY = snakeY(tailPosition)
+    
+    IF(nextTailX > tailX)
+        tailChar = SNAKE_TAIL_RIGHT
+    ELSEIF (nextTailX < tailX)
+        tailChar = SNAKE_TAIL_LEFT
+    ELSEIF (nextTailY > tailY)
+        tailChar = SNAKE_TAIL_UP
+    ELSEIF (nextTailY < tailY)
+        tailChar = SNAKE_TAIL_DOWN
+    ELSE
+        tailChar = SNAKE_TAIL_RIGHT
+    END IF
+    PRINT AT tailY, tailX ; INK SNAKE_COLOR ; tailChar;
+END SUB
+
+
+'Draws the snake head in it's different positions
+SUB drawSnakeHead()
+    DIM snakeChar AS STRING
+
+    IF(direction = DIRECTION_NONE)
+        snakeChar = SNAKE_HEAD_FRONT
+    ELSEIF(direction = DIRECTION_RIGHT)
+        snakeChar = SNAKE_HEAD_RIGHT
+    ELSEIF (direction = DIRECTION_LEFT)
+        snakeChar = SNAKE_HEAD_LEFT
+    ELSEIF (direction = DIRECTION_UP)
+        snakeChar = SNAKE_HEAD_UP
+    ELSEIF (direction = DIRECTION_DOWN)
+        snakeChar = SNAKE_HEAD_DOWN
+    END IF
+    PRINT AT snakeY(headPosition), snakeX(headPosition) ; INK SNAKE_COLOR ; snakeChar;
+END SUB
+
+'Reads the input and sets the snake direction, checks for pause too
+SUB processInput()
+    DIM controls AS UBYTE = getControls(PLAYER_1_INDEX)
+    IF((controls bAND CONTROL_LEFT) AND direction <> DIRECTION_RIGHT)
+        direction = DIRECTION_LEFT
+    ELSEIF((controls bAND CONTROL_RIGHT) AND direction <> DIRECTION_LEFT)
+        direction = DIRECTION_RIGHT
+    ELSEIF((controls bAND CONTROL_UP) AND direction <> DIRECTION_DOWN)
+        direction = DIRECTION_UP
+    ELSEIF((controls bAND CONTROL_DOWN) AND direction <> DIRECTION_UP)
+        direction = DIRECTION_DOWN
+    ELSEIF(controls bAND CONTROL_FIRE)
+        setGameState(STATE_START_PAUSE)
+    END IF
+END SUB
+
+'Updates the player snake and head if it is moving
+SUB updatePlayer()
+    IF(direction <> DIRECTION_NONE)
+        updateSnakeHeadPosition()
+        updateSnakeTailPosition()
+    END IF
+END SUB
+
+'Updates the snake tail position, it does not move if there is growth left
+SUB updateSnakeTailPosition()
+    IF(growthLeft > 0 AND snakeLength < MAX_SNAKE_LENGTH)
+        growthLeft = growthLeft - GROWTH_DEC
+        snakeLength = snakeLength + GROWTH_DEC
+    ELSE
+        eraseSnakeTail()
+        snakeX(tailPosition) = SNAKE_OUT_BOUNDS_X
+        snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
+        tailPosition = tailPosition + NEXT_TAIL_INC
+        IF(tailPosition > MAX_SNAKE_INDEX) tailPosition = 0
+        drawSnakeTail()
+    END IF
+END SUB
+
+'Updates the snake head position and draws it and redraws the body to do curves
+SUB updateSnakeHeadPosition()
+    DIM prevHeadX, prevHeadY AS UBYTE
+    DIM oldHeadX, oldHeadY AS UBYTE
+    DIM oldHeadPos AS UBYTE
+    DIM prevHeadChar AS STRING
+
+    prevHeadChar = SNAKE_BODY
+    prevHeadX = snakeX(headPosition)
+    prevHeadY = snakeY(headPosition)
+    
+    oldHeadPos = headPosition - PREV_HEAD_DEC
+    IF(oldHeadPos > MAX_SNAKE_INDEX) oldHeadPos = MAX_SNAKE_INDEX
+    oldHeadX = snakeX(oldHeadPos)
+    oldHeadY = snakeY(oldHeadPos)
+    
+    headPosition = headPosition + NEXT_HEAD_INC
+    IF(headPosition > MAX_SNAKE_INDEX) headPosition = MIN_SNAKE_INDEX
+    IF(direction = DIRECTION_RIGHT)
+        snakeX(headPosition) = prevHeadX + HEAD_SPEED
+        snakeY(headPosition) = prevHeadY
+        IF(oldHeadY > prevHeadY)
+            prevHeadChar = SNAKE_BODY_DW_RI
+        ELSEIF(oldHeadY < prevHeadY)
+            prevHeadChar = SNAKE_BODY_UP_RI
+        ELSE
+            prevHeadChar = SNAKE_BODY_HOR
+        END IF
+        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_RIGHT
+    ELSEIF(direction = DIRECTION_LEFT)
+        snakeX(headPosition) = prevHeadX - HEAD_SPEED
+        snakeY(headPosition) = prevHeadY
+        IF(oldHeadY > prevHeadY)
+            prevHeadChar = SNAKE_BODY_LF_DW
+        ELSEIF(oldHeadY < prevHeadY)
+            prevHeadChar = SNAKE_BODY_LF_UP
+        ELSE
+            prevHeadChar = SNAKE_BODY_HOR
+        END IF
+        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_LEFT
+    ELSEIF(direction = DIRECTION_UP)
+        snakeX(headPosition) = prevHeadX
+        snakeY(headPosition) = prevHeadY - HEAD_SPEED
+        IF(oldHeadX > prevHeadX)
+            prevHeadChar = SNAKE_BODY_UP_RI
+        ELSEIF(oldHeadX < prevHeadX)
+            prevHeadChar = SNAKE_BODY_LF_UP
+        ELSE
+            prevHeadChar = SNAKE_BODY_VER
+        END IF
+        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_DOWN
+    ELSEIF(direction = DIRECTION_DOWN)
+        snakeX(headPosition) = prevHeadX
+        snakeY(headPosition) = prevHeadY + HEAD_SPEED
+        IF(oldHeadX > prevHeadX)
+            prevHeadChar = SNAKE_BODY_DW_RI
+        ELSEIF(oldHeadX < prevHeadX)
+            prevHeadChar = SNAKE_BODY_LF_DW
+        ELSE
+            prevHeadChar = SNAKE_BODY_VER
+        END IF
+        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_UP
+    END IF
+    
+    PRINT AT prevHeadY, prevHeadX; INK SNAKE_COLOR; prevHeadChar;
+    drawSnakeHead()
+END SUB
+
+'Erases the snake tail
+SUB eraseSnakeTail()
+    PRINT AT snakeY(tailPosition), snakeX(tailPosition); SNAKE_TAIL_ERASE
+END SUB
+
+'Returns a new board random X position within it's bounds
+FUNCTION getBoardRandomX() AS UBYTE
+    RETURN RND() * (MAX_BOARD_X - MIN_BOARD_X) + MIN_BOARD_X
+END FUNCTION
+
+'Returns a new board random Y position within it's bounds
+FUNCTION getBoardRandomY() AS UBYTE
+    RETURN RND() * (MAX_BOARD_Y - MIN_BOARD_Y) + MIN_BOARD_Y
+END FUNCTION
+
+'Puts all the snake positions to out of bounds
+SUB clearSnakePositions()
+    FOR i = MIN_SNAKE_INDEX TO MAX_SNAKE_INDEX
+        snakeX(i) = SNAKE_OUT_BOUNDS_X
+        snakeY(i) = SNAKE_OUT_BOUNDS_Y
+    NEXT i
+END SUB
+
+'Checks if the fruit is colliding with the snake, used to
+'generate a new fruit in an unused space
+FUNCTION fruitInSnake() AS UBYTE
+    FOR i = MIN_SNAKE_INDEX TO MAX_SNAKE_INDEX
+        IF(snakeX(i) = fruitX AND snakeY(i) = fruitY) return TRUE
+    NEXT i
+    RETURN FALSE
+END FUNCTION
+
+'Puts a new fruit on a free board position
+SUB putFruit()
+    DO
+        fruitX = getBoardRandomX()
+        fruitY = getBoardRandomY()
+    LOOP UNTIL fruitInSnake() = FALSE
+    PRINT AT fruitY, fruitX; INK FRUIT_COLOR; FRUIT_CHAR
+END SUB
+
+'Draws the score and best texts, not the actual scores
+SUB drawScoreTexts()
+    PRINT AT SCORE_STRING_Y, SCORE_STRING_X; INK FONT_COLOR; SCORE_STRING;
+    PRINT AT BEST_STRING_Y, BEST_STRING_X; INK FONT_COLOR; BEST_STRING;
+END SUB
+
+'Prints at the difficulty cursor selected char
+SUB drawDifficultyCursor(character AS STRING)
+    PRINT AT DIFFICULTY_CURSOR_Y,_
+    DIFFICULTY_CURSOR_X + difficultyIndex * DIFFICULTY_CURSOR_STEP;_
+    INK SNAKE_COLOR;character;
+END SUB
+
+'Beeps the fruit sound
+SUB fruitSound()
+    BEEP .1, 10
+END SUB
+
+'Beeps the die sound
+SUB dieSound()
+    BEEP .1, 20
+END SUB
+
+'Beeps the start sound
+SUB startSound()
+    BEEP .4, 40
+END SUB
+
+'Draws the title instructions
+SUB printInstructions()
+    DIM controlType AS UBYTE = getControlType(PLAYER_1_INDEX)
+    
+    INK INTRO_INSTRUCTIONS_COLOR
+    if(controlType = CONTROL_TYPE_KEYBOARD)
+        PRINT AT INTRO_INSTRUCTIONS_Y_1, INTRO_INSTRUCTIONS_X_1;_
+            getControlChar(PLAYER_1_INDEX, CONTROL_LEFT_INDEX); INTRO_INSTRUCTIONS_1_A;_
+            getControlChar(PLAYER_1_INDEX, CONTROL_RIGHT_INDEX); INTRO_INSTRUCTIONS_1_B;
+        PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_X_2;_
+            getControlChar(PLAYER_1_INDEX, CONTROL_UP_INDEX); INTRO_INSTRUCTIONS_2_A;_
+            getControlChar(PLAYER_1_INDEX, CONTROL_DOWN_INDEX); INTRO_INSTRUCTIONS_2_B;
+        PRINT AT INTRO_INSTRUCTIONS_Y_3, INTRO_INSTRUCTIONS_X_3;_
+            getControlChar(PLAYER_1_INDEX, CONTROL_FIRE_INDEX); INTRO_INSTRUCTIONS_3;
+    ELSE
+        PRINT AT INTRO_INSTRUCTIONS_Y_1, INTRO_INSTRUCTIONS_JOYSTICK_X_1;_
+            INTRO_INSTRUCTIONS_JOYSTICK;
+        IF(controlType = CONTROL_TYPE_SINCLAIR_1)
+            PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_2;_
+                INTRO_INSTRUCTIONS_SINCLAIR_1;
+        ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_2)
+            PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_3;_
+                INTRO_INSTRUCTIONS_SINCLAIR_2;
+        ELSEIF(controlType = CONTROL_TYPE_CURSOR)
+            PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_4;_
+                INTRO_INSTRUCTIONS_CURSOR;
+        ELSEIF(controlType = CONTROL_TYPE_KEMPSTON)
+            PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_5;_
+                INTRO_INSTRUCTIONS_KEMPSTON;
+        END IF
+            PRINT AT INTRO_INSTRUCTIONS_Y_3, INTRO_INSTRUCTIONS_JOYSTICK_X_6;_
+                INTRO_INSTRUCTIONS_JOY_OTHERS;
+    END IF
+END SUB
+
+'Returns true if the new key is not already defined and is on the printable
+'uppercase range
+FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
+    IF(keyCode < FIRST_SELECTABLE_KEY or keyCode > LAST_SELECTABLE_KEY) RETURN FALSE
+    IF(redefinedKeys > REDEFINED_KEYS_INIT) 
+        FOR i = REDEFINED_KEYS_INIT TO redefinedKeys - REDEFINED_KEYS_INDEX_DEC
+            IF(keys(playerIndex, i) = keyCode) return FALSE
+        NEXT i
+    END IF
+    RETURN TRUE
+END FUNCTION

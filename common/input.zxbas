@@ -1,0 +1,170 @@
+'Input constants
+#define FIRST_UPPERCASE_CHAR 60h
+#define LOWER_TO_UPPERCASE 20h
+#define NO_KEY ""
+
+'Controls
+#define CONTROL_NONE  %00000000
+#define CONTROL_UP    %00000001
+#define CONTROL_DOWN  %00000010
+#define CONTROL_LEFT  %00000100
+#define CONTROL_RIGHT %00001000
+#define CONTROL_FIRE  %00010000
+
+'Control indexes
+#define CONTROL_LEFT_INDEX  0
+#define CONTROL_RIGHT_INDEX 1
+#define CONTROL_UP_INDEX    2
+#define CONTROL_DOWN_INDEX  3
+#define CONTROL_FIRE_INDEX  4
+
+'Miscelaneous keys to define
+#define CONTROL_MISC_1_INDEX 0
+#define CONTROL_MISC_2_INDEX 1
+#define CONTROL_MISC_3_INDEX 2
+#define CONTROL_MISC_4_INDEX 3
+#define CONTROL_MISC_5_INDEX 4
+#define CONTROL_MISC_6_INDEX 5
+#define CONTROL_MISC_7_INDEX 6
+#define CONTROL_MISC_8_INDEX 7
+
+#define PLAYER_1_INDEX 0
+#define PLAYER_2_INDEX 1
+#define PLAYER_3_INDEX 2
+#define PLAYER_4_INDEX 3
+
+#define CONTROL_TYPE_KEYBOARD   0
+#define CONTROL_TYPE_KEMPSTON   1
+#define CONTROL_TYPE_SINCLAIR_1 2
+#define CONTROL_TYPE_SINCLAIR_2 3
+#define CONTROL_TYPE_CURSOR     4
+
+#define NUM_PLAYERS_MAX_INDEX NUM_PLAYERS - 1
+#define KEYS_MAX_INDEX CONTROL_FIRE_INDEX
+
+'Kempston
+#define KEMPSTON_PORT  1Fh
+#define KEMPSTON_RIGHT %00000001
+#define KEMPSTON_LEFT  %00000010
+#define KEMPSTON_DOWN  %00000100
+#define KEMPSTON_UP    %00001000
+#define KEMPSTON_FIRE  %00010000
+
+'Input vars
+DIM frameKey AS STRING
+DIM controls(NUM_PLAYERS_MAX_INDEX) AS UBYTE
+DIM controlTypes(NUM_PLAYERS_MAX_INDEX) AS UBYTE
+
+'Default keys OPQAM
+DIM keys(NUM_PLAYERS_MAX_INDEX, KEYS_MAX_INDEX) AS UBYTE => {_
+    { $4F, $50, $51, $41, $4D } _
+}
+DIM miscKeys AS STRING = "TYUFGHCVB"
+DIM miscKeysControl AS UBYTE
+
+DIM defaultKeys(KEYS_MAX_INDEX) AS UBYTE => { $4F, $50, $51, $41, $4D }
+'ONE (the one to the right) appears at keys 6 to 0
+'6 (left), 7 (right), 9 (up), 8 (down) and 0 (fire)
+DIM sinclairOne(KEYS_MAX_INDEX) AS UBYTE => { $36, $37, $39, $38, $30 }
+'TWO (left) appears at keys 1 to 5
+'1 (left), 2 (right), 4 (up), 3 (down) and 5 (fire)
+DIM sinclairTwo(KEYS_MAX_INDEX) AS UBYTE => { $31, $32, $34, $33, $35 }
+'5 (left), 8 (right), 7 (up), 6 (down) and 0 (fire)
+DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { $35, $38, $37, $36, $30 }
+
+'Reads a key from keyboard and if its 60h or plus lowers it by 20h,
+'effectively making it uppercase in case of letters
+FUNCTION readKeyUpperCase() AS STRING
+    DIM key AS STRING = INKEY
+    DIM charVal AS UBYTE = CODE(key)
+
+    IF(charVal >= FIRST_UPPERCASE_CHAR) key = CHR(charVal - LOWER_TO_UPPERCASE)
+    RETURN key
+END FUNCTION
+
+'Returns the controls readed for the frame for the selected player
+FUNCTION getControls(playerIndex AS UBYTE) AS UBYTE
+    RETURN controls(playerIndex)
+END FUNCTION
+
+'Returns the control char for the selected player
+FUNCTION getControlChar(playerIndex AS UBYTE, controlIndex AS UBYTE) AS STRING
+    RETURN CHR(keys(playerIndex, controlIndex))
+END FUNCTION
+
+'Returns the miscKeys readed for the frame
+FUNCTION getMiscKeysControl() AS UBYTE
+    RETURN miscKeysControl
+END FUNCTION
+
+'Inits the input system, sets all control types to keyboard
+SUB initInput()
+    FOR i = 0 TO NUM_PLAYERS_MAX_INDEX
+        setControlType(i, CONTROL_TYPE_KEYBOARD)
+    NEXT i
+END SUB
+
+'Copy the keys to the player
+SUB copyKeys(playerIndex AS UBYTE, newKeys() AS UBYTE)
+    FOR i = 0 TO KEYS_MAX_INDEX
+        keys(playerIndex, i) = newKeys(i)       
+    NEXT i
+END SUB
+
+'Sets the control type of a player
+SUB setControlType(playerIndex AS UBYTE, controlType AS UBYTE)
+    controlTypes(playerIndex) = controlType
+    IF(controlType = CONTROL_TYPE_KEYBOARD)
+        copyKeys(playerIndex, defaultKeys)
+    ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_1)
+        copyKeys(playerIndex, sinclairOne)
+    ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_2)
+        copyKeys(playerIndex, sinclairTwo)
+    ELSEIF(controlType = CONTROL_TYPE_CURSOR)
+        copyKeys(playerIndex, cursor)
+    END IF
+END SUB
+
+'Gets the control type of a player
+FUNCTION getControlType(playerIndex AS UBYTE) AS UBYTE
+    RETURN controlTypes(playerIndex)
+END FUNCTION
+
+'Reads the [playerIndex] player keyboard keys (Or Sinclair/Protek Joysticks)
+SUB readPlayerKeyboard(playerIndex AS UBYTE)
+    DIM tmpControl AS UBYTE = CONTROL_NONE
+    DIM frameByte AS UBYTE = CODE(frameKey)
+    IF(frameByte = keys(playerIndex, CONTROL_UP_INDEX)) tmpControl = tmpControl + CONTROL_UP
+    IF(frameByte = keys(playerIndex, CONTROL_DOWN_INDEX)) tmpControl = tmpControl + CONTROL_DOWN
+    IF(frameByte = keys(playerIndex, CONTROL_LEFT_INDEX)) tmpControl = tmpControl + CONTROL_LEFT
+    IF(frameByte = keys(playerIndex, CONTROL_RIGHT_INDEX)) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(frameByte = keys(playerIndex, CONTROL_FIRE_INDEX)) tmpControl = tmpControl + CONTROL_FIRE
+    controls(playerIndex) = tmpControl
+END SUB
+
+'Reads the [playerIndex] player Kempston joystick
+SUB readPlayerKempston(playerIndex AS UBYTE)
+    DIM tmpControl AS UBYTE = CONTROL_NONE
+    DIM tmpKempston AS UBYTE = IN KEMPSTON_PORT
+
+    IF(tmpKempston bAND KEMPSTON_UP) tmpControl = tmpControl + CONTROL_UP
+    IF(tmpKempston bAND KEMPSTON_DOWN) tmpControl = tmpControl + CONTROL_DOWN
+    IF(tmpKempston bAND KEMPSTON_LEFT) tmpControl = tmpControl + CONTROL_LEFT
+    IF(tmpKempston bAND KEMPSTON_RIGHT) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(tmpKempston bAND KEMPSTON_FIRE) tmpControl = tmpControl + CONTROL_FIRE
+
+    controls(playerIndex) = tmpControl
+END SUB
+
+'Updates the controls reading the [keys]
+SUB updateControls()
+    'Sets the uppercase key to use in other places
+    frameKey = readKeyUpperCase()
+    FOR i = 0 TO NUM_PLAYERS_MAX_INDEX
+        IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
+            readPlayerKempston(i)
+        ELSE
+            readPlayerKeyboard(i)
+        END IF        
+    NEXT i
+END SUB

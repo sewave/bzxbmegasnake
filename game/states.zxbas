@@ -1,0 +1,220 @@
+'File with the game states subroutines
+DIM delayFrames AS UBYTE
+DIM delayedFrames AS UBYTE
+
+'Kills the snake, showing GAME OVER
+SUB stateStartGameOver()
+    FLASH TRUE
+    drawSnakeHead()
+    PRINT AT GAME_OVER_Y, GAME_OVER_X; INK GAME_OVER_INK; PAPER GAME_OVER_PAPER; GAME_OVER_STRING
+    FLASH FALSE
+    dieSound()
+    setStateWaitFrames(DIE_FRAMES, STATE_WAIT_KEY_GAME_OVER)
+END SUB
+
+'Sets to wait for any key and goes to title
+SUB stateWaitKeyGameOver()
+    setStateWaitAnyKey(STATE_START_TITLE)
+END SUB
+
+'Shows the pause string and changes to wait unpause on next state after no key
+SUB stateStartPause()
+    PRINT AT PAUSE_Y, PAUSE_X; INK RED; PAPER YELLOW; FLASH TRUE ; PAUSE_STRING
+    setStateWaitNoKey(STATE_WAIT_UNPAUSE)
+END SUB
+
+'Waits to unpause to reanudate the game on next state after no key
+SUB stateWaitUnpause()
+    IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
+        PRINT AT PAUSE_Y, PAUSE_X; PAUSE_STRING_CLEAR
+        setStateWaitNoKey(STATE_GAME_PLAYING)
+    END IF
+END SUB
+
+'Draws all the title, waits for difficulty selection and then starts a new game
+SUB stateStartTitle()
+    BRIGHT TRUE
+    clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
+    
+    'Title window
+    drawWindow(INTRO_WINDOW_X, INTRO_WINDOW_Y, INTRO_WINDOW_WIDTH, INTRO_WINDOW_HEIGHT, BOARD_COLOR, OUT_WINDOW_CHARACTERS)
+    
+    'Print title
+    INK SNAKE_COLOR
+    PRINT AT INTRO_TITLE_Y, INTRO_TITLE_X; INTRO_TITLE_1;
+    PRINT AT INTRO_TITLE_Y + 1, INTRO_TITLE_X; INTRO_TITLE_2;
+    PRINT AT INTRO_TITLE_Y + 2, INTRO_TITLE_X; INTRO_TITLE_3;
+    PRINT AT INTRO_TITLE_Y + 3, INTRO_TITLE_X; INTRO_TITLE_4;
+    PRINT AT INTRO_TITLE_Y + 4, INTRO_TITLE_X; INTRO_TITLE_5;
+    
+    INK FRUIT_COLOR
+    PRINT AT INTRO_TITLE_2_Y, INTRO_TITLE_2_X; INTRO_TITLE_2_1;
+    PRINT AT INTRO_TITLE_2_Y + 1, INTRO_TITLE_2_X; INTRO_TITLE_2_2;
+    PRINT AT INTRO_TITLE_2_Y + 2, INTRO_TITLE_2_X; INTRO_TITLE_2_3;
+    PRINT AT INTRO_TITLE_2_Y + 3, INTRO_TITLE_2_X; INTRO_TITLE_2_4;
+    
+    'Print credits
+    INK INTRO_CREDITS_COLOR
+    PRINT AT INTRO_CREDITS_Y, INTRO_CREDITS_X; INTRO_CREDITS;
+    
+    'Print max score
+    INK INTRO_CREDITS_COLOR
+    PRINT AT INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_X; INTRO_MAX_SCORE_STRING;
+    PRINT AT INTRO_MAX_SCORE_NUM_Y, INTRO_MAX_SCORE_NUM_X; FLASH TRUE; INK INTRO_MAX_SCORE_NUM_INK; PAPER INTRO_MAX_SCORE_NUM_PAPER; maxScore;
+    
+    'Print instructions
+    printInstructions()
+    
+    setStateWaitAKey(CHR(keys(PLAYER_1_INDEX, CONTROL_FIRE_INDEX)),_
+        STATE_WAIT_DIFFICULTY)
+END SUB
+
+'Waits for difficulty selection to change game state
+SUB stateWaitDifficulty()
+    IF(frameKey = SELECT_INPUT_KEY)
+        setGameState(STATE_START_SELECT_INPUT)
+    ELSE
+        DIM controls AS UBYTE = getControls(PLAYER_1_INDEX)
+        drawDifficultyCursor(DIFFICULTY_CURSOR_ERASE)
+        IF(controls bAND CONTROL_LEFT AND difficultyIndex > DIFFICULTY_INDEX_1)
+            difficultyIndex = difficultyIndex - DIFFICULTY_INDEX_STEP
+            setStateWaitNoKey(getGameState())
+        ELSEIF(controls bAND CONTROL_RIGHT AND difficultyIndex < DIFFICULTY_INDEX_3)
+            difficultyIndex = difficultyIndex + DIFFICULTY_INDEX_STEP
+            setStateWaitNoKey(getGameState())
+        ELSEIF(controls bAND CONTROL_FIRE)
+            delayFrames = DIFFICULTY_FRAMES - difficultyIndex
+            setGameState(STATE_START_GAME)
+        END IF
+        drawDifficultyCursor(DIFFICULTY_CURSOR_CHAR)
+    END IF
+END SUB
+
+'Resets the game, restores everything except the max score and difficulty
+SUB stateStartGame()
+    delayedFrames = INITIAL_DELAYED_FRAMES
+    snakeLength = MIN_SNAKE_LENGTH
+    growthLeft = START_GROWTH
+    score = START_SCORE
+    clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
+    clearSnakePositions()
+    headPosition = HEAD_START_INDEX
+    tailPosition = TAIL_START_INDEX
+    snakeX(headPosition) = getBoardRandomX()
+    snakeY(headPosition) = getBoardRandomY()
+    direction = DIRECTION_NONE
+    drawWindow(HEADER_WINDOW_X, HEADER_WINDOW_Y, HEADER_WINDOW_WIDTH, HEADER_WINDOW_HEIGHT, HEADER_COLOR, OUT_WINDOW_CHARACTERS)
+    drawWindow(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_WIDTH, BOARD_WINDOW_HEIGHT, BOARD_COLOR, IN_WINDOW_CHARACTERS)
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH, STATUS_WINDOW_HEIGHT, STATUS_COLOR, OUT_WINDOW_CHARACTERS)
+    PRINT AT HEADER_Y, HEADER_X; INK FONT_COLOR; HEADER_STRING;
+    drawScoreTexts()
+    drawScores()
+    drawSnakeHead()
+    putFruit()
+    startSound()
+    setGameState(STATE_GAME_PLAYING)
+END SUB
+
+'Inits the game
+SUB stateInitGame()
+    initInput()
+    loadFont(@reactorFont)
+    loadUdgs(@snakeUdg)
+    maxScore = INITIAL_MAX_SCORE
+    setGameState(STATE_START_TITLE)
+END SUB
+
+'Updates all the game status
+SUB stateGamePlaying()
+    delayedFrames = delayedFrames + DELAYED_FRAMES_INC
+    IF delayedFrames >= delayFrames
+        delayedFrames = INITIAL_DELAYED_FRAMES
+        processInput()
+        updatePlayer()
+        checkFruit()
+        checkDeath()   
+        drawScores()
+    END IF
+END SUB
+
+'Draws the select input screen
+SUB stateStartSelectInput()
+    clearScreen(SELECT_INPUT_PAPER, SELECT_INPUT_INK)
+    PRINT AT SELECT_INPUT_TITLE_Y, SELECT_INPUT_TITLE_X; SELECT_INPUT_TITLE
+    PRINT AT SELECT_INPUT_ENTRY_Y_1, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_1
+    PRINT AT SELECT_INPUT_ENTRY_Y_2, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_2
+    PRINT AT SELECT_INPUT_ENTRY_Y_3, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_3
+    PRINT AT SELECT_INPUT_ENTRY_Y_4, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_4
+    PRINT AT SELECT_INPUT_ENTRY_Y_5, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_5
+    setStateWaitNoKey(STATE_WAIT_SELECT_INPUT)
+END SUB
+
+'Waits for an input selection then goes to title or redefinition
+SUB stateWaitSelectInput()
+    IF(frameKey = SELECT_INPUT_ENTRY_1_KEY)
+        setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
+        setGameState(STATE_START_SELECT_KEYS)
+    ELSEIF(frameKey = SELECT_INPUT_ENTRY_2_KEY)
+        setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_1)
+        setGameState(STATE_START_TITLE)
+    ELSEIF(frameKey = SELECT_INPUT_ENTRY_3_KEY)
+        setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_2)
+        setGameState(STATE_START_TITLE)
+    ELSEIF(frameKey = SELECT_INPUT_ENTRY_4_KEY)
+        setControlType(PLAYER_1_INDEX, CONTROL_TYPE_CURSOR)
+        setGameState(STATE_START_TITLE)
+    ELSEIF(frameKey = SELECT_INPUT_ENTRY_5_KEY)
+        setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
+        setGameState(STATE_START_TITLE)
+    END IF
+END SUB
+
+'Draws the select keys screen
+SUB stateStartSelectKeys()
+    clearScreen(SELECT_KEYS_PAPER, SELECT_KEYS_COLOR)
+    PRINT AT SELECT_KEYS_TITLE_Y, SELECT_KEYS_TITLE_X; SELECT_KEYS_TITLE
+    PRINT AT SELECT_KEYS_ENTRY_Y_1, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_1
+    PRINT AT SELECT_KEYS_ENTRY_Y_2, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_2
+    PRINT AT SELECT_KEYS_ENTRY_Y_3, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_3
+    PRINT AT SELECT_KEYS_ENTRY_Y_4, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_4
+    PRINT AT SELECT_KEYS_ENTRY_Y_5, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_5
+    redefinedKeys = REDEFINED_KEYS_INIT
+    setStateWaitNoKey(STATE_WAIT_SELECT_KEYS)
+END SUB
+
+'Waits for the definition of all the game keys
+SUB stateWaitSelectKeys()
+    DIM keyCode AS UBYTE = CODE(frameKey)
+    IF(redefinedKeys > KEYS_MAX_INDEX)
+        setStateWaitFrames(SELECTED_KEYS_WAIT_FRAMES, STATE_START_TITLE)
+    ELSEIF(keyCodeAcceptable(keyCode, PLAYER_1_INDEX))
+        PRINT AT SELECT_KEYS_ENTRY_Y_1 + redefinedKeys,_
+            SELECT_KEYS_TITLE_X + REDEFINED_KEYS_OFFSET; frameKey
+        keys(PLAYER_1_INDEX, redefinedKeys) = keyCode
+        redefinedKeys = redefinedKeys + REDEFINED_KEYS_INC
+        setStateWaitNoKey(getGameState())      
+    END IF    
+END SUB
+
+'Slots 5-7 are reserved for future use
+DIM stateSubroutines(STATE_WAIT_SELECT_KEYS) AS UINTEGER => { _
+    @stateWaitFrames, _
+    @stateWaitAKey, _
+    @stateWaitAnyKey, _
+    @stateWaitNoKey, _
+    @stateFadeToBlack,_
+    0, 0, 0, _     
+    @stateInitGame, _
+    @stateStartTitle, _
+    @stateWaitDifficulty, _
+    @stateStartGame, _
+    @stateGamePlaying, _
+    @stateStartPause, _
+    @stateWaitUnpause, _
+    @stateStartGameOver, _
+    @stateWaitKeyGameOver, _
+    @stateStartSelectInput, _
+    @stateWaitSelectInput, _
+    @stateStartSelectKeys, _
+    @stateWaitSelectKeys _
+}

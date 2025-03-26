@@ -1,0 +1,5 @@
+{
+  "OutputPath": "out\\megasnake.tap",
+  "AddBasic": true,
+  "Autorun": true
+}

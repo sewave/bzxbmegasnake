@@ -1,0 +1,83 @@
+'Wwindows system gfx indexes
+#define WINDOW_UP_LEFT_INDEX 0
+#define WINDOW_UP_INDEX 1
+#define WINDOW_UP_RIGHT_INDEX 2
+#define WINDOW_RIGHT_INDEX 3
+#define WINDOW_DOWN_RIGHT_INDEX 4
+#define WINDOW_DOWN_INDEX 5
+#define WINDOW_DOWN_LEFT_INDEX 6
+#define WINDOW_LEFT_INDEX 7
+
+'UDGs address
+#define UDG_ADDRESS 23675
+
+'Font address
+#define FONT_ADDRESS 23606
+#define FONT_OFFSET 256
+
+'Spectrum frame counter low byte
+#define FRAME_LOW_BYTE 23672
+
+'Wait frames
+#define FRAMES_WAITED_START 0
+#define FRAMES_WAITED_INC 1
+
+'Loads udgs address into system to switch graphics
+SUB loadUdgs(udgs AS UINTEGER)
+    POKE UINTEGER UDG_ADDRESS, udgs
+END SUB
+
+'Loads font address into system to switch graphics
+SUB loadFont(font AS UINTEGER)
+    POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
+END SUB
+
+'Draws a straight line from start to end
+SUB drawLine(startX as UBYTE, startY as UBYTE, endX as UBYTE, endY as UBYTE, character as STRING)
+    FOR x = startX TO endX : FOR y = startY TO endY
+        PRINT AT y, x ; character;
+    NEXT y : NEXT x
+END SUB
+
+'Returns the Spectrum low frame counter byte (Usually updated 1/50 s)
+FUNCTION getFrameLowByte() as UBYTE
+    RETURN PEEK(FRAME_LOW_BYTE)
+END FUNCTION
+
+'Clears the screen with the selected paper-border and ink
+SUB clearScreen(pPaper as UBYTE, pInk as UBYTE)
+    BORDER pPaper: PAPER pPaper : INK pInk : CLS
+END SUB
+
+'Wait vsync
+SUB waitVsync()
+    DIM currentFrame AS UBYTE = getFrameLowByte()
+    DIM newFrame AS UBYTE
+    DO
+        newFrame = getFrameLowByte()
+    LOOP UNTIL newFrame <> currentFrame
+END SUB
+
+'Draws a window using the string characters to cover all possibilities like:
+'0112
+'7  3
+'7  3
+'6554
+SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, characters as STRING)
+    DIM widthInc AS UBYTE = width - 1
+    DIM heightInc AS UBYTE = height - 1
+    INK color
+    'UP
+    drawLine(startX, startY, startX + widthInc, startY, characters(WINDOW_UP_INDEX))
+    'RIGHT
+    drawLine(startX + widthInc, startY, startX + widthInc, startY + heightInc, characters(WINDOW_RIGHT_INDEX))
+    'DOWN
+    drawLine(startX, startY + heightInc, startX + widthInc, startY + heightInc, characters(WINDOW_DOWN_INDEX))
+    'LEFT
+    drawLine(startX, startY, startX, startY + heightInc, characters(WINDOW_LEFT_INDEX))
+    'CORNERS
+    PRINT AT startY, startX; characters(WINDOW_UP_LEFT_INDEX);
+    PRINT AT startY, startX + widthInc; characters(WINDOW_UP_RIGHT_INDEX);
+    PRINT AT startY + heightInc, startX; characters(WINDOW_DOWN_LEFT_INDEX);
+    PRINT AT startY + heightInc, startX + widthInc; characters(WINDOW_DOWN_RIGHT_INDEX);
+END SUB

@@ -1,0 +1,28 @@
+'Mega Snake for Boriel ZX Basic
+'Thanks to DamienG (https://damieng.com/typography/zx-origins/)
+'for the awesome fonts
+'Wave 2025
+
+'Set up max players to use less memory
+#define NUM_PLAYERS 1
+#include "common\constants.zxbas"
+#include "common\video.zxbas"
+#include "common\input.zxbas"
+#include "common\states.zxbas"
+#include "game\constants.zxbas"
+#include "game\functions.zxbas"
+#include "game\states.zxbas"
+#include "gfx\snakeUdg.udg.zxbas"
+
+setGameState(STATE_INIT_GAME)
+'Main loop
+DO
+    updateControls()
+    RANDOMIZE USR stateSubroutines(getGameState())
+    waitVsync()
+LOOP
+
+reactorFont:
+ASM
+    incbin "gfx\Reactor.ch8"
+END ASM
