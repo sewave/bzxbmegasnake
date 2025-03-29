@@ -22,6 +22,30 @@
 #define FRAMES_WAITED_START 0
 #define FRAMES_WAITED_INC 1
 
+'Attributes
+#define ATTRIBUTE_PAPER %00111000
+#define ATTRIBUTE_INK   %00000111
+#define ATTRIBUTE_COLOR %00111111
+#define ATTRIBUTES_START_ADDR 5800h
+#define ATTRIBUTES_END_ADDR   5AFFh
+#define ATTRIBUTE_PAPER_UNIT 8
+#define ATTRIBUTE_INK_UNIT   1
+
+'Scroller
+#define SCROLLER_POINTER_START 0
+#define SCROLLER_POINTER_INC   1
+#define SCROLLER_WIDTH_DEC     1
+#define SCROLLER_FRAMES_DEC    1
+#define SCROLLER_FRAMES_DONE   0
+
+#define SCROLLER_REMAINIG_FRAMES_START 1
+
+DIM scrollerTargetFrames AS UBYTE
+DIM scrollerRemainingFrames AS UBYTE
+DIM scrollerX, scrollerY AS UBYTE
+DIM scrollerTargetWidth AS UBYTE
+DIM scrollerPointer AS UINTEGER
+
 'Loads udgs address into system to switch graphics
 SUB loadUdgs(udgs AS UINTEGER)
     POKE UINTEGER UDG_ADDRESS, udgs
@@ -68,16 +92,68 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
     DIM heightInc AS UBYTE = height - 1
     INK color
     'UP
-    drawLine(startX, startY, startX + widthInc, startY, characters(WINDOW_UP_INDEX))
+    drawLine(startX + 1, startY, startX + widthInc, startY,_
+        characters(WINDOW_UP_INDEX))
     'RIGHT
-    drawLine(startX + widthInc, startY, startX + widthInc, startY + heightInc, characters(WINDOW_RIGHT_INDEX))
+    drawLine(startX + widthInc, startY + 1, startX + widthInc, startY + heightInc,_
+        characters(WINDOW_RIGHT_INDEX))
     'DOWN
-    drawLine(startX, startY + heightInc, startX + widthInc, startY + heightInc, characters(WINDOW_DOWN_INDEX))
+    drawLine(startX + 1, startY + heightInc, startX + widthInc, startY + heightInc,_
+        characters(WINDOW_DOWN_INDEX))
     'LEFT
-    drawLine(startX, startY, startX, startY + heightInc, characters(WINDOW_LEFT_INDEX))
+    drawLine(startX, startY + 1, startX, startY + heightInc,_
+        characters(WINDOW_LEFT_INDEX))
     'CORNERS
     PRINT AT startY, startX; characters(WINDOW_UP_LEFT_INDEX);
     PRINT AT startY, startX + widthInc; characters(WINDOW_UP_RIGHT_INDEX);
     PRINT AT startY + heightInc, startX; characters(WINDOW_DOWN_LEFT_INDEX);
-    PRINT AT startY + heightInc, startX + widthInc; characters(WINDOW_DOWN_RIGHT_INDEX);
+    PRINT AT startY + heightInc, startX + widthInc;_ 
+        characters(WINDOW_DOWN_RIGHT_INDEX);
+END SUB
+
+'Initializes the text scroller
+SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE)
+    scrollerTargetFrames = frames
+    scrollerRemainingFrames = SCROLLER_REMAINIG_FRAMES_START
+    scrollerX = x
+    scrollerY = y
+    scrollerTargetWidth = width - SCROLLER_WIDTH_DEC
+    scrollerPointer = SCROLLER_POINTER_START
+END SUB
+
+'You must set ink, paper, bright, flash before calling
+'String must start by an empty zone of at least width
+'if you want the characters to enter from the right
+'String must end by an empty zone of at least width if you
+'want the string to dissapear completely
+'Call it on each frame
+SUB frameTextScroller(scrollerText AS STRING)
+    scrollerRemainingFrames = scrollerRemainingFrames - SCROLLER_FRAMES_DEC
+    IF(scrollerRemainingFrames = SCROLLER_FRAMES_DONE)
+        scrollerRemainingFrames = scrollerTargetFrames
+        PRINT AT scrollerY, scrollerX; scrollerText(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
+        IF(scrollerPointer + scrollerTargetWidth >= LEN(scrollerText))
+            scrollerPointer = SCROLLER_POINTER_START
+        ELSE
+            scrollerPointer = scrollerPointer + SCROLLER_POINTER_INC
+        END IF
+    END IF
+END SUB
+
+'Clears a rectangular region with space
+SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
+    FOR j = y TO (y + height - 1)
+        PRINT AT j, x; TAB (x + width - 1);
+    NEXT j
+END SUB
+
+'Draws a space filled window using the string characters to cover all
+'possibilities like:
+'0112
+'7FF3
+'7FF3
+'6554
+SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, characters as STRING)
+    clearRectangle(startX, startY, width, height)
+    drawWindow(startX, startY, width, height, color, characters)    
 END SUB

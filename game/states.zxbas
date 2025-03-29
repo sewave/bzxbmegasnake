@@ -1,20 +1,17 @@
 'File with the game states subroutines
 DIM delayFrames AS UBYTE
-DIM delayedFrames AS UBYTE
 
 'Kills the snake, showing GAME OVER
 SUB stateStartGameOver()
-    FLASH TRUE
-    drawSnakeHead()
-    PRINT AT GAME_OVER_Y, GAME_OVER_X; INK GAME_OVER_INK; PAPER GAME_OVER_PAPER; GAME_OVER_STRING
-    FLASH FALSE
-    dieSound()
+    PRINT AT GAME_OVER_Y, GAME_OVER_X; FLASH TRUE; INK GAME_OVER_INK;_
+        PAPER GAME_OVER_PAPER; GAME_OVER_STRING
+    drawDeadSnakeHead()
     setStateWaitFrames(DIE_FRAMES, STATE_WAIT_KEY_GAME_OVER)
 END SUB
 
 'Sets to wait for any key and goes to title
 SUB stateWaitKeyGameOver()
-    setStateWaitAnyKey(STATE_START_TITLE)
+    IF(frameKey <> NO_KEY) setStateFadeToBlack(DIE_FADE_FRAMES, STATE_START_TITLE)
 END SUB
 
 'Shows the pause string and changes to wait unpause on next state after no key
@@ -57,61 +54,36 @@ SUB stateStartTitle()
     INK INTRO_CREDITS_COLOR
     PRINT AT INTRO_CREDITS_Y, INTRO_CREDITS_X; INTRO_CREDITS;
     
-    'Print max score
-    INK INTRO_CREDITS_COLOR
-    PRINT AT INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_X; INTRO_MAX_SCORE_STRING;
-    PRINT AT INTRO_MAX_SCORE_NUM_Y, INTRO_MAX_SCORE_NUM_X; FLASH TRUE; INK INTRO_MAX_SCORE_NUM_INK; PAPER INTRO_MAX_SCORE_NUM_PAPER; maxScore;
+    'Scroller
+    initTextScroller(1, 22, 30, 10)
+    drawWindow(TITLE_SCROLLER_WINDOW_X, TITLE_SCROLLER_WINDOW_Y, TITLE_SCROLLER_WINDOW_WIDTH, TITLE_SCROLLER_WINDOW_HEIGHT, TITLE_SCROLLER_PAPER, IN_WINDOW_CHARACTERS)
+   
+    printTitleScroller()
     
-    'Print instructions
-    printInstructions()
-    
-    setStateWaitAKey(CHR(keys(PLAYER_1_INDEX, CONTROL_FIRE_INDEX)),_
-        STATE_WAIT_DIFFICULTY)
+    setGameState(STATE_START_MENU)
 END SUB
 
-'Waits for difficulty selection to change game state
-SUB stateWaitDifficulty()
+'Waits menu selection to change game state
+SUB stateWaitMenu()
+    printTitleScroller()
     IF(frameKey = SELECT_INPUT_KEY)
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
-        DIM controls AS UBYTE = getControls(PLAYER_1_INDEX)
-        drawDifficultyCursor(DIFFICULTY_CURSOR_ERASE)
-        IF(controls bAND CONTROL_LEFT AND difficultyIndex > DIFFICULTY_INDEX_1)
-            difficultyIndex = difficultyIndex - DIFFICULTY_INDEX_STEP
-            setStateWaitNoKey(getGameState())
-        ELSEIF(controls bAND CONTROL_RIGHT AND difficultyIndex < DIFFICULTY_INDEX_3)
-            difficultyIndex = difficultyIndex + DIFFICULTY_INDEX_STEP
-            setStateWaitNoKey(getGameState())
-        ELSEIF(controls bAND CONTROL_FIRE)
+        IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
             delayFrames = DIFFICULTY_FRAMES - difficultyIndex
-            setGameState(STATE_START_GAME)
+            setStateFadeToBlack(DIFFICULTY_FADE, STATE_START_GAME)
         END IF
-        drawDifficultyCursor(DIFFICULTY_CURSOR_CHAR)
     END IF
 END SUB
 
 'Resets the game, restores everything except the max score and difficulty
 SUB stateStartGame()
-    delayedFrames = INITIAL_DELAYED_FRAMES
-    snakeLength = MIN_SNAKE_LENGTH
-    growthLeft = START_GROWTH
     score = START_SCORE
+    lives = START_LIVES
+    fruits = LEVEL_FRUITS
+    level = START_LEVEL
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
-    clearSnakePositions()
-    headPosition = HEAD_START_INDEX
-    tailPosition = TAIL_START_INDEX
-    snakeX(headPosition) = getBoardRandomX()
-    snakeY(headPosition) = getBoardRandomY()
-    direction = DIRECTION_NONE
-    drawWindow(HEADER_WINDOW_X, HEADER_WINDOW_Y, HEADER_WINDOW_WIDTH, HEADER_WINDOW_HEIGHT, HEADER_COLOR, OUT_WINDOW_CHARACTERS)
-    drawWindow(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_WIDTH, BOARD_WINDOW_HEIGHT, BOARD_COLOR, IN_WINDOW_CHARACTERS)
-    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH, STATUS_WINDOW_HEIGHT, STATUS_COLOR, OUT_WINDOW_CHARACTERS)
-    PRINT AT HEADER_Y, HEADER_X; INK FONT_COLOR; HEADER_STRING;
-    drawScoreTexts()
-    drawScores()
-    drawSnakeHead()
-    putFruit()
-    startSound()
+    resetGameLevel()
     setGameState(STATE_GAME_PLAYING)
 END SUB
 
@@ -139,7 +111,8 @@ END SUB
 
 'Draws the select input screen
 SUB stateStartSelectInput()
-    clearScreen(SELECT_INPUT_PAPER, SELECT_INPUT_INK)
+    clearCentralMenu()
+    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK INTRO_CENTRAL_WINDOW_INK
     PRINT AT SELECT_INPUT_TITLE_Y, SELECT_INPUT_TITLE_X; SELECT_INPUT_TITLE
     PRINT AT SELECT_INPUT_ENTRY_Y_1, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_1
     PRINT AT SELECT_INPUT_ENTRY_Y_2, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_2
@@ -151,27 +124,28 @@ END SUB
 
 'Waits for an input selection then goes to title or redefinition
 SUB stateWaitSelectInput()
+    printTitleScroller()
     IF(frameKey = SELECT_INPUT_ENTRY_1_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
         setGameState(STATE_START_SELECT_KEYS)
     ELSEIF(frameKey = SELECT_INPUT_ENTRY_2_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_1)
-        setGameState(STATE_START_TITLE)
+        setGameState(STATE_START_MENU)
     ELSEIF(frameKey = SELECT_INPUT_ENTRY_3_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_2)
-        setGameState(STATE_START_TITLE)
+        setGameState(STATE_START_MENU)
     ELSEIF(frameKey = SELECT_INPUT_ENTRY_4_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_CURSOR)
-        setGameState(STATE_START_TITLE)
+        setGameState(STATE_START_MENU)
     ELSEIF(frameKey = SELECT_INPUT_ENTRY_5_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
-        setGameState(STATE_START_TITLE)
+        setGameState(STATE_START_MENU)
     END IF
 END SUB
 
 'Draws the select keys screen
 SUB stateStartSelectKeys()
-    clearScreen(SELECT_KEYS_PAPER, SELECT_KEYS_COLOR)
+    clearCentralMenu()
     PRINT AT SELECT_KEYS_TITLE_Y, SELECT_KEYS_TITLE_X; SELECT_KEYS_TITLE
     PRINT AT SELECT_KEYS_ENTRY_Y_1, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_1
     PRINT AT SELECT_KEYS_ENTRY_Y_2, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_2
@@ -185,19 +159,76 @@ END SUB
 'Waits for the definition of all the game keys
 SUB stateWaitSelectKeys()
     DIM keyCode AS UBYTE = CODE(frameKey)
+    
+    printTitleScroller()
     IF(redefinedKeys > KEYS_MAX_INDEX)
-        setStateWaitFrames(SELECTED_KEYS_WAIT_FRAMES, STATE_START_TITLE)
+        setStateWaitFrames(SELECTED_KEYS_WAIT_FRAMES, STATE_START_MENU)
     ELSEIF(keyCodeAcceptable(keyCode, PLAYER_1_INDEX))
         PRINT AT SELECT_KEYS_ENTRY_Y_1 + redefinedKeys,_
-            SELECT_KEYS_TITLE_X + REDEFINED_KEYS_OFFSET; frameKey
+            SELECT_KEYS_TITLE_X + REDEFINED_KEYS_OFFSET;_
+            PAPER INTRO_CENTRAL_WINDOW_PAPER; INK INTRO_CENTRAL_WINDOW_INK;_
+            frameKey;
         keys(PLAYER_1_INDEX, redefinedKeys) = keyCode
         redefinedKeys = redefinedKeys + REDEFINED_KEYS_INC
         setStateWaitNoKey(getGameState())      
     END IF    
 END SUB
 
+'State that starts the central menu at the title screen
+SUB stateStartMenu()
+    clearCentralMenu()
+    printControls()
+    
+    'Print max score
+    INK INTRO_CREDITS_COLOR
+    PRINT AT INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_X; INTRO_MAX_SCORE_STRING;_
+        FLASH TRUE; INK INTRO_MAX_SCORE_NUM_INK;_
+            PAPER INTRO_MAX_SCORE_NUM_PAPER; maxScore;
+    
+    setStateWaitNoKey(STATE_WAIT_MENU) 
+END SUB
+
+'State to start to lose a live
+SUB stateStartLoseLive()
+    PRINT AT LOSE_LIVE_Y, LOSE_LIVE_X; FLASH LOSE_LIVE_FLASH;_
+        INK LOSE_LIVE_INK; PAPER LOSE_LIVE_PAPER; LOSE_LIVE_STRING;
+    drawDeadSnakeHead()
+    setStateWaitFrames(LOSE_LIVE_FRAMES, STATE_RESTART_LEVEL)
+END SUB
+
+'State to restart a level
+SUB stateRestartLevel()
+    clearRectangle(1, 3, 30, 15)
+    resetGameLevel()
+    setGameState(STATE_GAME_PLAYING)
+END SUB
+
+FUNCTION getPaddedNumber(number AS UBYTE, length AS UBYTE, padding AS STRING) AS STRING
+    DIM paddedNumber AS STRING = STR(number)
+    WHILE LEN(paddedNumber) < length
+        paddedNumber = padding + paddedNumber
+    END WHILE
+    RETURN paddedNumber
+END FUNCTION
+
+'Starts the end level printing bonus
+SUB stateStartEndLevel()    
+    drawWindowFilled(3, 7, 26, 10, BLUE, OUT_WINDOW_CHARACTERS)
+    drawWindowFilled(3, 7, 26, 3, BLUE, OUT_WINDOW_CHARACTERS)
+    INK GUI_COLOR
+    PRINT AT 8, 6;START_EXCL; "NIVEL "; getPaddedNumber(level, 2, " ");_
+        " TERMINADO!";
+    PRINT AT 11, 5; "Tiempo 2 x "; getPaddedNumber(remainingTime, 3, " ");_
+        "  =    0";
+    PRINT AT 15, 5; "Total           =    0";
+    
+    level = level + LEVEL_INC
+    fruits = LEVEL_FRUITS
+    setStateWaitAnyKey(STATE_RESTART_LEVEL)
+END SUB
+
 'Slots 5-7 are reserved for future use
-DIM stateSubroutines(STATE_WAIT_SELECT_KEYS) AS UINTEGER => { _
+DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateWaitFrames, _
     @stateWaitAKey, _
     @stateWaitAnyKey, _
@@ -206,7 +237,7 @@ DIM stateSubroutines(STATE_WAIT_SELECT_KEYS) AS UINTEGER => { _
     0, 0, 0, _     
     @stateInitGame, _
     @stateStartTitle, _
-    @stateWaitDifficulty, _
+    @stateWaitMenu, _
     @stateStartGame, _
     @stateGamePlaying, _
     @stateStartPause, _
@@ -216,5 +247,9 @@ DIM stateSubroutines(STATE_WAIT_SELECT_KEYS) AS UINTEGER => { _
     @stateStartSelectInput, _
     @stateWaitSelectInput, _
     @stateStartSelectKeys, _
-    @stateWaitSelectKeys _
+    @stateWaitSelectKeys, _
+    @stateStartLoseLive, _
+    @stateRestartLevel, _
+    @stateStartEndLevel, _
+    @stateStartMenu _
 }

@@ -7,6 +7,7 @@
 #define FIRST_UNUSED_STATE  8
 #define FRAMES_TO_WAIT_DEC  1
 #define NO_FRAMES_TO_WAIT   0
+#define FADE_TO_BLACK_STEPS 8
 
 'State vars
 DIM gameState AS UBYTE
@@ -16,6 +17,12 @@ DIM keyToWait AS STRING
 DIM targetFadeStepframes AS UBYTE
 DIM fadeStepframes AS UBYTE
 DIM remainingFadeSteps AS UBYTE
+
+'Fade global variables, some to speed up processing
+DIM tmpAttribute AS UBYTE
+DIM tmpPaper AS UBYTE
+DIM tmpInk AS UBYTE
+DIM attrIndex AS UINTEGER
 
 'Gets the current game state
 FUNCTION getGameState() AS UBYTE
@@ -71,6 +78,15 @@ SUB setStateWaitNoKey(nextGameState AS UBYTE)
     setGameStateAndNext(STATE_WAIT_NO_KEY, nextGameState)
 END SUB
 
+'Sets the next state to fade to black, waiting [pTargetFadeStepframes] frames
+'per step and then switches to [nextGameState]
+SUB setStateFadeToBlack(pTargetFadeStepframes AS UBYTE, nextGameState AS UBYTE)
+    targetFadeStepframes = pTargetFadeStepframes
+    remainingFadeSteps = FADE_TO_BLACK_STEPS
+    fadeStepframes = targetFadeStepframes
+    setGameStateAndNext(STATE_FADE_TO_BLACK, nextGameState)
+END SUB
+
 'Reusable states
 
 'Waits for [framesToWait] frames and then goes to next game state
@@ -94,39 +110,29 @@ SUB stateWaitAKey()
     IF(frameKey <> keyToWait) moveNextGameStateToGameState()
 END SUB
 
-SUB setFadeToBlack(pTargetFadeStepframes AS UBYTE, nextGameState AS UBYTE)
-    targetFadeStepframes = pTargetFadeStepframes
-    remainingFadeSteps = 8
-    setGameStateAndNext(STATE_FADE_TO_BLACK, nextGameState)
-END SUB
-
 'Waits for [targetFadeStepframes] frames and then lowers attributes, 8 steps
 SUB stateFadeToBlack()
     fadeStepframes = fadeStepframes - 1
     if(fadeStepframes = 0)
-        'fadeAttributesToBlack()
+        fadeAttributesToBlack()
         fadeStepframes = targetFadeStepframes
         remainingFadeSteps = remainingFadeSteps - 1
         IF(remainingFadeSteps = 0) moveNextGameStateToGameState()
     END IF
 END SUB
 
-DIM tmpAttribute AS UBYTE
-DIM tmpPaper AS UBYTE
-DIM tmpInk AS UBYTE
-DIM attrIndex AS UINTEGER
 SUB fadeAttributesToBlack()
-    FOR attrIndex = 5800h TO 5AFFh
-        tmpAttribute = PEEK(UBYTE, i)
-        IF(tmpAttribute > %00111111)
-            tmpAttribute = tmpAttribute bAND %00111111
+    FOR attrIndex = ATTRIBUTES_START_ADDR TO ATTRIBUTES_END_ADDR
+        tmpAttribute = PEEK(attrIndex)
+        IF(tmpAttribute > ATTRIBUTE_COLOR)
+            tmpAttribute = tmpAttribute bAND ATTRIBUTE_COLOR
         ELSE
-            tmpPaper = tmpAttribute bAND %00000111
-            tmpInk = tmpAttribute bAND %00111000
-            IF(tmpPaper > 0) tmpPaper = tmpPaper - 1
-            IF(tmpInk > 0) tmpInk = tmpInk - 8
-            tmpAttribute = tmpPaper + tmpInk
+            tmpPaper = tmpAttribute bAND ATTRIBUTE_PAPER
+            tmpInk = tmpAttribute bAND ATTRIBUTE_INK
+            IF(tmpPaper) tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
+            IF(tmpInk) tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
+            tmpAttribute = tmpPaper bOR tmpInk
         END IF
-        POKE UBYTE, i, tmpAttribute
-    NEXT i
+        POKE attrIndex, tmpAttribute
+    NEXT attrIndex
 END SUB

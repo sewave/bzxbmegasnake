@@ -1,7 +1,17 @@
+'Spanish chars
+#define ACUTE_LC_A "\#035"
+#define ACUTE_LC_E "\#038"
+#define ACUTE_LC_I "\#064"
+#define TILDE_LC_N "\#094"
+#define ACUTE_LC_O "\#096"
+#define ACUTE_LC_U "\#123"
+#define START_EXCL "\#125"
+#define START_INTE "\#126"
+
 'Game states
 #define STATE_INIT_GAME          FIRST_UNUSED_STATE + 0
 #define STATE_START_TITLE        FIRST_UNUSED_STATE + 1
-#define STATE_WAIT_DIFFICULTY    FIRST_UNUSED_STATE + 2
+#define STATE_WAIT_MENU          FIRST_UNUSED_STATE + 2
 #define STATE_START_GAME         FIRST_UNUSED_STATE + 3
 #define STATE_GAME_PLAYING       FIRST_UNUSED_STATE + 4
 #define STATE_START_PAUSE        FIRST_UNUSED_STATE + 5
@@ -12,6 +22,10 @@
 #define STATE_WAIT_SELECT_INPUT  FIRST_UNUSED_STATE + 10
 #define STATE_START_SELECT_KEYS  FIRST_UNUSED_STATE + 11
 #define STATE_WAIT_SELECT_KEYS   FIRST_UNUSED_STATE + 12
+#define STATE_START_LOSE_LIVE    FIRST_UNUSED_STATE + 13
+#define STATE_RESTART_LEVEL      FIRST_UNUSED_STATE + 14
+#define STATE_START_END_LEVEL      FIRST_UNUSED_STATE + 15
+#define STATE_START_MENU         FIRST_UNUSED_STATE + 16
 
 'Snake indexes
 #define MAX_SNAKE_INDEX 127
@@ -23,31 +37,32 @@
 #define SNAKE_TAIL_ERASE " "
 
 'Snake udgs
-#define SNAKE_HEAD_RIGHT CHR(144)
-#define SNAKE_HEAD_DOWN  CHR(145)
-#define SNAKE_HEAD_LEFT  CHR(146)
-#define SNAKE_HEAD_UP    CHR(147)
-#define SNAKE_HEAD_FRONT CHR(158)
+#define SNAKE_HEAD_RIGHT "\A"
+#define SNAKE_HEAD_DOWN  "\B"
+#define SNAKE_HEAD_LEFT  "\C"
+#define SNAKE_HEAD_UP    "\D"
+#define SNAKE_HEAD_FRONT "\O"
 
-#define SNAKE_TAIL_RIGHT CHR(148)
-#define SNAKE_TAIL_UP    CHR(149)
-#define SNAKE_TAIL_LEFT  CHR(150)
-#define SNAKE_TAIL_DOWN  CHR(151)
+#define SNAKE_TAIL_RIGHT "\E"
+#define SNAKE_TAIL_UP    "\F"
+#define SNAKE_TAIL_LEFT  "\G"
+#define SNAKE_TAIL_DOWN  "\H"
 
-#define SNAKE_BODY_HOR   CHR(152)
-#define SNAKE_BODY_VER   CHR(153)
-#define SNAKE_BODY_DW_RI CHR(154)
-#define SNAKE_BODY_LF_DW CHR(155)
-#define SNAKE_BODY_UP_RI CHR(156)
-#define SNAKE_BODY_LF_UP CHR(157)
+#define SNAKE_BODY_HOR   "\I"
+#define SNAKE_BODY_VER   "\J"
+#define SNAKE_BODY_DW_RI "\K"
+#define SNAKE_BODY_LF_DW "\L"
+#define SNAKE_BODY_UP_RI "\M"
+#define SNAKE_BODY_LF_UP "\N"
 
 'Gameplay colors
 #define FONT_COLOR WHITE
 #define GAMEPLAY_PAPER BLACK
 #define GAMEPLAY_INK GREEN
+#define GUI_COLOR WHITE
 
 'Fruit
-#define FRUIT_CHAR "\U"
+#define FRUIT_CHAR "\P"
 #define FRUIT_COLOR RED
 #define FRUIT_GROWTH 4
 #define FRUIT_INC_SCORE 1
@@ -61,32 +76,36 @@
 
 'Board
 #define MIN_BOARD_X 1
-#define MIN_BOARD_Y 4
+#define MIN_BOARD_Y 3
 #define MAX_BOARD_X 30
 #define MAX_BOARD_Y 18
 #define BOARD_WIDTH 30
 #define BOARD_COLOR PURPLE
 #define BOARD_WINDOW_X 0
 #define BOARD_WINDOW_Y 3
-#define BOARD_WINDOW_WIDTH 32
-#define BOARD_WINDOW_HEIGHT 17
+#define BOARD_WINDOW_X_2 31
+#define BOARD_WINDOW_Y_2 18
+#define BOARD_WINDOW_LEFT  "\ :"
+#define BOARD_WINDOW_RIGHT "\: "
 
 'Status
-#define FIRST_STATUS_LINE_Y 21
-#define SECOND_STATUS_LINE_Y 22
+#define FIRST_STATUS_LINE_Y 20
+#define SECOND_STATUS_LINE_Y 21
+#define THIRD_STATUS_LINE_Y 22
 #define STATUS_WINDOW_X 0
-#define STATUS_WINDOW_Y 20
+#define STATUS_WINDOW_Y 19
 #define STATUS_WINDOW_WIDTH 32
-#define STATUS_WINDOW_HEIGHT 4
+#define STATUS_WINDOW_HEIGHT 5
 #define STATUS_COLOR CYAN
 
 'Game over
-#define GAME_OVER_Y SECOND_STATUS_LINE_Y
+#define GAME_OVER_Y 11
 #define GAME_OVER_X 7
 #define GAME_OVER_INK RED
 #define GAME_OVER_PAPER YELLOW
 #define GAME_OVER_STRING "FIN DE LA PARTIDA"
 #define DIE_FRAMES 60
+#define DIE_FADE_FRAMES 1
 
 'Head, body and tail
 #define HEAD_START_INDEX 0
@@ -102,36 +121,63 @@
 #define START_SCORE 0
 #define SCORE_STRING "Puntos:";
 #define BEST_STRING "Mejor:";
-#define SCORE_NUM_X 9
+#define SCORE_NUM_X 27
 #define SCORE_NUM_Y FIRST_STATUS_LINE_Y
-#define BEST_NUM_X 28
-#define BEST_NUM_Y FIRST_STATUS_LINE_Y
-#define SCORE_STRING_X 1
+#define BEST_NUM_X 27
+#define BEST_NUM_Y SECOND_STATUS_LINE_Y
+#define SCORE_STRING_X 19
 #define SCORE_STRING_Y FIRST_STATUS_LINE_Y
-#define BEST_STRING_X 21
-#define BEST_STRING_Y FIRST_STATUS_LINE_Y
+#define BEST_STRING_X 20
+#define BEST_STRING_Y SECOND_STATUS_LINE_Y
 #define INITIAL_MAX_SCORE 10
+
+'Lives, fruit and time
+#define LIVES_STRING_X 3
+#define LIVES_STRING_Y FIRST_STATUS_LINE_Y
+#define LIVES_STRING "Vidas:"
+#define LIVES_NUM_X 11
+#define LIVES_NUM_Y FIRST_STATUS_LINE_Y
+#define LOSE_LIVE_X 5
+#define LOSE_LIVE_Y 11
+#define LOSE_LIVE_STRING START_EXCL + "HAS PERDIDO UNA VIDA!"
+#define LOSE_LIVE_INK YELLOW
+#define LOSE_LIVE_PAPER RED
+#define LOSE_LIVE_FLASH TRUE
+#define LOSE_LIVE_FRAMES 60
+
+#define FRUITS_STRING_X 2
+#define FRUITS_STRING_Y SECOND_STATUS_LINE_Y
+#define FRUITS_STRING "Frutas:"
+#define FRUITS_NUM_X 11
+#define FRUITS_NUM_Y SECOND_STATUS_LINE_Y
+#define TIME_STRING_X 2
+#define TIME_STRING_Y THIRD_STATUS_LINE_Y
+#define TIME_STRING "Tiempo:"
+#define TIME_BAR_X 11
+#define TIME_BAR_Y THIRD_STATUS_LINE_Y
 
 'Header
 #define HEADER_COLOR BLUE
-#define HEADER_STRING "Snake para BZX Basic por Wave"
+#define HEADER_STRING "Nivel: "
 #define HEADER_X 1
 #define HEADER_Y 1
 #define HEADER_WINDOW_X 0
 #define HEADER_WINDOW_Y 0
 #define HEADER_WINDOW_WIDTH 32
 #define HEADER_WINDOW_HEIGHT 3
+#define LEVEL_NUM_Y 1
+#define LEVEL_NUM_X 8
 
 'Pause
 #define PAUSE_FRAMES 60
-#define PAUSE_X 13
+#define PAUSE_X 14
 #define PAUSE_Y SECOND_STATUS_LINE_Y
 #define PAUSE_STRING "PAUSA"
 #define PAUSE_STRING_CLEAR "     "
 
 'Intro constants
 #define INTRO_TITLE_X 1
-#define INTRO_TITLE_Y 6
+#define INTRO_TITLE_Y 5
 #define INTRO_TITLE_1  " __      __   _            __ "
 #define INTRO_TITLE_2  "/ _\\  /\\ \\ \\ /_\\    /\\ /\\ /__\\"
 #define INTRO_TITLE_3  "\\ \\  /  \\/ ///_\\\\  / //_//_\\  "
@@ -146,32 +192,35 @@
 #define INTRO_TITLE_2_4  "\_)(_/(____)\___/\_/\_/"
 
 'Intro title
-#define INTRO_CREDITS_X 11
-#define INTRO_CREDITS_Y 23
+#define INTRO_CREDITS_X 2
+#define INTRO_CREDITS_Y 11
 #define INTRO_CREDITS_COLOR YELLOW
-#define INTRO_CREDITS "Wave 2025"
+#define INTRO_CREDITS "\* Wave 2025 Fuente: DamienG"
 
 'Intro instructions
+#define INTRO_CONTROLS_X 11
+#define INTRO_CONTROLS_Y 14
+#define INTRO_CONTROLS "CONTROLES"
 #define INTRO_INSTRUCTIONS_X_1 4
-#define INTRO_INSTRUCTIONS_Y_1 14
+#define INTRO_INSTRUCTIONS_Y_1 16
 #define INTRO_INSTRUCTIONS_1_A ": Izquierda "
 #define INTRO_INSTRUCTIONS_1_B ": Derecha"
 #define INTRO_INSTRUCTIONS_X_2 4
-#define INTRO_INSTRUCTIONS_Y_2 15
+#define INTRO_INSTRUCTIONS_Y_2 17
 #define INTRO_INSTRUCTIONS_2_A  ": Arriba    "
 #define INTRO_INSTRUCTIONS_2_B  ": Abajo"
 #define INTRO_INSTRUCTIONS_X_3 3
-#define INTRO_INSTRUCTIONS_Y_3 16
+#define INTRO_INSTRUCTIONS_Y_3 18
 #define INTRO_INSTRUCTIONS_3  ": Elige/Pausa R: Redefine"
 #define INTRO_INSTRUCTIONS_COLOR WHITE
 
-#define INTRO_INSTRUCTIONS_JOYSTICK   "Joystick:"
+#define INTRO_INSTRUCTIONS_JOYSTICK   "Joystick"
 #define INTRO_INSTRUCTIONS_SINCLAIR_1 "Sinclair 1"
 #define INTRO_INSTRUCTIONS_SINCLAIR_2 "Sinclair 2"
 #define INTRO_INSTRUCTIONS_CURSOR     "Cursor"
 #define INTRO_INSTRUCTIONS_KEMPSTON   "Kempston"
 #define INTRO_INSTRUCTIONS_JOY_OTHERS "FUEGO: Elige/Pausa R: Redefine"
-#define INTRO_INSTRUCTIONS_JOYSTICK_X_1 11
+#define INTRO_INSTRUCTIONS_JOYSTICK_X_1 12
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_2 10
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_3 10
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_4 13
@@ -179,11 +228,9 @@
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_6 1
 
 'Intro max score
-#define INTRO_MAX_SCORE_X 13
-#define INTRO_MAX_SCORE_Y 18
-#define INTRO_MAX_SCORE_STRING "Mejor:"
-#define INTRO_MAX_SCORE_NUM_X 15
-#define INTRO_MAX_SCORE_NUM_Y 19
+#define INTRO_MAX_SCORE_X 11
+#define INTRO_MAX_SCORE_Y 20
+#define INTRO_MAX_SCORE_STRING "Mejor: "
 #define INTRO_MAX_SCORE_NUM_INK CYAN 
 #define INTRO_MAX_SCORE_NUM_PAPER BLUE
 
@@ -195,22 +242,17 @@
 #define DIFFICULTY_1 "1"
 #define DIFFICULTY_2 "2"
 #define DIFFICULTY_3 "3"
-#define DIFFICULTY_FRAMES 4
+#define DIFFICULTY_FRAMES  4
+#define DIFFICULTY_FADE    4
 #define DIFFICULTY_INDEX_1 1
 #define DIFFICULTY_INDEX_2 2
 #define DIFFICULTY_INDEX_3 3
-#define DIFFICULTY_CURSOR_X     20
-#define DIFFICULTY_CURSOR_Y     21
-#define DIFFICULTY_INDEX_STEP   1
-#define DIFFICULTY_CURSOR_STEP  2
-#define DIFFICULTY_CURSOR_CHAR  SNAKE_HEAD_FRONT
-#define DIFFICULTY_CURSOR_ERASE " "
 
 'Intro window
 #define INTRO_WINDOW_X 0
 #define INTRO_WINDOW_Y 0
 #define INTRO_WINDOW_WIDTH 32
-#define INTRO_WINDOW_HEIGHT 24
+#define INTRO_WINDOW_HEIGHT 13
 
 'Initial frames delayed until logic is executed
 #define INITIAL_DELAYED_FRAMES 0
@@ -227,22 +269,22 @@
 #define SELECT_INPUT_KEY "R"
 #define SELECT_INPUT_PAPER BLACK
 #define SELECT_INPUT_INK   YELLOW
-#define SELECT_INPUT_TITLE_Y 10
+#define SELECT_INPUT_TITLE_Y 14
 #define SELECT_INPUT_TITLE_X 9
 #define SELECT_INPUT_TITLE   "ELIGE CONTROL"
-#define SELECT_INPUT_ENTRY_1 "1-TECLADO"
-#define SELECT_INPUT_ENTRY_2 "2-SINCLAIR 1"
-#define SELECT_INPUT_ENTRY_3 "3-SINCLAIR 2"
-#define SELECT_INPUT_ENTRY_4 "4-CURSOR"
-#define SELECT_INPUT_ENTRY_5 "5-KEMPSTON"
+#define SELECT_INPUT_ENTRY_1 "1-Teclado"
+#define SELECT_INPUT_ENTRY_2 "2-Sinclair 1"
+#define SELECT_INPUT_ENTRY_3 "3-Sinclair 2"
+#define SELECT_INPUT_ENTRY_4 "4-Cursor"
+#define SELECT_INPUT_ENTRY_5 "5-Kempston"
 
 #define SELECT_INPUT_ENTRY_X 10
-#define SELECT_INPUT_ENTRY_Y_1 12
-#define SELECT_INPUT_ENTRY_Y_2 13
-#define SELECT_INPUT_ENTRY_Y_3 14
-#define SELECT_INPUT_ENTRY_Y_4 15
-#define SELECT_INPUT_ENTRY_Y_5 16
-#define SELECT_INPUT_ENTRY_Y_6 17
+#define SELECT_INPUT_ENTRY_Y_1 16
+#define SELECT_INPUT_ENTRY_Y_2 17
+#define SELECT_INPUT_ENTRY_Y_3 18
+#define SELECT_INPUT_ENTRY_Y_4 19
+#define SELECT_INPUT_ENTRY_Y_5 20
+#define SELECT_INPUT_ENTRY_Y_6 21
 
 #define SELECT_INPUT_ENTRY_1_KEY "1"
 #define SELECT_INPUT_ENTRY_2_KEY "2"
@@ -251,17 +293,17 @@
 #define SELECT_INPUT_ENTRY_5_KEY "5"
 
 'Select keys
-#define SELECT_KEYS_TITLE_Y 10
+#define SELECT_KEYS_TITLE_Y 14
 #define SELECT_KEYS_TITLE_X 9
 #define SELECT_KEYS_TITLE   "ELIGE TECLAS"
 #define SELECT_KEYS_COLOR   PURPLE
 #define SELECT_KEYS_PAPER   BLACK
 #define SELECT_KEYS_ENTRY_X   8
-#define SELECT_KEYS_ENTRY_Y_1 12
-#define SELECT_KEYS_ENTRY_Y_2 13
-#define SELECT_KEYS_ENTRY_Y_3 14
-#define SELECT_KEYS_ENTRY_Y_4 15
-#define SELECT_KEYS_ENTRY_Y_5 16
+#define SELECT_KEYS_ENTRY_Y_1 16
+#define SELECT_KEYS_ENTRY_Y_2 17
+#define SELECT_KEYS_ENTRY_Y_3 18
+#define SELECT_KEYS_ENTRY_Y_4 19
+#define SELECT_KEYS_ENTRY_Y_5 20
 
 #define SELECT_KEYS_ENTRY_1 "IZQUIERDA..."
 #define SELECT_KEYS_ENTRY_2 "DERECHA....."
@@ -278,3 +320,30 @@
 #define LAST_SELECTABLE_KEY  5Fh
 
 #define SELECTED_KEYS_WAIT_FRAMES 60
+
+'Title text
+#define TITLE_SCROLLER_WINDOW_X 0
+#define TITLE_SCROLLER_WINDOW_Y 21
+#define TITLE_SCROLLER_WINDOW_WIDTH 32
+#define TITLE_SCROLLER_WINDOW_HEIGHT 3
+#define TITLE_SCROLLER_INK YELLOW
+#define TITLE_SCROLLER_PAPER BLUE
+DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote las 10 frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: o Vertical, p Horizontal, q Diagonal, a Borde horario, m Borde anti-horario                              "
+
+'Intro central window
+#define INTRO_CENTRAL_WINDOW_X 0
+#define INTRO_CENTRAL_WINDOW_Y 13
+#define INTRO_CENTRAL_WINDOW_WIDTH 32
+#define INTRO_CENTRAL_WINDOW_HEIGHT 8
+#define INTRO_CENTRAL_WINDOW_PAPER BLACK
+#define INTRO_CENTRAL_WINDOW_INK WHITE
+#define INTRO_CENTRAL_WINDOW_CLEAR " "
+
+'Starting values
+#define START_LIVES 3
+#define DEC_LIVES 1
+#define START_LEVEL 1
+#define LEVEL_INC 1
+#define LEVEL_FRUITS 1
+#define LEVEL_FRUITS_DEC 1
+#define LEVEL_TIME 120

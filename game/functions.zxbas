@@ -10,6 +10,11 @@ DIM fruitX, fruitY AS UBYTE
 DIM snakeLength AS UBYTE
 DIM difficultyIndex AS UBYTE
 DIM redefinedKeys AS UBYTE
+DIM level AS UBYTE
+DIM lives AS UBYTE
+DIM fruits AS UBYTE
+DIM remainingTime AS UBYTE
+DIM delayedFrames AS UBYTE
 
 'Checks if the snake is colliding with the fruit to increase score and
 'put a new fruit
@@ -18,15 +23,87 @@ SUB checkFruit()
         fruitSound()
         score = score + FRUIT_INC_SCORE
         IF(score > maxScore) maxScore = score
-        IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
-        putFruit()
+        fruits = fruits - LEVEL_FRUITS_DEC
+        IF(fruits)
+            IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
+            putFruit()
+        ELSE
+            setGameState(STATE_START_END_LEVEL)
+        END IF
     END IF
+END SUB
+
+'Draws the status texts
+SUB drawStatusTexts()
+    drawScoreTexts()
+    drawFruitsText()
+    drawLivesText() 
+    drawTimeText()
+END SUB
+
+'Draws the time text
+SUB drawTimeText()
+    PRINT AT TIME_STRING_Y, TIME_STRING_X; INK FONT_COLOR; TIME_STRING;
+END SUB
+
+'Draws the score and best texts
+SUB drawScoreTexts()
+    PRINT AT SCORE_STRING_Y, SCORE_STRING_X; INK FONT_COLOR; SCORE_STRING;
+    PRINT AT BEST_STRING_Y, BEST_STRING_X; INK FONT_COLOR; BEST_STRING;
+END SUB
+
+'Draws the lives number
+SUB drawLivesText()
+   PRINT AT LIVES_STRING_Y, LIVES_STRING_X; INK GUI_COLOR; LIVES_STRING;
+END SUB
+
+'Draws the fruits number
+SUB drawFruitsText()
+   PRINT AT FRUITS_STRING_Y, FRUITS_STRING_X; INK GUI_COLOR; FRUITS_STRING;
+END SUB
+
+'Draws the status numbers
+SUB drawStatusValues()
+    drawScores()
+    drawLives()
+    drawFruits()
+    drawTime()
+END SUB
+
+'Draws the lives numbers
+SUB drawLives()
+   PRINT AT LIVES_NUM_Y, LIVES_NUM_X; INK GUI_COLOR; lives;
+END SUB
+
+'Draws the fruits numbers
+SUB drawFruits()
+   PRINT AT FRUITS_NUM_Y, FRUITS_NUM_X; INK GUI_COLOR; fruits;
+END SUB
+
+'Draws the Time
+SUB drawTime()
+   'TODO
+END SUB
+
+'Draw level value
+SUB drawLevelValue()
+    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; level;
 END SUB
 
 'Draws the score and max score numbers
 SUB drawScores()
-   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK FONT_COLOR; score;
-   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK FONT_COLOR; maxScore;
+   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK GUI_COLOR; score;
+   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK GUI_COLOR; maxScore;
+END SUB
+
+'Loses live and checks to see new state
+SUB loseLive()
+    lives = lives - DEC_LIVES
+    IF(lives)
+        setGameState(STATE_START_LOSE_LIVE)
+    ELSE
+        setGameState(STATE_START_GAME_OVER)
+    END IF
 END SUB
 
 'Checks if the snake has to die, either by bounds or by biting herself
@@ -37,12 +114,12 @@ SUB checkDeath()
     snakeYPos = snakeY(headPosition)
     'Check bounds death
     IF(snakeXPos < MIN_BOARD_X OR snakeXPos > MAX_BOARD_X OR snakeYPos < MIN_BOARD_Y OR snakeYPos > MAX_BOARD_Y)
-        setGameState(STATE_START_GAME_OVER)
+        loseLive()
     END IF
     'Check body death
     FOR i = MIN_SNAKE_INDEX TO MAX_SNAKE_INDEX
         IF(i <> headPosition AND snakeX(i) = snakeXPos AND snakeY(i) = snakeYPos)
-            setGameState(STATE_START_GAME_OVER)
+            loseLive()
             EXIT FOR
         END IF
     NEXT i
@@ -75,7 +152,6 @@ SUB drawSnakeTail()
     PRINT AT tailY, tailX ; INK SNAKE_COLOR ; tailChar;
 END SUB
 
-
 'Draws the snake head in it's different positions
 SUB drawSnakeHead()
     DIM snakeChar AS STRING
@@ -91,7 +167,8 @@ SUB drawSnakeHead()
     ELSEIF (direction = DIRECTION_DOWN)
         snakeChar = SNAKE_HEAD_DOWN
     END IF
-    PRINT AT snakeY(headPosition), snakeX(headPosition) ; INK SNAKE_COLOR ; snakeChar;
+    PRINT AT snakeY(headPosition), snakeX(headPosition);_
+        INK SNAKE_COLOR; snakeChar;
 END SUB
 
 'Reads the input and sets the snake direction, checks for pause too
@@ -208,12 +285,12 @@ END SUB
 
 'Returns a new board random X position within it's bounds
 FUNCTION getBoardRandomX() AS UBYTE
-    RETURN RND() * (MAX_BOARD_X - MIN_BOARD_X) + MIN_BOARD_X
+    RETURN INT(RND() * (MAX_BOARD_X - MIN_BOARD_X)) + MIN_BOARD_X
 END FUNCTION
 
 'Returns a new board random Y position within it's bounds
 FUNCTION getBoardRandomY() AS UBYTE
-    RETURN RND() * (MAX_BOARD_Y - MIN_BOARD_Y) + MIN_BOARD_Y
+    RETURN INT(RND() * (MAX_BOARD_Y - MIN_BOARD_Y)) + MIN_BOARD_Y
 END FUNCTION
 
 'Puts all the snake positions to out of bounds
@@ -242,19 +319,6 @@ SUB putFruit()
     PRINT AT fruitY, fruitX; INK FRUIT_COLOR; FRUIT_CHAR
 END SUB
 
-'Draws the score and best texts, not the actual scores
-SUB drawScoreTexts()
-    PRINT AT SCORE_STRING_Y, SCORE_STRING_X; INK FONT_COLOR; SCORE_STRING;
-    PRINT AT BEST_STRING_Y, BEST_STRING_X; INK FONT_COLOR; BEST_STRING;
-END SUB
-
-'Prints at the difficulty cursor selected char
-SUB drawDifficultyCursor(character AS STRING)
-    PRINT AT DIFFICULTY_CURSOR_Y,_
-    DIFFICULTY_CURSOR_X + difficultyIndex * DIFFICULTY_CURSOR_STEP;_
-    INK SNAKE_COLOR;character;
-END SUB
-
 'Beeps the fruit sound
 SUB fruitSound()
     BEEP .1, 10
@@ -270,11 +334,13 @@ SUB startSound()
     BEEP .4, 40
 END SUB
 
-'Draws the title instructions
-SUB printInstructions()
+'Draws the title controls
+SUB printControls()
     DIM controlType AS UBYTE = getControlType(PLAYER_1_INDEX)
     
     INK INTRO_INSTRUCTIONS_COLOR
+    
+    PRINT AT INTRO_CONTROLS_Y, INTRO_CONTROLS_X; INTRO_CONTROLS;
     if(controlType = CONTROL_TYPE_KEYBOARD)
         PRINT AT INTRO_INSTRUCTIONS_Y_1, INTRO_INSTRUCTIONS_X_1;_
             getControlChar(PLAYER_1_INDEX, CONTROL_LEFT_INDEX); INTRO_INSTRUCTIONS_1_A;_
@@ -316,3 +382,60 @@ FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
     END IF
     RETURN TRUE
 END FUNCTION
+
+'Prints the scrolling text
+SUB printTitleScroller()
+    INK TITLE_SCROLLER_INK: PAPER TITLE_SCROLLER_PAPER
+    frameTextScroller(TITLE_TEXT_SCROLLER)
+END SUB
+
+'Clears the central menu
+SUB clearCentralMenu()
+    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK INTRO_CENTRAL_WINDOW_INK
+    clearRectangle(INTRO_CENTRAL_WINDOW_X, INTRO_CENTRAL_WINDOW_Y,_
+        INTRO_CENTRAL_WINDOW_WIDTH, INTRO_CENTRAL_WINDOW_HEIGHT)
+END SUB
+
+'Draws the main game windows
+SUB drawGameWindows()
+    INK BOARD_COLOR
+    drawLine(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_X,_
+        BOARD_WINDOW_Y_2, BOARD_WINDOW_LEFT)
+    drawLine(BOARD_WINDOW_X_2, BOARD_WINDOW_Y, BOARD_WINDOW_X_2,_
+        BOARD_WINDOW_Y_2, BOARD_WINDOW_RIGHT) 
+    drawWindow(HEADER_WINDOW_X, HEADER_WINDOW_Y, HEADER_WINDOW_WIDTH,_
+        HEADER_WINDOW_HEIGHT, HEADER_COLOR, OUT_WINDOW_CHARACTERS)
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH,_
+        STATUS_WINDOW_HEIGHT, STATUS_COLOR, OUT_WINDOW_CHARACTERS)
+END SUB
+
+'Resets game level
+SUB resetGameLevel()
+    delayedFrames = INITIAL_DELAYED_FRAMES
+    snakeLength = MIN_SNAKE_LENGTH
+    growthLeft = START_GROWTH
+    remainingTime = LEVEL_TIME
+    clearSnakePositions()
+    headPosition = HEAD_START_INDEX
+    tailPosition = TAIL_START_INDEX
+    snakeX(headPosition) = getBoardRandomX()
+    snakeY(headPosition) = getBoardRandomY()
+    direction = DIRECTION_NONE
+    drawGameWindows()
+    PRINT AT HEADER_Y, HEADER_X; INK GUI_COLOR; HEADER_STRING;
+    drawStatusTexts()
+    drawStatusValues()
+    drawLevelValue()
+    drawSnakeHead()
+    'TODO DRAW LEVEL
+    putFruit()
+    startSound()
+END SUB
+
+'Draws the flashing snake head and does the die sound
+SUB drawDeadSnakeHead()
+    FLASH TRUE
+    drawSnakeHead()
+    FLASH FALSE
+    dieSound()
+END SUB

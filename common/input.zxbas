@@ -160,7 +160,7 @@ END SUB
 SUB updateControls()
     'Sets the uppercase key to use in other places
     frameKey = readKeyUpperCase()
-    FOR i = 0 TO NUM_PLAYERS_MAX_INDEX
+    FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
             readPlayerKempston(i)
         ELSE
