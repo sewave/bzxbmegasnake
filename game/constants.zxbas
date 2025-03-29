@@ -24,7 +24,7 @@
 #define STATE_WAIT_SELECT_KEYS   FIRST_UNUSED_STATE + 12
 #define STATE_START_LOSE_LIVE    FIRST_UNUSED_STATE + 13
 #define STATE_RESTART_LEVEL      FIRST_UNUSED_STATE + 14
-#define STATE_START_END_LEVEL      FIRST_UNUSED_STATE + 15
+#define STATE_START_END_LEVEL    FIRST_UNUSED_STATE + 15
 #define STATE_START_MENU         FIRST_UNUSED_STATE + 16
 
 'Snake indexes
@@ -196,9 +196,9 @@
 #define INTRO_TITLE_2_X 4
 #define INTRO_TITLE_2_Y 1
 #define INTRO_TITLE_2_1  " _  _  ____  ___   __  "
-#define INTRO_TITLE_2_2  "( \/ )(  __)/ __) / _\ "
-#define INTRO_TITLE_2_3  "/ \/ \ ) _)( (_ \/    \"
-#define INTRO_TITLE_2_4  "\_)(_/(____)\___/\_/\_/"
+#define INTRO_TITLE_2_2  "( \\/ )(  __)/ __) / _\\ "
+#define INTRO_TITLE_2_3  "/ \\/ \\ ) _)( (_ \\/    \\"
+#define INTRO_TITLE_2_4  "\\_)(_/(____)\\___/\\_/\\_/"
 
 'Intro title
 #define INTRO_CREDITS_X 2

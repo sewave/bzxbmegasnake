@@ -5,15 +5,15 @@
 
 'Set up max players to use less memory
 #define NUM_PLAYERS 1
-#include "common\constants.zxbas"
-#include "common\utils.zxbas"
-#include "common\video.zxbas"
-#include "common\input.zxbas"
-#include "common\states.zxbas"
-#include "game\constants.zxbas"
-#include "game\functions.zxbas"
-#include "game\states.zxbas"
-#include "gfx\snakeUdg.udg.zxbas"
+#include "common\\constants.zxbas"
+#include "common\\utils.zxbas"
+#include "common\\video.zxbas"
+#include "common\\input.zxbas"
+#include "common\\states.zxbas"
+#include "game\\constants.zxbas"
+#include "game\\functions.zxbas"
+#include "game\\states.zxbas"
+#include "gfx\\snakeUdg.udg.zxbas"
 
 setGameState(STATE_INIT_GAME)
 'Main loop
@@ -25,5 +25,5 @@ LOOP
 
 reactorFont:
 ASM
-    incbin "gfx\Reactor.ch8"
+    incbin "gfx\\Reactor.fnt"
 END ASM
