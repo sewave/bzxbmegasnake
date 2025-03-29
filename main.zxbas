@@ -11,9 +11,11 @@
 #include "common\\input.zxbas"
 #include "common\\states.zxbas"
 #include "game\\constants.zxbas"
+#include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"
 #include "game\\states.zxbas"
 #include "gfx\\snakeUdg.udg.zxbas"
+#include "gfx\\reactor.fnt.zxbas"
 
 setGameState(STATE_INIT_GAME)
 'Main loop
@@ -22,8 +24,3 @@ DO
     RANDOMIZE USR stateSubroutines(getGameState())
     waitVsync()
 LOOP
-
-reactorFont:
-ASM
-    incbin "gfx\\Reactor.fnt"
-END ASM

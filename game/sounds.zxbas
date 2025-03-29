@@ -1,0 +1,14 @@
+'Beeps the fruit sound
+SUB fruitSound()
+    BEEP .02, 10
+END SUB
+
+'Beeps the die sound
+SUB dieSound()
+    BEEP .1, 20
+END SUB
+
+'Beeps the start sound
+SUB startSound()
+    BEEP .4, 40
+END SUB
