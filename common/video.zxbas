@@ -20,7 +20,6 @@
 
 'Wait frames
 #define FRAMES_WAITED_START 0
-#define FRAMES_WAITED_INC 1
 
 'Attributes
 #define ATTRIBUTE_PAPER %00111000
@@ -34,8 +33,6 @@
 'Scroller
 #define SCROLLER_POINTER_START 0
 #define SCROLLER_POINTER_INC   1
-#define SCROLLER_WIDTH_DEC     1
-#define SCROLLER_FRAMES_DEC    1
 #define SCROLLER_FRAMES_DONE   0
 
 #define SCROLLER_REMAINIG_FRAMES_START 1
@@ -45,6 +42,12 @@ DIM scrollerRemainingFrames AS UBYTE
 DIM scrollerX, scrollerY AS UBYTE
 DIM scrollerTargetWidth AS UBYTE
 DIM scrollerPointer AS UINTEGER
+
+'Fade global variables, to speed up processing
+DIM tmpAttribute AS UBYTE
+DIM tmpPaper AS UBYTE
+DIM tmpInk AS UBYTE
+DIM attrIndex AS UINTEGER
 
 'Loads udgs address into system to switch graphics
 SUB loadUdgs(udgs AS UINTEGER)
@@ -74,7 +77,7 @@ SUB clearScreen(pPaper as UBYTE, pInk as UBYTE)
 END SUB
 
 'Wait vsync
-SUB waitVsync()
+SUB FASTCALL waitVsync()
     DIM currentFrame AS UBYTE = getFrameLowByte()
     DIM newFrame AS UBYTE
     DO
@@ -117,7 +120,7 @@ SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE)
     scrollerRemainingFrames = SCROLLER_REMAINIG_FRAMES_START
     scrollerX = x
     scrollerY = y
-    scrollerTargetWidth = width - SCROLLER_WIDTH_DEC
+    scrollerTargetWidth = width - 1
     scrollerPointer = SCROLLER_POINTER_START
 END SUB
 
@@ -128,7 +131,7 @@ END SUB
 'want the string to dissapear completely
 'Call it on each frame
 SUB frameTextScroller(scrollerText AS STRING)
-    scrollerRemainingFrames = scrollerRemainingFrames - SCROLLER_FRAMES_DEC
+    scrollerRemainingFrames = scrollerRemainingFrames - 1
     IF(scrollerRemainingFrames = SCROLLER_FRAMES_DONE)
         scrollerRemainingFrames = scrollerTargetFrames
         PRINT AT scrollerY, scrollerX; scrollerText(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
@@ -156,4 +159,21 @@ END SUB
 SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, characters as STRING)
     clearRectangle(startX, startY, width, height)
     drawWindow(startX, startY, width, height, color, characters)    
+END SUB
+
+'Decreases all attributes, starts by flash and bright, then paper and color
+SUB fadeAttributesToBlack()
+    FOR attrIndex = ATTRIBUTES_START_ADDR TO ATTRIBUTES_END_ADDR
+        tmpAttribute = PEEK(attrIndex)
+        IF(tmpAttribute > ATTRIBUTE_COLOR)
+            tmpAttribute = tmpAttribute bAND ATTRIBUTE_COLOR
+        ELSE
+            tmpPaper = tmpAttribute bAND ATTRIBUTE_PAPER
+            tmpInk = tmpAttribute bAND ATTRIBUTE_INK
+            IF(tmpPaper) tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
+            IF(tmpInk) tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
+            tmpAttribute = tmpPaper bOR tmpInk
+        END IF
+        POKE attrIndex, tmpAttribute
+    NEXT attrIndex
 END SUB
