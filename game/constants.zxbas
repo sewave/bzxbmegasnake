@@ -71,8 +71,6 @@
 #define MIN_SNAKE_LENGTH 2
 #define MAX_SNAKE_LENGTH MAX_SNAKE_INDEX - 2
 #define START_GROWTH 2
-#define GROWTH_DEC 1
-#define SNAKE_GROWTH 1
 
 'Board
 #define MIN_BOARD_X 1
@@ -80,6 +78,7 @@
 #define MAX_BOARD_X 30
 #define MAX_BOARD_Y 18
 #define BOARD_WIDTH 30
+#define BOARD_HEIGHT 16
 #define BOARD_COLOR PURPLE
 #define BOARD_WINDOW_X 0
 #define BOARD_WINDOW_Y 3
@@ -112,22 +111,23 @@
 #define TAIL_START_INDEX 0
 #define SNAKE_OUT_BOUNDS_X 255
 #define SNAKE_OUT_BOUNDS_Y 255
-#define NEXT_TAIL_INC 1
-#define NEXT_HEAD_INC 1
-#define PREV_HEAD_DEC 1
 #define HEAD_SPEED 1
 
 'Scores
 #define START_SCORE 0
 #define SCORE_STRING "Puntos:";
 #define BEST_STRING "Mejor:";
-#define SCORE_NUM_X 27
+#define SCORE_NUM_X 26
 #define SCORE_NUM_Y FIRST_STATUS_LINE_Y
-#define BEST_NUM_X 27
+#define SCORE_NUM_PAD " "
+#define SCORE_NUM_LENGTH 4
+#define BEST_NUM_X 26
 #define BEST_NUM_Y SECOND_STATUS_LINE_Y
-#define SCORE_STRING_X 19
+#define BEST_NUM_PAD " "
+#define BEST_NUM_LENGTH 4
+#define SCORE_STRING_X 18
 #define SCORE_STRING_Y FIRST_STATUS_LINE_Y
-#define BEST_STRING_X 20
+#define BEST_STRING_X 19
 #define BEST_STRING_Y SECOND_STATUS_LINE_Y
 #define INITIAL_MAX_SCORE 10
 
@@ -135,11 +135,16 @@
 #define LIVES_STRING_X 3
 #define LIVES_STRING_Y FIRST_STATUS_LINE_Y
 #define LIVES_STRING "Vidas:"
-#define LIVES_NUM_X 11
+#define LIVES_NUM_X 10
 #define LIVES_NUM_Y FIRST_STATUS_LINE_Y
+#define LIVES_NUM_PAD " "
+#define LIVES_NUM_LENGTH 2
 #define LOSE_LIVE_X 5
 #define LOSE_LIVE_Y 11
 #define LOSE_LIVE_STRING START_EXCL + "HAS PERDIDO UNA VIDA!"
+#define LOSE_LIVE_TIME_X 4
+#define LOSE_LIVE_TIME_Y 11
+#define LOSE_LIVE_TIME_STRING START_EXCL + "TE QUEDASTE SIN TIEMPO!"
 #define LOSE_LIVE_INK YELLOW
 #define LOSE_LIVE_PAPER RED
 #define LOSE_LIVE_FLASH TRUE
@@ -148,13 +153,17 @@
 #define FRUITS_STRING_X 2
 #define FRUITS_STRING_Y SECOND_STATUS_LINE_Y
 #define FRUITS_STRING "Frutas:"
-#define FRUITS_NUM_X 11
+#define FRUITS_NUM_X 10
 #define FRUITS_NUM_Y SECOND_STATUS_LINE_Y
+#define FRUITS_NUM_PAD " "
+#define FRUITS_NUM_LENGTH 2
 #define TIME_STRING_X 2
 #define TIME_STRING_Y THIRD_STATUS_LINE_Y
 #define TIME_STRING "Tiempo:"
-#define TIME_BAR_X 11
+#define TIME_BAR_X 9
 #define TIME_BAR_Y THIRD_STATUS_LINE_Y
+#define TIME_BAR_PAD " "
+#define TIME_BAR_LENGTH 3
 
 'Header
 #define HEADER_COLOR BLUE
@@ -170,7 +179,7 @@
 
 'Pause
 #define PAUSE_FRAMES 60
-#define PAUSE_X 14
+#define PAUSE_X 13
 #define PAUSE_Y SECOND_STATUS_LINE_Y
 #define PAUSE_STRING "PAUSA"
 #define PAUSE_STRING_CLEAR "     "
@@ -234,19 +243,9 @@
 #define INTRO_MAX_SCORE_NUM_INK CYAN 
 #define INTRO_MAX_SCORE_NUM_PAPER BLUE
 
-'Intro difficulty
-#define DIFFICULTY_X 4
-#define DIFFICULTY_Y 22
-#define DIFFICULTY_STRING "Elige dificultad (1-2-3)"
-#define DIFFICULTY_COLOR RED
-#define DIFFICULTY_1 "1"
-#define DIFFICULTY_2 "2"
-#define DIFFICULTY_3 "3"
-#define DIFFICULTY_FRAMES  4
-#define DIFFICULTY_FADE    4
-#define DIFFICULTY_INDEX_1 1
-#define DIFFICULTY_INDEX_2 2
-#define DIFFICULTY_INDEX_3 3
+'Game constants
+#define GAME_FRAMES  3
+#define GAME_FADE    4
 
 'Intro window
 #define INTRO_WINDOW_X 0
@@ -256,7 +255,6 @@
 
 'Initial frames delayed until logic is executed
 #define INITIAL_DELAYED_FRAMES 0
-#define DELAYED_FRAMES_INC     1
 
 'Direction
 #define DIRECTION_NONE  %00000000
@@ -326,6 +324,10 @@
 #define TITLE_SCROLLER_WINDOW_Y 21
 #define TITLE_SCROLLER_WINDOW_WIDTH 32
 #define TITLE_SCROLLER_WINDOW_HEIGHT 3
+#define TITLE_SCROLLER_X 1
+#define TITLE_SCROLLER_Y 22
+#define TITLE_SCROLLER_WIDTH 30
+#define TITLE_SCROLLER_FRAMES 10
 #define TITLE_SCROLLER_INK YELLOW
 #define TITLE_SCROLLER_PAPER BLUE
 DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote las 10 frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: o Vertical, p Horizontal, q Diagonal, a Borde horario, m Borde anti-horario                              "
@@ -341,9 +343,43 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 
 'Starting values
 #define START_LIVES 3
-#define DEC_LIVES 1
 #define START_LEVEL 1
-#define LEVEL_INC 1
 #define LEVEL_FRUITS 1
-#define LEVEL_FRUITS_DEC 1
-#define LEVEL_TIME 120
+#define LEVEL_TIME 10
+#define LEVEL_TIME_BONUS 2
+
+'End level
+#define END_LEVEL_BIG_WINDOW_X 3
+#define END_LEVEL_BIG_WINDOW_Y 7
+#define END_LEVEL_BIG_WINDOW_WIDTH 26
+#define END_LEVEL_BIG_WINDOW_HEIGHT 10
+#define END_LEVEL_BIG_WINDOW_COLOR YELLOW
+
+#define END_LEVEL_HEADER_WINDOW_X 3
+#define END_LEVEL_HEADER_WINDOW_Y 7
+#define END_LEVEL_HEADER_WINDOW_WIDTH 26
+#define END_LEVEL_HEADER_WINDOW_HEIGHT 3
+#define END_LEVEL_HEADER_WINDOW_COLOR RED
+
+#define END_LEVEL_FINISHED_X 6
+#define END_LEVEL_FINISHED_Y 8
+#define END_LEVEL_FINISHED_STRING START_EXCL + "NIVEL "
+#define END_LEVEL_FINISHED_STRING_2 " TERMINADO!"
+
+#define END_LEVEL_NUMBER_LENGTH 2
+#define END_LEVEL_NUMBER_PAD " "
+
+#define END_LEVEL_TIME_X 5
+#define END_LEVEL_TIME_Y 11
+#define END_LEVEL_TIME_LENGTH 3
+#define END_LEVEL_TIME_PAD " "
+#define END_LEVEL_TIME_STRING "Tiempo 2 x "
+#define END_LEVEL_TIME_STRING_2 "  = "
+#define END_LEVEL_TIME_BONUS_LENGTH 4
+#define END_LEVEL_TIME_BONUS_PAD " "
+
+#define END_LEVEL_TOTAL_X 5
+#define END_LEVEL_TOTAL_Y 15
+#define END_LEVEL_TOTAL_STRING "Total           = "
+#define END_LEVEL_TOTAL_PAD " "
+#define END_LEVEL_TOTAL_LENGTH 4

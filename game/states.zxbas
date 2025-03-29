@@ -36,7 +36,7 @@ SUB stateStartTitle()
     'Title window
     drawWindow(INTRO_WINDOW_X, INTRO_WINDOW_Y, INTRO_WINDOW_WIDTH, INTRO_WINDOW_HEIGHT, BOARD_COLOR, OUT_WINDOW_CHARACTERS)
     
-    'Print title
+    'MEGA
     INK SNAKE_COLOR
     PRINT AT INTRO_TITLE_Y, INTRO_TITLE_X; INTRO_TITLE_1;
     PRINT AT INTRO_TITLE_Y + 1, INTRO_TITLE_X; INTRO_TITLE_2;
@@ -44,6 +44,7 @@ SUB stateStartTitle()
     PRINT AT INTRO_TITLE_Y + 3, INTRO_TITLE_X; INTRO_TITLE_4;
     PRINT AT INTRO_TITLE_Y + 4, INTRO_TITLE_X; INTRO_TITLE_5;
     
+    'SNAKE
     INK FRUIT_COLOR
     PRINT AT INTRO_TITLE_2_Y, INTRO_TITLE_2_X; INTRO_TITLE_2_1;
     PRINT AT INTRO_TITLE_2_Y + 1, INTRO_TITLE_2_X; INTRO_TITLE_2_2;
@@ -55,8 +56,11 @@ SUB stateStartTitle()
     PRINT AT INTRO_CREDITS_Y, INTRO_CREDITS_X; INTRO_CREDITS;
     
     'Scroller
-    initTextScroller(1, 22, 30, 10)
-    drawWindow(TITLE_SCROLLER_WINDOW_X, TITLE_SCROLLER_WINDOW_Y, TITLE_SCROLLER_WINDOW_WIDTH, TITLE_SCROLLER_WINDOW_HEIGHT, TITLE_SCROLLER_PAPER, IN_WINDOW_CHARACTERS)
+    initTextScroller(TITLE_SCROLLER_X, TITLE_SCROLLER_Y, TITLE_SCROLLER_WIDTH,_
+        TITLE_SCROLLER_FRAMES)
+    drawWindow(TITLE_SCROLLER_WINDOW_X, TITLE_SCROLLER_WINDOW_Y,_
+        TITLE_SCROLLER_WINDOW_WIDTH, TITLE_SCROLLER_WINDOW_HEIGHT,_
+            TITLE_SCROLLER_PAPER, IN_WINDOW_CHARACTERS)
    
     printTitleScroller()
     
@@ -70,8 +74,8 @@ SUB stateWaitMenu()
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
         IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
-            delayFrames = DIFFICULTY_FRAMES - difficultyIndex
-            setStateFadeToBlack(DIFFICULTY_FADE, STATE_START_GAME)
+            delayFrames = GAME_FRAMES
+            setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
         END IF
     END IF
 END SUB
@@ -98,7 +102,8 @@ END SUB
 
 'Updates all the game status
 SUB stateGamePlaying()
-    delayedFrames = delayedFrames + DELAYED_FRAMES_INC
+    checkTime()
+    delayedFrames = delayedFrames + 1
     IF delayedFrames >= delayFrames
         delayedFrames = INITIAL_DELAYED_FRAMES
         processInput()
@@ -190,39 +195,49 @@ END SUB
 
 'State to start to lose a live
 SUB stateStartLoseLive()
-    PRINT AT LOSE_LIVE_Y, LOSE_LIVE_X; FLASH LOSE_LIVE_FLASH;_
-        INK LOSE_LIVE_INK; PAPER LOSE_LIVE_PAPER; LOSE_LIVE_STRING;
+    IF(remainingTime)
+        PRINT AT LOSE_LIVE_Y, LOSE_LIVE_X; FLASH LOSE_LIVE_FLASH;_
+            INK LOSE_LIVE_INK; PAPER LOSE_LIVE_PAPER; LOSE_LIVE_STRING;
+    ELSE 
+        PRINT AT LOSE_LIVE_TIME_Y, LOSE_LIVE_TIME_X; FLASH LOSE_LIVE_FLASH;_
+            INK LOSE_LIVE_INK; PAPER LOSE_LIVE_PAPER; LOSE_LIVE_TIME_STRING;
+    END IF
     drawDeadSnakeHead()
     setStateWaitFrames(LOSE_LIVE_FRAMES, STATE_RESTART_LEVEL)
 END SUB
 
 'State to restart a level
 SUB stateRestartLevel()
-    clearRectangle(1, 3, 30, 15)
+    clearRectangle(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT)
     resetGameLevel()
     setGameState(STATE_GAME_PLAYING)
 END SUB
 
-FUNCTION getPaddedNumber(number AS UBYTE, length AS UBYTE, padding AS STRING) AS STRING
-    DIM paddedNumber AS STRING = STR(number)
-    WHILE LEN(paddedNumber) < length
-        paddedNumber = padding + paddedNumber
-    END WHILE
-    RETURN paddedNumber
-END FUNCTION
-
 'Starts the end level printing bonus
-SUB stateStartEndLevel()    
-    drawWindowFilled(3, 7, 26, 10, BLUE, OUT_WINDOW_CHARACTERS)
-    drawWindowFilled(3, 7, 26, 3, BLUE, OUT_WINDOW_CHARACTERS)
+SUB stateStartEndLevel()
+    DIM timeBonus AS UINTEGER = remainingTime * LEVEL_TIME_BONUS
+    score = score + timeBonus
+    'TODO NO DEATH, PACIFISTA
+    drawWindowFilled(END_LEVEL_BIG_WINDOW_X, END_LEVEL_BIG_WINDOW_Y,_
+        END_LEVEL_BIG_WINDOW_WIDTH, END_LEVEL_BIG_WINDOW_HEIGHT,_
+            END_LEVEL_BIG_WINDOW_COLOR, OUT_WINDOW_CHARACTERS)
+    drawWindowFilled(END_LEVEL_HEADER_WINDOW_X, END_LEVEL_HEADER_WINDOW_Y,_
+        END_LEVEL_HEADER_WINDOW_WIDTH, END_LEVEL_HEADER_WINDOW_HEIGHT,_
+            END_LEVEL_HEADER_WINDOW_COLOR, OUT_WINDOW_CHARACTERS)
     INK GUI_COLOR
-    PRINT AT 8, 6;START_EXCL; "NIVEL "; getPaddedNumber(level, 2, " ");_
-        " TERMINADO!";
-    PRINT AT 11, 5; "Tiempo 2 x "; getPaddedNumber(remainingTime, 3, " ");_
-        "  =    0";
-    PRINT AT 15, 5; "Total           =    0";
+    PRINT AT END_LEVEL_FINISHED_Y, END_LEVEL_FINISHED_X; END_LEVEL_FINISHED_STRING;_
+        getPaddedNumber(level, END_LEVEL_NUMBER_LENGTH, END_LEVEL_NUMBER_PAD);_
+            END_LEVEL_FINISHED_STRING_2;
+    PRINT AT END_LEVEL_TIME_Y, END_LEVEL_TIME_X; END_LEVEL_TIME_STRING;_
+        getPaddedNumber(remainingTime, END_LEVEL_TIME_LENGTH, END_LEVEL_TIME_PAD);_
+            END_LEVEL_TIME_STRING_2; getPaddedNumber(timeBonus,_
+                END_LEVEL_TIME_BONUS_LENGTH, END_LEVEL_TIME_BONUS_PAD);
+    PRINT AT END_LEVEL_TOTAL_Y, END_LEVEL_TOTAL_X; END_LEVEL_TOTAL_STRING;_
+        getPaddedNumber(score, END_LEVEL_TOTAL_LENGTH, END_LEVEL_TOTAL_PAD)
+    checkMaxScore()
+    drawScores()
     
-    level = level + LEVEL_INC
+    level = level + 1
     fruits = LEVEL_FRUITS
     setStateWaitAnyKey(STATE_RESTART_LEVEL)
 END SUB

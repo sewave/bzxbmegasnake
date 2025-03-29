@@ -4,17 +4,22 @@ DIM growthLeft AS UBYTE
 DIM direction AS UBYTE
 DIM snakeX(MAX_SNAKE_INDEX) AS UBYTE
 DIM snakeY(MAX_SNAKE_INDEX) AS UBYTE
-DIM score AS UBYTE
-DIM maxScore AS UBYTE
+DIM score AS UINTEGER
+DIM maxScore AS UINTEGER
 DIM fruitX, fruitY AS UBYTE
 DIM snakeLength AS UBYTE
-DIM difficultyIndex AS UBYTE
 DIM redefinedKeys AS UBYTE
 DIM level AS UBYTE
 DIM lives AS UBYTE
 DIM fruits AS UBYTE
+DIM timeRemainingFrames AS UBYTE
 DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
+
+'Checks if max score has to be updated
+SUB checkMaxScore()
+    IF(score > maxScore) maxScore = score
+END SUB
 
 'Checks if the snake is colliding with the fruit to increase score and
 'put a new fruit
@@ -22,12 +27,13 @@ SUB checkFruit()
     IF(snakeX(headPosition) = fruitX AND snakeY(headPosition) = fruitY)
         fruitSound()
         score = score + FRUIT_INC_SCORE
-        IF(score > maxScore) maxScore = score
-        fruits = fruits - LEVEL_FRUITS_DEC
+        checkMaxScore()
+        fruits = fruits - 1
         IF(fruits)
             IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
             putFruit()
         ELSE
+            drawFruits()
             setGameState(STATE_START_END_LEVEL)
         END IF
     END IF
@@ -72,17 +78,20 @@ END SUB
 
 'Draws the lives numbers
 SUB drawLives()
-   PRINT AT LIVES_NUM_Y, LIVES_NUM_X; INK GUI_COLOR; lives;
+   PRINT AT LIVES_NUM_Y, LIVES_NUM_X; INK GUI_COLOR;_
+    getPaddedNumber(lives, LIVES_NUM_LENGTH, LIVES_NUM_PAD);
 END SUB
 
 'Draws the fruits numbers
 SUB drawFruits()
-   PRINT AT FRUITS_NUM_Y, FRUITS_NUM_X; INK GUI_COLOR; fruits;
+   PRINT AT FRUITS_NUM_Y, FRUITS_NUM_X; INK GUI_COLOR;_
+    getPaddedNumber(fruits, FRUITS_NUM_LENGTH, FRUITS_NUM_PAD);
 END SUB
 
 'Draws the Time
 SUB drawTime()
-   'TODO
+   PRINT AT TIME_BAR_Y, TIME_BAR_X; INK GUI_COLOR;_
+    getPaddedNumber(remainingTime, TIME_BAR_LENGTH, TIME_BAR_PAD);
 END SUB
 
 'Draw level value
@@ -92,13 +101,15 @@ END SUB
 
 'Draws the score and max score numbers
 SUB drawScores()
-   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK GUI_COLOR; score;
-   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK GUI_COLOR; maxScore;
+   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK GUI_COLOR;_
+    getPaddedNumber(score, SCORE_NUM_LENGTH ,SCORE_NUM_PAD);
+   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK GUI_COLOR;_
+   getPaddedNumber(maxScore, BEST_NUM_LENGTH ,BEST_NUM_PAD);
 END SUB
 
 'Loses live and checks to see new state
 SUB loseLive()
-    lives = lives - DEC_LIVES
+    lives = lives - 1
     IF(lives)
         setGameState(STATE_START_LOSE_LIVE)
     ELSE
@@ -131,7 +142,7 @@ SUB drawSnakeTail()
     DIM nextTailX, nextTailY, tailX, tailY AS UBYTE
     DIM nextTailPosition AS UBYTE
 
-    nextTailPosition = tailPosition + NEXT_TAIL_INC
+    nextTailPosition = tailPosition + 1
     IF(nextTailPosition > MAX_SNAKE_INDEX) nextTailPosition = 0
     nextTailX = snakeX(nextTailPosition)
     nextTailY = snakeY(nextTailPosition)
@@ -197,14 +208,14 @@ END SUB
 
 'Updates the snake tail position, it does not move if there is growth left
 SUB updateSnakeTailPosition()
-    IF(growthLeft > 0 AND snakeLength < MAX_SNAKE_LENGTH)
-        growthLeft = growthLeft - GROWTH_DEC
-        snakeLength = snakeLength + GROWTH_DEC
+    IF(growthLeft AND snakeLength < MAX_SNAKE_LENGTH)
+        growthLeft = growthLeft - 1
+        snakeLength = snakeLength + 1
     ELSE
         eraseSnakeTail()
         snakeX(tailPosition) = SNAKE_OUT_BOUNDS_X
         snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
-        tailPosition = tailPosition + NEXT_TAIL_INC
+        tailPosition = tailPosition + 1
         IF(tailPosition > MAX_SNAKE_INDEX) tailPosition = 0
         drawSnakeTail()
     END IF
@@ -221,12 +232,12 @@ SUB updateSnakeHeadPosition()
     prevHeadX = snakeX(headPosition)
     prevHeadY = snakeY(headPosition)
     
-    oldHeadPos = headPosition - PREV_HEAD_DEC
+    oldHeadPos = headPosition - 1
     IF(oldHeadPos > MAX_SNAKE_INDEX) oldHeadPos = MAX_SNAKE_INDEX
     oldHeadX = snakeX(oldHeadPos)
     oldHeadY = snakeY(oldHeadPos)
     
-    headPosition = headPosition + NEXT_HEAD_INC
+    headPosition = headPosition + 1
     IF(headPosition > MAX_SNAKE_INDEX) headPosition = MIN_SNAKE_INDEX
     IF(direction = DIRECTION_RIGHT)
         snakeX(headPosition) = prevHeadX + HEAD_SPEED
@@ -285,12 +296,12 @@ END SUB
 
 'Returns a new board random X position within it's bounds
 FUNCTION getBoardRandomX() AS UBYTE
-    RETURN INT(RND() * (MAX_BOARD_X - MIN_BOARD_X)) + MIN_BOARD_X
+    RETURN RND() * (MAX_BOARD_X - MIN_BOARD_X) + MIN_BOARD_X
 END FUNCTION
 
 'Returns a new board random Y position within it's bounds
 FUNCTION getBoardRandomY() AS UBYTE
-    RETURN INT(RND() * (MAX_BOARD_Y - MIN_BOARD_Y)) + MIN_BOARD_Y
+    RETURN RND() * (MAX_BOARD_Y - MIN_BOARD_Y) + MIN_BOARD_Y
 END FUNCTION
 
 'Puts all the snake positions to out of bounds
@@ -411,9 +422,11 @@ END SUB
 
 'Resets game level
 SUB resetGameLevel()
+    RANDOMIZE timeRemainingFrames
     delayedFrames = INITIAL_DELAYED_FRAMES
     snakeLength = MIN_SNAKE_LENGTH
     growthLeft = START_GROWTH
+    timeRemainingFrames = FRAMES_IN_SECOND
     remainingTime = LEVEL_TIME
     clearSnakePositions()
     headPosition = HEAD_START_INDEX
@@ -438,4 +451,16 @@ SUB drawDeadSnakeHead()
     drawSnakeHead()
     FLASH FALSE
     dieSound()
+END SUB
+
+'Check remaining time to lose a live and redraws it
+SUB checkTime()
+    IF(timeRemainingFrames)
+        timeRemainingFrames = timeRemainingFrames - 1
+    ELSE
+        timeRemainingFrames = FRAMES_IN_SECOND
+        remainingTime = remainingTime - 1
+        drawTime()
+        IF(remainingTime = 0) setGameState(STATE_START_LOSE_LIVE)
+    END IF
 END SUB

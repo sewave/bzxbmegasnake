@@ -16,3 +16,6 @@
 'Windows characters
 #define OUT_WINDOW_CHARACTERS "\:'\''\':\ :\.:\..\:.\: "
 #define IN_WINDOW_CHARACTERS  "\ .\..\. \: \' \''\ '\ :"
+
+'Video
+#define FRAMES_IN_SECOND 50
