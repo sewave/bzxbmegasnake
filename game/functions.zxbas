@@ -330,21 +330,6 @@ SUB putFruit()
     PRINT AT fruitY, fruitX; INK FRUIT_COLOR; FRUIT_CHAR
 END SUB
 
-'Beeps the fruit sound
-SUB fruitSound()
-    BEEP .1, 10
-END SUB
-
-'Beeps the die sound
-SUB dieSound()
-    BEEP .1, 20
-END SUB
-
-'Beeps the start sound
-SUB startSound()
-    BEEP .4, 40
-END SUB
-
 'Draws the title controls
 SUB printControls()
     DIM controlType AS UBYTE = getControlType(PLAYER_1_INDEX)

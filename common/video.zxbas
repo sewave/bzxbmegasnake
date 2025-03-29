@@ -1,4 +1,4 @@
-'Wwindows system gfx indexes
+'Window system gfx indexes
 #define WINDOW_UP_LEFT_INDEX 0
 #define WINDOW_UP_INDEX 1
 #define WINDOW_UP_RIGHT_INDEX 2
@@ -32,7 +32,6 @@
 
 'Scroller
 #define SCROLLER_POINTER_START 0
-#define SCROLLER_POINTER_INC   1
 #define SCROLLER_FRAMES_DONE   0
 
 #define SCROLLER_REMAINIG_FRAMES_START 1
@@ -77,7 +76,7 @@ SUB clearScreen(pPaper as UBYTE, pInk as UBYTE)
 END SUB
 
 'Wait vsync
-SUB FASTCALL waitVsync()
+SUB waitVsync()
     DIM currentFrame AS UBYTE = getFrameLowByte()
     DIM newFrame AS UBYTE
     DO
@@ -138,7 +137,7 @@ SUB frameTextScroller(scrollerText AS STRING)
         IF(scrollerPointer + scrollerTargetWidth >= LEN(scrollerText))
             scrollerPointer = SCROLLER_POINTER_START
         ELSE
-            scrollerPointer = scrollerPointer + SCROLLER_POINTER_INC
+            scrollerPointer = scrollerPointer + 1
         END IF
     END IF
 END SUB
