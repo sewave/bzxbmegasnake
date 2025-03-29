@@ -5,7 +5,7 @@
   "ArrayBase": null,
   "StringBase": null,
   "SinclairMode": false,
-  "HeapSize": null,
+  "HeapSize": 2048,
   "StrictBool": false,
   "EnableBreak": false,
   "Explicit": false,
