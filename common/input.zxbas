@@ -75,13 +75,12 @@ DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { $35, $38, $37, $36, $30 }
 
 'Reads a key from keyboard and if its 60h or plus lowers it by 20h,
 'effectively making it uppercase in case of letters
-FUNCTION readKeyUpperCase() AS STRING
-    DIM key AS STRING = INKEY
-    DIM charVal AS UBYTE = CODE(key)
+SUB readKeyUpperCase()
+    frameKey = INKEY
+    DIM charVal AS UBYTE = CODE(frameKey)
 
-    IF(charVal >= FIRST_UPPERCASE_CHAR) key = CHR(charVal - LOWER_TO_UPPERCASE)
-    RETURN key
-END FUNCTION
+    IF(charVal >= FIRST_UPPERCASE_CHAR) frameKey = CHR(charVal - LOWER_TO_UPPERCASE)
+END SUB
 
 'Returns the controls readed for the frame for the selected player
 FUNCTION getControls(playerIndex AS UBYTE) AS UBYTE
@@ -159,8 +158,7 @@ END SUB
 
 'Updates the controls reading the [keys]
 SUB updateControls()
-    'Sets the uppercase key to use in other places
-    frameKey = readKeyUpperCase()
+    readKeyUpperCase()
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
             readPlayerKempston(i)

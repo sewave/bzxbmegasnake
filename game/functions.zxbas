@@ -334,7 +334,7 @@ END SUB
 SUB printControls()
     DIM controlType AS UBYTE = getControlType(PLAYER_1_INDEX)
     
-    INK INTRO_INSTRUCTIONS_COLOR
+    INK GUI_COLOR
     
     PRINT AT INTRO_CONTROLS_Y, INTRO_CONTROLS_X; INTRO_CONTROLS;
     if(controlType = CONTROL_TYPE_KEYBOARD)
@@ -371,8 +371,8 @@ END SUB
 'uppercase range
 FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
     IF(keyCode < FIRST_SELECTABLE_KEY or keyCode > LAST_SELECTABLE_KEY) RETURN FALSE
-    IF(redefinedKeys > REDEFINED_KEYS_INIT) 
-        FOR i = REDEFINED_KEYS_INIT TO redefinedKeys - REDEFINED_KEYS_INDEX_DEC
+    IF(redefinedKeys)
+        FOR i = 0 TO redefinedKeys - 1
             IF(keys(playerIndex, i) = keyCode) return FALSE
         NEXT i
     END IF
@@ -387,7 +387,7 @@ END SUB
 
 'Clears the central menu
 SUB clearCentralMenu()
-    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK INTRO_CENTRAL_WINDOW_INK
+    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK GUI_COLOR
     clearRectangle(INTRO_CENTRAL_WINDOW_X, INTRO_CENTRAL_WINDOW_Y,_
         INTRO_CENTRAL_WINDOW_WIDTH, INTRO_CENTRAL_WINDOW_HEIGHT)
 END SUB
@@ -408,7 +408,7 @@ END SUB
 'Resets game level
 SUB resetGameLevel()
     RANDOMIZE timeRemainingFrames
-    delayedFrames = INITIAL_DELAYED_FRAMES
+    delayedFrames = 0
     snakeLength = MIN_SNAKE_LENGTH
     growthLeft = START_GROWTH
     timeRemainingFrames = FRAMES_IN_SECOND

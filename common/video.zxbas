@@ -33,8 +33,10 @@
 'Scroller
 #define SCROLLER_POINTER_START 0
 #define SCROLLER_FRAMES_DONE   0
-
 #define SCROLLER_REMAINIG_FRAMES_START 1
+
+'Common constants
+#define SPACE_STRING " "
 
 DIM scrollerTargetFrames AS UBYTE
 DIM scrollerRemainingFrames AS UBYTE
@@ -146,6 +148,7 @@ END SUB
 SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
     FOR j = y TO (y + height - 1)
         PRINT AT j, x; TAB (x + width - 1);
+        PRINT SPACE_STRING;
     NEXT j
 END SUB
 

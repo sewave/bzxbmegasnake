@@ -204,7 +204,7 @@
 #define INTRO_CREDITS_X 2
 #define INTRO_CREDITS_Y 11
 #define INTRO_CREDITS_COLOR YELLOW
-#define INTRO_CREDITS "\* Wave 2025 Fuente: DamienG"
+#define INTRO_CREDITS "\* Wave 2025  Fuente: DamienG"
 
 'Intro instructions
 #define INTRO_CONTROLS_X 11
@@ -221,7 +221,6 @@
 #define INTRO_INSTRUCTIONS_X_3 3
 #define INTRO_INSTRUCTIONS_Y_3 18
 #define INTRO_INSTRUCTIONS_3  ": Elige/Pausa R: Redefine"
-#define INTRO_INSTRUCTIONS_COLOR WHITE
 
 #define INTRO_INSTRUCTIONS_JOYSTICK   "Joystick"
 #define INTRO_INSTRUCTIONS_SINCLAIR_1 "Sinclair 1"
@@ -252,9 +251,6 @@
 #define INTRO_WINDOW_Y 0
 #define INTRO_WINDOW_WIDTH 32
 #define INTRO_WINDOW_HEIGHT 13
-
-'Initial frames delayed until logic is executed
-#define INITIAL_DELAYED_FRAMES 0
 
 'Direction
 #define DIRECTION_NONE  %00000000
@@ -309,15 +305,10 @@
 #define SELECT_KEYS_ENTRY_4 "ABAJO......."
 #define SELECT_KEYS_ENTRY_5 "FUEGO......."
 
-#define REDEFINED_KEYS_INIT   0
-#define REDEFINED_KEYS_INC    1
 #define REDEFINED_KEYS_OFFSET 12
-#define REDEFINED_KEYS_INDEX_DEC 1
 
 #define FIRST_SELECTABLE_KEY 20h
 #define LAST_SELECTABLE_KEY  5Fh
-
-#define SELECTED_KEYS_WAIT_FRAMES 60
 
 'Title text
 #define TITLE_SCROLLER_WINDOW_X 0
@@ -338,7 +329,6 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define INTRO_CENTRAL_WINDOW_WIDTH 32
 #define INTRO_CENTRAL_WINDOW_HEIGHT 8
 #define INTRO_CENTRAL_WINDOW_PAPER BLACK
-#define INTRO_CENTRAL_WINDOW_INK WHITE
 #define INTRO_CENTRAL_WINDOW_CLEAR " "
 
 'Starting values

@@ -104,8 +104,8 @@ END SUB
 SUB stateGamePlaying()
     checkTime()
     delayedFrames = delayedFrames + 1
-    IF delayedFrames >= delayFrames
-        delayedFrames = INITIAL_DELAYED_FRAMES
+    IF(delayedFrames >= delayFrames)
+        delayedFrames = 0
         processInput()
         updatePlayer()
         checkFruit()
@@ -117,7 +117,7 @@ END SUB
 'Draws the select input screen
 SUB stateStartSelectInput()
     clearCentralMenu()
-    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK INTRO_CENTRAL_WINDOW_INK
+    PAPER INTRO_CENTRAL_WINDOW_PAPER: INK GUI_COLOR
     PRINT AT SELECT_INPUT_TITLE_Y, SELECT_INPUT_TITLE_X; SELECT_INPUT_TITLE
     PRINT AT SELECT_INPUT_ENTRY_Y_1, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_1
     PRINT AT SELECT_INPUT_ENTRY_Y_2, SELECT_INPUT_ENTRY_X; SELECT_INPUT_ENTRY_2
@@ -157,7 +157,7 @@ SUB stateStartSelectKeys()
     PRINT AT SELECT_KEYS_ENTRY_Y_3, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_3
     PRINT AT SELECT_KEYS_ENTRY_Y_4, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_4
     PRINT AT SELECT_KEYS_ENTRY_Y_5, SELECT_KEYS_ENTRY_X; SELECT_KEYS_ENTRY_5
-    redefinedKeys = REDEFINED_KEYS_INIT
+    redefinedKeys = 0
     setStateWaitNoKey(STATE_WAIT_SELECT_KEYS)
 END SUB
 
@@ -167,15 +167,14 @@ SUB stateWaitSelectKeys()
     
     printTitleScroller()
     IF(redefinedKeys > KEYS_MAX_INDEX)
-        setStateWaitFrames(SELECTED_KEYS_WAIT_FRAMES, STATE_START_MENU)
+        setStateWaitNoKey(STATE_START_MENU)
     ELSEIF(keyCodeAcceptable(keyCode, PLAYER_1_INDEX))
         PRINT AT SELECT_KEYS_ENTRY_Y_1 + redefinedKeys,_
             SELECT_KEYS_TITLE_X + REDEFINED_KEYS_OFFSET;_
-            PAPER INTRO_CENTRAL_WINDOW_PAPER; INK INTRO_CENTRAL_WINDOW_INK;_
-            frameKey;
+            PAPER INTRO_CENTRAL_WINDOW_PAPER; INK GUI_COLOR; frameKey;
         keys(PLAYER_1_INDEX, redefinedKeys) = keyCode
-        redefinedKeys = redefinedKeys + REDEFINED_KEYS_INC
-        setStateWaitNoKey(getGameState())      
+        redefinedKeys = redefinedKeys + 1
+        setStateWaitNoKey(getGameState())
     END IF    
 END SUB
 
