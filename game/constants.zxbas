@@ -112,6 +112,8 @@
 #define SNAKE_OUT_BOUNDS_X 255
 #define SNAKE_OUT_BOUNDS_Y 255
 #define HEAD_SPEED 1
+#define SNAKE_START_X 1
+#define SNAKE_START_Y 3
 
 'Scores
 #define START_SCORE 0
@@ -394,3 +396,6 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define RECT_WIDTH_INDEX 2
 #define RECT_HEIGHT_INDEX 3
 #define RECT_END 255
+
+'Window chars for obstacles
+#define ROUND_WINDOW_PAPER "\Q\''\R\ :\T\..\S\: "

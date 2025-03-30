@@ -27,8 +27,8 @@ END SUB
 
 'Puts a solid rectangle in the board
 SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
-    PAPER YELLOW
-    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height, YELLOW, OUT_WINDOW_CHARACTERS)
+    PAPER PURPLE
+    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height, BLACK, ROUND_WINDOW_PAPER)
     FOR i = x TO x + width - 1
         FOR j = y TO y + height - 1
             board(i, j) = BOARD_TYPE_SOLID
@@ -455,9 +455,8 @@ SUB resetGameLevel()
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
     initBoard()
-    getRandomEmptyBoardPosition()
-    snakeX(headPosition) = emptyScreenXPosition
-    snakeY(headPosition) = emptyScreenYPosition
+    snakeX(headPosition) = SNAKE_START_X
+    snakeY(headPosition) = SNAKE_START_Y
     putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_SNAKE)
     direction = DIRECTION_NONE
     drawGameWindows()
@@ -466,9 +465,7 @@ SUB resetGameLevel()
     drawStatusValues()
     drawLevelValue()
     drawSnakeHead()
-    FOR i = 0 TO fruits - 1
-        putFruit()
-    NEXT i
+    FOR i = 0 TO fruits - 1: putFruit(): NEXT i
     startSound()
 END SUB
 
