@@ -373,3 +373,14 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define END_LEVEL_TOTAL_STRING "Total           = "
 #define END_LEVEL_TOTAL_PAD " "
 #define END_LEVEL_TOTAL_LENGTH 4
+
+'Board space tipes
+#define BOARD_TYPE_EMPTY 0
+#define BOARD_TYPE_SOLID 1
+#define BOARD_TYPE_SNAKE 2
+#define BOARD_TYPE_FRUIT 3
+
+#define PLAY_BOARD_MAX_X 31
+#define PLAY_BOARD_MAX_Y 17
+
+#define PLAY_BOARD_Y_DEC 2
