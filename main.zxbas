@@ -11,6 +11,7 @@
 #include "common\\input.zxbas"
 #include "common\\states.zxbas"
 #include "game\\constants.zxbas"
+#include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"
 #include "game\\states.zxbas"

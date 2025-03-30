@@ -25,8 +25,20 @@ SUB clearBoard()
     NEXT j: NEXT i
 END SUB
 
+'Puts a solid rectangle in the board
+SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
+    PAPER YELLOW
+    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height, YELLOW, OUT_WINDOW_CHARACTERS)
+    FOR i = x TO x + width - 1
+        FOR j = y TO y + height - 1
+            board(i, j) = BOARD_TYPE_SOLID
+    NEXT j: NEXT i
+    PAPER BLACK
+END SUB
+
 'Init the board
 SUB initBoard()
+    clearBoard()
     'Draw the board limits
     FOR i = 0 TO PLAY_BOARD_MAX_X
         board(i, 0) = BOARD_TYPE_SOLID
@@ -36,7 +48,17 @@ SUB initBoard()
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i   
-    'TODO Draw the level layout
+    
+    'Draw the level layout
+    DIM rectangle AS UBYTE = 0
+    WHILE(levelsData(level, rectangle, 0) <> RECT_END)
+        putBoardRectangle(_
+            levelsData(level, rectangle, RECT_X_INDEX),_
+            levelsData(level, rectangle, RECT_Y_INDEX),_
+            levelsData(level, rectangle, RECT_WIDTH_INDEX),_
+            levelsData(level, rectangle, RECT_HEIGHT_INDEX))
+        rectangle = rectangle + 1
+    END WHILE
 END SUB
 
 'Puts in the board a [boardType], moves from screen position to board position
@@ -63,11 +85,10 @@ SUB checkFruit()
         score = score + FRUIT_INC_SCORE
         checkMaxScore()
         fruits = fruits - 1
+        drawFruits()
         IF(fruits)
             IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
-            putFruit()
-        ELSE
-            drawFruits()
+        ELSE           
             setGameState(STATE_START_END_LEVEL)
         END IF
     END IF
@@ -130,7 +151,7 @@ END SUB
 
 'Draw level value
 SUB drawLevelValue()
-    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; level;
+    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; (level + 1);
 END SUB
 
 'Draws the score and max score numbers
@@ -433,7 +454,6 @@ SUB resetGameLevel()
     clearSnakePositions()
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
-    clearBoard()
     initBoard()
     getRandomEmptyBoardPosition()
     snakeX(headPosition) = emptyScreenXPosition
@@ -446,7 +466,9 @@ SUB resetGameLevel()
     drawStatusValues()
     drawLevelValue()
     drawSnakeHead()
-    putFruit()
+    FOR i = 0 TO fruits - 1
+        putFruit()
+    NEXT i
     startSound()
 END SUB
 
