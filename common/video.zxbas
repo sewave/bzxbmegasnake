@@ -50,6 +50,9 @@ DIM tmpPaper AS UBYTE
 DIM tmpInk AS UBYTE
 DIM attrIndex AS UINTEGER
 
+'System variables
+DIM lowFrameCounter AS UBYTE AT FRAME_LOW_BYTE
+
 'Loads udgs address into system to switch graphics
 SUB loadUdgs(udgs AS UINTEGER)
     POKE UINTEGER UDG_ADDRESS, udgs
@@ -67,11 +70,6 @@ SUB drawLine(startX as UBYTE, startY as UBYTE, endX as UBYTE, endY as UBYTE, cha
     NEXT y : NEXT x
 END SUB
 
-'Returns the Spectrum low frame counter byte (Usually updated 1/50 s)
-FUNCTION getFrameLowByte() as UBYTE
-    RETURN PEEK(FRAME_LOW_BYTE)
-END FUNCTION
-
 'Clears the screen with the selected paper-border and ink
 SUB clearScreen(pPaper as UBYTE, pInk as UBYTE)
     BORDER pPaper: PAPER pPaper : INK pInk : CLS
@@ -79,11 +77,11 @@ END SUB
 
 'Wait vsync
 SUB waitVsync()
-    DIM currentFrame AS UBYTE = getFrameLowByte()
+    DIM currentFrame AS UBYTE = lowFrameCounter
     DIM newFrame AS UBYTE
     DO
-        newFrame = getFrameLowByte()
-    LOOP UNTIL newFrame <> currentFrame
+        newFrame = lowFrameCounter
+    LOOP WHILE newFrame = currentFrame
 END SUB
 
 'Draws a window using the string characters to cover all possibilities like:

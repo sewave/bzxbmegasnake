@@ -22,6 +22,6 @@ setGameState(STATE_INIT_GAME)
 'Main loop
 DO
     updateControls()
-    RANDOMIZE USR stateSubroutines(getGameState())
+    executeSub(stateSubroutines(getGameState()))
     waitVsync()
 LOOP

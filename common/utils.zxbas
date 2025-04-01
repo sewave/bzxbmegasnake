@@ -6,3 +6,6 @@ FUNCTION getPaddedNumber(number AS UINTEGER, length AS UBYTE, padding AS STRING)
     END WHILE
     RETURN paddedNumber
 END FUNCTION
+
+'Trick to execute subroutine at [subAddress], address 0 is rom so not writable
+#define executeSub(subAddress) POKE 0, USR subAddress
