@@ -96,3 +96,102 @@ DIM levelsData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_RECTANGL
         {RECT_END, RECT_END, RECT_END, RECT_END}, {RECT_END, RECT_END, RECT_END, RECT_END}_
     }_
 }
+
+DIM enemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_INDEX) AS UBYTE => {_
+    {_
+        {ENEMY_TYPE_U_D, 25, 5, 2}, {ENEMY_TYPE_L_R, 26, 5, 5},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
+        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    }_
+}

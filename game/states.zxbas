@@ -104,6 +104,7 @@ END SUB
 'Updates all the game status
 SUB stateGamePlaying()
     checkTime()
+    moveEnemies()
     delayedFrames = delayedFrames + 1
     IF(delayedFrames >= delayFrames)
         delayedFrames = 0
