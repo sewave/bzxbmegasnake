@@ -327,7 +327,7 @@
 #define TITLE_SCROLLER_FRAMES 10
 #define TITLE_SCROLLER_INK YELLOW
 #define TITLE_SCROLLER_PAPER BLUE
-DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote las 10 frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: o Vertical, p Horizontal, q Diagonal, a Borde horario, m Borde anti-horario                              "
+DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote las 10 frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: \A Vertical, \C Horizontal, \E Diagonal Der, \G Diagonal Izq, \I Borde horario, \K Borde anti-horario                              "
 
 'Intro central window
 #define INTRO_CENTRAL_WINDOW_X 0

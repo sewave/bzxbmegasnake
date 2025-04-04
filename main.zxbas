@@ -10,14 +10,15 @@
 #include "common\\video.zxbas"
 #include "common\\input.zxbas"
 #include "common\\states.zxbas"
+#include "gfx\\snakeUdg.udg.zxbas"
+#include "gfx\\enemiesUdg.udg.zxbas"
+#include "gfx\\reactor.fnt.zxbas"
 #include "game\\constants.zxbas"
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"
 #include "game\\enemies.zxbas"
 #include "game\\states.zxbas"
-#include "gfx\\snakeUdg.udg.zxbas"
-#include "gfx\\reactor.fnt.zxbas"
 
 setGameState(STATE_INIT_GAME)
 'Main loop

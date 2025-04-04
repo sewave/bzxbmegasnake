@@ -8,7 +8,8 @@ DIM enemyWait(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_D_R, DIRECTION_U_L _
 }
-DIM enemyCharacters AS STRING = " OPQAZX"
+DIM enemyCharacters AS STRING =    " \A\C\E\G\I\K"
+DIM enemyCharactersAlt AS STRING = " \B\D\F\H\J\L"
 DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_EMPTY, BOARD_TYPE_ENEMY_U_D, BOARD_TYPE_ENEMY_L_R, BOARD_TYPE_ENEMY_DIAL,_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
@@ -28,6 +29,7 @@ END SUB
 
 'Moves the active enemies
 SUB moveEnemies()
+    loadEnemiesGfx()
     FOR i = 0 TO LAST_ENEMY_INDEX
         IF(enemyType(i) <> ENEMY_TYPE_NONE)
             IF(enemyWait(i))
@@ -38,6 +40,7 @@ SUB moveEnemies()
             END IF
         END IF
     NEXT i
+    loadSnakeGfx()
 END SUB
 
 'Draws the active enemies

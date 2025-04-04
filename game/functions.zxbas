@@ -16,6 +16,16 @@ DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 
+'Loads the UDGs of the snake parts
+SUB loadSnakeGfx()
+    loadUdgs(@snakeUdg)
+END SUB
+
+'Loads the UDGs of the enemies parts
+SUB loadEnemiesGfx()
+    loadUdgs(@enemiesUdg)
+END SUB
+
 'Clears the board
 SUB clearBoard()
     FOR i = 0 TO PLAY_BOARD_MAX_X
@@ -418,8 +428,10 @@ END FUNCTION
 
 'Prints the scrolling text
 SUB printTitleScroller()
+    loadEnemiesGfx()
     INK TITLE_SCROLLER_INK: PAPER TITLE_SCROLLER_PAPER
     frameTextScroller(TITLE_TEXT_SCROLLER)
+    loadSnakeGfx()
 END SUB
 
 'Clears the central menu

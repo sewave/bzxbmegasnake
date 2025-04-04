@@ -51,7 +51,8 @@ DIM tmpInk AS UBYTE
 DIM attrIndex AS UINTEGER
 
 'System variables
-DIM lowFrameCounter AS UBYTE AT FRAME_LOW_BYTE
+DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
+DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
 
 'Loads udgs address into system to switch graphics
 SUB loadUdgs(udgs AS UINTEGER)
@@ -77,10 +78,10 @@ END SUB
 
 'Wait vsync
 SUB waitVsync()
-    DIM currentFrame AS UBYTE = lowFrameCounter
+    DIM currentFrame AS UBYTE = byteFrameCounter
     DIM newFrame AS UBYTE
     DO
-        newFrame = lowFrameCounter
+        newFrame = byteFrameCounter
     LOOP WHILE newFrame = currentFrame
 END SUB
 
