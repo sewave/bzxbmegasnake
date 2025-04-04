@@ -14,6 +14,7 @@
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"
+#include "game\\enemies.zxbas"
 #include "game\\states.zxbas"
 #include "gfx\\snakeUdg.udg.zxbas"
 #include "gfx\\reactor.fnt.zxbas"

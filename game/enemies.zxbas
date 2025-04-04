@@ -1,0 +1,110 @@
+
+DIM enemyX(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemyY(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemyType(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemyDirection(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemySpeed(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemyWait(LAST_ENEMY_INDEX) AS UBYTE
+
+DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
+    DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_D_R, DIRECTION_U_L _
+}
+
+DIM enemyCharacters AS STRING = " opqam"
+DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
+    BOARD_TYPE_EMPTY, BOARD_TYPE_ENEMY_U_D, BOARD_TYPE_ENEMY_L_R, BOARD_TYPE_ENEMY_DIAL,_
+    BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
+}
+
+'Resets enemies and copies enemies from level to active status
+SUB initEnemies()
+    FOR i = 0 TO LAST_ENEMY_INDEX
+        enemyType(i) = enemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
+        enemyX(i) = enemiesData(level, i, ENEMY_PROPERTY_X_INDEX)
+        enemyY(i) = enemiesData(level, i, ENEMY_PROPERTY_Y_INDEX)
+        enemySpeed(i) = enemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
+        enemyWait(i) = 0
+        enemyDirection(i) = enemyInitialDirection(enemyType(i))
+    NEXT i
+END SUB
+
+'Moves the active enemies
+SUB moveEnemies()
+    FOR i = 0 TO LAST_ENEMY_INDEX
+        IF(enemyType(i) <> ENEMY_TYPE_NONE)
+            IF(enemyWait(i))
+                enemyWait(i) = enemyWait(i) - 1
+            ELSE
+                enemyWait(i) = enemySpeed(i)
+                moveEnemy(i)
+            END IF
+        END IF
+    NEXT i
+END SUB
+
+'Draws the active enemies
+SUB moveEnemy(enemyNumber AS UBYTE)
+    DIM tmpEnemyType AS UBYTE = enemyType(enemyNumber)
+    DIM tmpEnemyX AS UBYTE = enemyX(enemyNumber)
+    DIM tmpEnemyY AS UBYTE = enemyY(enemyNumber)
+    DIM tmpEnemyDirection AS UBYTE = enemyDirection(enemyNumber)
+
+    board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY
+    PRINT AT tmpEnemyY + PLAY_BOARD_Y_DEC, tmpEnemyX; enemyCharacters(ENEMY_TYPE_NONE);
+    IF(tmpEnemyType = ENEMY_TYPE_U_D)
+        moveUpDownEnemy(enemyNumber, tmpEnemyX, tmpEnemyY, tmpEnemyDirection)
+    ELSEIF(tmpEnemyType = ENEMY_TYPE_L_R)
+        moveLeftRightEnemy(enemyNumber, tmpEnemyX, tmpEnemyY, tmpEnemyDirection)
+    ELSEIF(tmpEnemyType = ENEMY_TYPE_DIAR)
+        'TODO
+    ELSEIF(tmpEnemyType = ENEMY_TYPE_DIAL)
+        'TODO
+    ELSEIF(tmpEnemyType = ENEMY_TYPE_CLO)
+        'TODO
+    ELSEIF(tmpEnemyType = ENEMY_TYPE_CCLO)
+        'TODO
+    END IF
+    'TODO others
+    board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
+    enemyX(enemyNumber) = tmpEnemyX
+    enemyY(enemyNumber) = tmpEnemyY    
+    PRINT AT tmpEnemyY + PLAY_BOARD_Y_DEC, tmpEnemyX; enemyCharacters(tmpEnemyType);
+END SUB
+
+'Moves an "LEFT-RIGHT" enemy
+SUB moveLeftRightEnemy(number as UBYTE, BYREF x as UBYTE, BYREF y as UBYTE, direction as UBYTE)
+    IF(direction = DIRECTION_LEFT)
+        IF(board(x - 1 , y) = BOARD_TYPE_EMPTY)
+            x = x - 1
+            enemyX(number) = x
+        ELSE
+            enemyDirection(number) = DIRECTION_RIGHT   
+        END IF
+    END IF
+    IF(direction = DIRECTION_RIGHT)
+        IF(board(x + 1, y) = BOARD_TYPE_EMPTY)
+            x = x + 1
+            enemyX(number) = x
+        ELSE
+            enemyDirection(number) = DIRECTION_LEFT
+        END IF
+    END IF
+END SUB
+
+'Moves an "UP-DOWN" enemy
+SUB moveUpDownEnemy(number as UBYTE, BYREF x as UBYTE, BYREF y as UBYTE, direction as UBYTE)
+    IF(direction = DIRECTION_UP)
+        IF(board(x, y - 1) = BOARD_TYPE_EMPTY)
+            y = y - 1
+        ELSE
+            enemyDirection(number) = DIRECTION_DOWN    
+        END IF
+    END IF
+    IF(direction = DIRECTION_DOWN)
+        IF(board(x, y + 1) = BOARD_TYPE_EMPTY)
+            y = y + 1
+        ELSE
+            enemyDirection(number) = DIRECTION_UP
+        END IF
+    END IF
+END SUB
