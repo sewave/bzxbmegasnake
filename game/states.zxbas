@@ -177,7 +177,7 @@ SUB stateWaitSelectKeys()
         keys(PLAYER_1_INDEX, redefinedKeys) = keyCode
         redefinedKeys = redefinedKeys + 1
         setStateWaitNoKey(getGameState())
-    END IF    
+    END IF
 END SUB
 
 'State that starts the central menu at the title screen
@@ -190,7 +190,7 @@ SUB stateStartMenu()
     PRINT AT INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_X; INTRO_MAX_SCORE_STRING;_
         FLASH TRUE; INK INTRO_MAX_SCORE_NUM_INK;_
             PAPER INTRO_MAX_SCORE_NUM_PAPER; maxScore;
-    
+
     setStateWaitNoKey(STATE_WAIT_MENU) 
 END SUB
 

@@ -340,7 +340,7 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 'Starting values
 #define START_LIVES 3
 #define START_LEVEL 0
-#define LEVEL_FRUITS 5
+#define LEVEL_FRUITS 10
 #define LEVEL_TIME 120
 #define LEVEL_TIME_BONUS 2
 

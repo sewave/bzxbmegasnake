@@ -17,14 +17,10 @@ DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 
 'Loads the UDGs of the snake parts
-SUB loadSnakeGfx()
-    loadUdgs(@snakeUdg)
-END SUB
+#define loadSnakeGfx() loadUdgs(@snakeUdg)
 
 'Loads the UDGs of the enemies parts
-SUB loadEnemiesGfx()
-    loadUdgs(@enemiesUdg)
-END SUB
+#define loadEnemiesGfx() loadUdgs(@enemiesUdg)
 
 'Clears the board
 SUB clearBoard()
@@ -444,10 +440,8 @@ END SUB
 'Draws the main game windows
 SUB drawGameWindows()
     INK BOARD_COLOR
-    drawLine(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_X,_
-        BOARD_WINDOW_Y_2, BOARD_WINDOW_LEFT)
-    drawLine(BOARD_WINDOW_X_2, BOARD_WINDOW_Y, BOARD_WINDOW_X_2,_
-        BOARD_WINDOW_Y_2, BOARD_WINDOW_RIGHT) 
+    drawVerticalLine(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1, BOARD_WINDOW_LEFT)
+    drawVerticalLine(BOARD_WINDOW_X_2, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1, BOARD_WINDOW_RIGHT)
     drawWindow(HEADER_WINDOW_X, HEADER_WINDOW_Y, HEADER_WINDOW_WIDTH,_
         HEADER_WINDOW_HEIGHT, HEADER_COLOR, OUT_WINDOW_CHARACTERS)
     drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH,_

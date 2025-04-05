@@ -1,4 +1,4 @@
-'Window system gfx indexes
+'Window system
 #define WINDOW_UP_LEFT_INDEX 0
 #define WINDOW_UP_INDEX 1
 #define WINDOW_UP_RIGHT_INDEX 2
@@ -7,6 +7,8 @@
 #define WINDOW_DOWN_INDEX 5
 #define WINDOW_DOWN_LEFT_INDEX 6
 #define WINDOW_LEFT_INDEX 7
+#define MIN_WINDOW_REPEAT_WIDTH  2
+#define MIN_WINDOW_REPEAT_HEIGHT 2
 
 'UDGs address
 #define UDG_ADDRESS 23675
@@ -54,21 +56,25 @@ DIM attrIndex AS UINTEGER
 DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
 DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
 
-'Loads udgs address into system to switch graphics
-SUB loadUdgs(udgs AS UINTEGER)
-    POKE UINTEGER UDG_ADDRESS, udgs
+'Loads [udgs] address into system to switch udgs graphics
+#define loadUdgs(udgs) POKE UINTEGER UDG_ADDRESS, udgs
+
+'Loads [font] address into system to switch font graphics
+#define loadFont(font) POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
+
+'Draws a horizontal line from (x, y) to (x + length - 1, y) with [character]
+SUB drawHorizontalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
+    PRINT AT y, x; character;
+    FOR i = x + 1 TO x + length - 1
+        PRINT character;
+    NEXT i
 END SUB
 
-'Loads font address into system to switch graphics
-SUB loadFont(font AS UINTEGER)
-    POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
-END SUB
-
-'Draws a straight line from start to end
-SUB drawLine(startX as UBYTE, startY as UBYTE, endX as UBYTE, endY as UBYTE, character as STRING)
-    FOR x = startX TO endX : FOR y = startY TO endY
-        PRINT AT y, x ; character;
-    NEXT y : NEXT x
+'Draws a vertical line from (x, y) to (x, y + length - 1) with [character]
+SUB drawVerticalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
+    FOR i = y TO y + length - 1
+        PRINT AT i, x; character;
+    NEXT i
 END SUB
 
 'Clears the screen with the selected paper-border and ink
@@ -94,24 +100,20 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
     DIM widthInc AS UBYTE = width - 1
     DIM heightInc AS UBYTE = height - 1
     INK color
-    'UP
-    drawLine(startX + 1, startY, startX + widthInc, startY,_
-        characters(WINDOW_UP_INDEX))
-    'RIGHT
-    drawLine(startX + widthInc, startY + 1, startX + widthInc, startY + heightInc,_
-        characters(WINDOW_RIGHT_INDEX))
-    'DOWN
-    drawLine(startX + 1, startY + heightInc, startX + widthInc, startY + heightInc,_
-        characters(WINDOW_DOWN_INDEX))
-    'LEFT
-    drawLine(startX, startY + 1, startX, startY + heightInc,_
-        characters(WINDOW_LEFT_INDEX))
+    
+    IF(width > MIN_WINDOW_REPEAT_WIDTH)
+        drawHorizontalLine(startX + 1, startY, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_UP_INDEX))
+        drawHorizontalLine(startX + 1, startY + heightInc, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_DOWN_INDEX))
+    END IF
+    IF(height > MIN_WINDOW_REPEAT_HEIGHT)
+        drawVerticalLine(startX, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_LEFT_INDEX))
+        drawVerticalLine(startX + widthInc, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_RIGHT_INDEX))
+    END IF
     'CORNERS
     PRINT AT startY, startX; characters(WINDOW_UP_LEFT_INDEX);
     PRINT AT startY, startX + widthInc; characters(WINDOW_UP_RIGHT_INDEX);
     PRINT AT startY + heightInc, startX; characters(WINDOW_DOWN_LEFT_INDEX);
-    PRINT AT startY + heightInc, startX + widthInc;_ 
-        characters(WINDOW_DOWN_RIGHT_INDEX);
+    PRINT AT startY + heightInc, startX + widthInc; characters(WINDOW_DOWN_RIGHT_INDEX);
 END SUB
 
 'Initializes the text scroller

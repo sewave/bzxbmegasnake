@@ -1,6 +1,6 @@
 {
   "MainFile": "main.zxbas",
-  "OptimizationLevel": 4,
+  "OptimizationLevel": 3,
   "Origin": null,
   "ArrayBase": null,
   "StringBase": null,

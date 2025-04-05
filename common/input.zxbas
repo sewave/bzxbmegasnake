@@ -73,6 +73,10 @@ DIM sinclairTwo(KEYS_MAX_INDEX) AS UBYTE => { $31, $32, $34, $33, $35 }
 '5 (left), 8 (right), 7 (up), 6 (down) and 0 (fire)
 DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { $35, $38, $37, $36, $30 }
 
+'Tmp vars for speed
+DIM tmpControl AS UBYTE
+DIM tmpInput AS UBYTE
+
 'Reads a key from keyboard and if its 60h or plus lowers it by 20h,
 'effectively making it uppercase in case of letters
 SUB readKeyUpperCase()
@@ -132,26 +136,26 @@ END FUNCTION
 
 'Reads the [playerIndex] player keyboard keys (Or Sinclair/Protek Joysticks)
 SUB readPlayerKeyboard(playerIndex AS UBYTE)
-    DIM tmpControl AS UBYTE = CONTROL_NONE
-    DIM frameByte AS UBYTE = CODE(frameKey)
-    IF(frameByte = keys(playerIndex, CONTROL_UP_INDEX)) tmpControl = tmpControl + CONTROL_UP
-    IF(frameByte = keys(playerIndex, CONTROL_DOWN_INDEX)) tmpControl = tmpControl + CONTROL_DOWN
-    IF(frameByte = keys(playerIndex, CONTROL_LEFT_INDEX)) tmpControl = tmpControl + CONTROL_LEFT
-    IF(frameByte = keys(playerIndex, CONTROL_RIGHT_INDEX)) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(frameByte = keys(playerIndex, CONTROL_FIRE_INDEX)) tmpControl = tmpControl + CONTROL_FIRE
+    tmpControl = CONTROL_NONE
+    tmpInput = CODE(frameKey)
+    IF(tmpInput = keys(playerIndex, CONTROL_UP_INDEX)) tmpControl = tmpControl + CONTROL_UP
+    IF(tmpInput = keys(playerIndex, CONTROL_DOWN_INDEX)) tmpControl = tmpControl + CONTROL_DOWN
+    IF(tmpInput = keys(playerIndex, CONTROL_LEFT_INDEX)) tmpControl = tmpControl + CONTROL_LEFT
+    IF(tmpInput = keys(playerIndex, CONTROL_RIGHT_INDEX)) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(tmpInput = keys(playerIndex, CONTROL_FIRE_INDEX)) tmpControl = tmpControl + CONTROL_FIRE
     controls(playerIndex) = tmpControl
 END SUB
 
 'Reads the [playerIndex] player Kempston joystick
 SUB readPlayerKempston(playerIndex AS UBYTE)
-    DIM tmpControl AS UBYTE = CONTROL_NONE
-    DIM tmpKempston AS UBYTE = IN KEMPSTON_PORT
+    tmpControl = CONTROL_NONE
+    tmpInput = IN KEMPSTON_PORT
 
-    IF(tmpKempston bAND KEMPSTON_UP) tmpControl = tmpControl + CONTROL_UP
-    IF(tmpKempston bAND KEMPSTON_DOWN) tmpControl = tmpControl + CONTROL_DOWN
-    IF(tmpKempston bAND KEMPSTON_LEFT) tmpControl = tmpControl + CONTROL_LEFT
-    IF(tmpKempston bAND KEMPSTON_RIGHT) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(tmpKempston bAND KEMPSTON_FIRE) tmpControl = tmpControl + CONTROL_FIRE
+    IF(tmpInput bAND KEMPSTON_UP) tmpControl = tmpControl + CONTROL_UP
+    IF(tmpInput bAND KEMPSTON_DOWN) tmpControl = tmpControl + CONTROL_DOWN
+    IF(tmpInput bAND KEMPSTON_LEFT) tmpControl = tmpControl + CONTROL_LEFT
+    IF(tmpInput bAND KEMPSTON_RIGHT) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(tmpInput bAND KEMPSTON_FIRE) tmpControl = tmpControl + CONTROL_FIRE
 
     controls(playerIndex) = tmpControl
 END SUB
