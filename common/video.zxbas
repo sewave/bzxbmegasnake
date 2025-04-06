@@ -17,8 +17,10 @@
 #define FONT_ADDRESS 23606
 #define FONT_OFFSET 256
 
-'Spectrum frame counter low byte
+'Spectrum frame counter bytes
 #define FRAME_LOW_BYTE 23672
+#define FRAME_MED_BYTE 23673
+#define FRAME_HI_BYTE 23674
 
 'Wait frames
 #define FRAMES_WAITED_START 0
@@ -55,12 +57,16 @@ DIM attrIndex AS UINTEGER
 'System variables
 DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
 DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
+DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
 
 'Loads [udgs] address into system to switch udgs graphics
 #define loadUdgs(udgs) POKE UINTEGER UDG_ADDRESS, udgs
 
 'Loads [font] address into system to switch font graphics
 #define loadFont(font) POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
+
+'Get the 24 bit frame counter
+#define fullFrameCounter (CAST(ULONG, highFrameCounter) << INTEGER_BITS) + integerFrameCounter
 
 'Draws a horizontal line from (x, y) to (x + length - 1, y) with [character]
 SUB drawHorizontalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
@@ -132,7 +138,7 @@ END SUB
 'String must end by an empty zone of at least width if you
 'want the string to dissapear completely
 'Call it on each frame
-SUB frameTextScroller(scrollerText AS STRING)
+SUB frameTextScroller(BYREF scrollerText AS STRING)
     scrollerRemainingFrames = scrollerRemainingFrames - 1
     IF(scrollerRemainingFrames = SCROLLER_FRAMES_DONE)
         scrollerRemainingFrames = scrollerTargetFrames
