@@ -299,7 +299,7 @@ SUB updateSnakeHeadPosition()
         ELSE
             prevHeadChar = SNAKE_BODY_HOR
         END IF
-        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_RIGHT
+        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_RIGHT
     ELSEIF(direction = DIRECTION_LEFT)
         snakeX(headPosition) = prevHeadX - HEAD_SPEED
         snakeY(headPosition) = prevHeadY
@@ -310,7 +310,7 @@ SUB updateSnakeHeadPosition()
         ELSE
             prevHeadChar = SNAKE_BODY_HOR
         END IF
-        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_LEFT
+        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_LEFT
     ELSEIF(direction = DIRECTION_UP)
         snakeX(headPosition) = prevHeadX
         snakeY(headPosition) = prevHeadY - HEAD_SPEED
@@ -321,7 +321,7 @@ SUB updateSnakeHeadPosition()
         ELSE
             prevHeadChar = SNAKE_BODY_VER
         END IF
-        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_DOWN
+        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_DOWN
     ELSEIF(direction = DIRECTION_DOWN)
         snakeX(headPosition) = prevHeadX
         snakeY(headPosition) = prevHeadY + HEAD_SPEED
@@ -332,7 +332,7 @@ SUB updateSnakeHeadPosition()
         ELSE
             prevHeadChar = SNAKE_BODY_VER
         END IF
-        if oldHeadX = SNAKE_OUT_BOUNDS_X prevHeadChar = SNAKE_TAIL_UP
+        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_UP
     END IF
     
     PRINT AT prevHeadY, prevHeadX; INK SNAKE_COLOR; prevHeadChar;

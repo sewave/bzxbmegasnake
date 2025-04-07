@@ -68,6 +68,113 @@ DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
 'Get the 24 bit frame counter
 #define fullFrameCounter (CAST(ULONG, highFrameCounter) << INTEGER_BITS) + integerFrameCounter
 
+'010TTSSS RRRCCCCC
+#define PIXEL_BASE %0100000000000000
+#define SCAN_LINE_INC 256
+#define ROW_INC %0000011100100000
+#define SCAN_LINE_CLEAR %1111100011111111
+'010110TT RRRCCCCC FBPPPIII
+#define ATTR_BASE %0101100000000000
+#define ATTR_ROW_INC %00100000
+
+DIM currentCharAddr AS UINTEGER
+DIM currentCharAttrAddr AS UINTEGER
+DIM currentAttributes AS UBYTE
+DIM tmpAddr AS UINTEGER
+
+'Updates char addresses to next column
+SUB nextCharColumn()
+    currentCharAddr = currentCharAddr + 1
+    currentCharAttrAddr = currentCharAttrAddr + 1
+END SUB
+
+'Updates char addresses to next row
+SUB nextCharRow()
+    currentCharAddr = (currentCharAddr + ROW_INC) bAND SCAN_LINE_CLEAR
+    currentCharAttrAddr = (currentCharAttrAddr + ATTR_ROW_INC)
+END SUB
+
+'Sets the attributes for the current char
+#define setCharAttributes() POKE(currentCharAttrAddr, currentAttributes)
+
+'Sets the attributes for the next chars
+#define setAttributes(attributes) currentAttributes = attributes
+
+'Puts the cursor pixel pointer at the desired position
+SUB setCharPosition(x as UBYTE, y as UBYTE)
+    DIM lowByte AS UBYTE = x bOR (y << 5)
+    DIM third AS UINTEGER = CAST(UINTEGER, y >> 3)
+    currentCharAddr = PIXEL_BASE bOR (third << 11) bOR lowByte
+    currentCharAttrAddr = ATTR_BASE bOR (third << 8) bOR lowByte
+END SUB
+
+'Clears the current char position
+SUB clearChar()
+    POKE(currentCharAddr, 0)
+    POKE(currentCharAddr + SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
+    setCharAttributes()
+END SUB
+
+'Put a char
+SUB putChar(charAddress AS UINTEGER)
+    tmpAddr = charAddress
+    POKE(currentCharAddr, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    setCharAttributes()
+END SUB
+
+'Puts [numChars] characters in line, stops at next char
+SUB putChars(numChars as UBYTE, charAddress AS UINTEGER)
+    FOR i = 0 TO numChars - 1
+        putChar(charAddress)
+        nextCharColumn()
+    NEXT i
+END SUB
+
+'Clears [numChars] characters in line, stops at next char
+SUB clearChars(numChars as UBYTE)
+    FOR i = 0 TO numChars - 1
+        clearChar()
+        nextCharColumn()
+    NEXT i
+END SUB
+
+'Puts [numChars] characters in row, stops at next char
+SUB putRowChars(numChars as UBYTE, charAddress AS UINTEGER)
+    FOR i = 0 TO numChars - 1
+        putChar(charAddress)
+        nextCharRow()
+    NEXT i
+END SUB
+
+'Clears row [numChars] characters in row, stops at next char
+SUB clearRowChars(numChars as UBYTE)
+    FOR i = 0 TO numChars - 1
+        clearChar()
+        nextCharRow()
+    NEXT i
+END SUB
+
 'Draws a horizontal line from (x, y) to (x + length - 1, y) with [character]
 SUB drawHorizontalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
     PRINT AT y, x; character;
