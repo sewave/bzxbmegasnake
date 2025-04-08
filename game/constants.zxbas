@@ -33,27 +33,27 @@
 
 'Snake
 #define SNAKE_COLOR GREEN
-#define SNAKE_BODY "\::"
 #define SNAKE_TAIL_ERASE " "
+#define SNAKE_ATTRIBUTES createAttribute(FALSE, TRUE, BLACK, GREEN)
 
 'Snake udgs
-#define SNAKE_HEAD_RIGHT "\A"
-#define SNAKE_HEAD_DOWN  "\B"
-#define SNAKE_HEAD_LEFT  "\C"
-#define SNAKE_HEAD_UP    "\D"
-#define SNAKE_HEAD_FRONT "\O"
+#define SNAKE_HEAD_RIGHT @sprites_Snake_Head(0, 0)
+#define SNAKE_HEAD_DOWN  @sprites_Snake_Head(1, 0)
+#define SNAKE_HEAD_LEFT  @sprites_Snake_Head(2, 0)
+#define SNAKE_HEAD_UP    @sprites_Snake_Head(3, 0)
+#define SNAKE_HEAD_FRONT @sprites_Snake_Head(4, 0)
 
-#define SNAKE_TAIL_RIGHT "\E"
-#define SNAKE_TAIL_UP    "\F"
-#define SNAKE_TAIL_LEFT  "\G"
-#define SNAKE_TAIL_DOWN  "\H"
+#define SNAKE_TAIL_RIGHT @sprites_Snake_Tail(0, 0)
+#define SNAKE_TAIL_UP    @sprites_Snake_Tail(1, 0)
+#define SNAKE_TAIL_LEFT  @sprites_Snake_Tail(2, 0)
+#define SNAKE_TAIL_DOWN  @sprites_Snake_Tail(3, 0)
 
-#define SNAKE_BODY_HOR   "\I"
-#define SNAKE_BODY_VER   "\J"
-#define SNAKE_BODY_DW_RI "\K"
-#define SNAKE_BODY_LF_DW "\L"
-#define SNAKE_BODY_UP_RI "\M"
-#define SNAKE_BODY_LF_UP "\N"
+#define SNAKE_BODY_HOR   @sprites_Snake_Body(0, 0)
+#define SNAKE_BODY_VER   @sprites_Snake_Body(1, 0)
+#define SNAKE_BODY_DW_RI @sprites_Snake_Body(2, 0)
+#define SNAKE_BODY_LF_DW @sprites_Snake_Body(3, 0)
+#define SNAKE_BODY_UP_RI @sprites_Snake_Body(4, 0)
+#define SNAKE_BODY_LF_UP @sprites_Snake_Body(5, 0)
 
 'Gameplay colors
 #define FONT_COLOR WHITE
@@ -424,3 +424,5 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define ENEMY_TYPE_DIAL 4
 #define ENEMY_TYPE_CLO  5
 #define ENEMY_TYPE_CCLO 6
+
+#define BOARD_ATTRIBUTES createAttribute(FALSE, FALSE, BLACK, BLACK)

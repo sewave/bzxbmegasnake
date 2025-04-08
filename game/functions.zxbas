@@ -190,7 +190,7 @@ END SUB
 
 'Draws the snake tail in it's different positions
 SUB drawSnakeTail()
-    DIM tailChar AS STRING
+    DIM tailChar AS UINTEGER
     DIM nextTailX, nextTailY, tailX, tailY AS UBYTE
     DIM nextTailPosition AS UBYTE
 
@@ -212,12 +212,12 @@ SUB drawSnakeTail()
     ELSE
         tailChar = SNAKE_TAIL_RIGHT
     END IF
-    PRINT AT tailY, tailX ; INK SNAKE_COLOR ; tailChar;
+    putCharAt(tailX, tailY, SNAKE_ATTRIBUTES, tailChar)
 END SUB
 
 'Draws the snake head in it's different positions
-SUB drawSnakeHead()
-    DIM snakeChar AS STRING
+SUB drawSnakeHead(flashAttr AS UBYTE)
+    DIM snakeChar AS UINTEGER
 
     IF(direction = DIRECTION_NONE)
         snakeChar = SNAKE_HEAD_FRONT
@@ -230,8 +230,7 @@ SUB drawSnakeHead()
     ELSEIF (direction = DIRECTION_DOWN)
         snakeChar = SNAKE_HEAD_DOWN
     END IF
-    PRINT AT snakeY(headPosition), snakeX(headPosition);_
-        INK SNAKE_COLOR; snakeChar;
+    putCharAt(snakeX(headPosition), snakeY(headPosition), flashAttr | SNAKE_ATTRIBUTES, snakeChar)
 END SUB
 
 'Reads the input and sets the snake direction, checks for pause too
@@ -276,9 +275,9 @@ SUB updateSnakeHeadPosition()
     DIM prevHeadX, prevHeadY AS UBYTE
     DIM oldHeadX, oldHeadY AS UBYTE
     DIM oldHeadPos AS UBYTE
-    DIM prevHeadChar AS STRING
+    DIM prevHeadChar AS UINTEGER
 
-    prevHeadChar = SNAKE_BODY
+    prevHeadChar = SNAKE_BODY_HOR
     prevHeadX = snakeX(headPosition)
     prevHeadY = snakeY(headPosition)
     
@@ -334,14 +333,13 @@ SUB updateSnakeHeadPosition()
         END IF
         IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_UP
     END IF
-    
-    PRINT AT prevHeadY, prevHeadX; INK SNAKE_COLOR; prevHeadChar;
-    drawSnakeHead()
+    putCharAt(prevHeadX, prevHeadY, SNAKE_ATTRIBUTES, prevHeadChar)
+    drawSnakeHead(ATTRIBUTE_FLASH_OFF)
 END SUB
 
 'Erases the snake tail
 SUB eraseSnakeTail()
-    PRINT AT snakeY(tailPosition), snakeX(tailPosition); SNAKE_TAIL_ERASE
+    clearCharAt(snakeX(tailPosition), snakeY(tailPosition), BOARD_ATTRIBUTES)
     putInBoardFromScreen(snakeX(tailPosition), snakeY(tailPosition), BOARD_TYPE_EMPTY)
     snakeX(tailPosition) = SNAKE_OUT_BOUNDS_X
     snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
@@ -470,16 +468,14 @@ SUB resetGameLevel()
     drawStatusTexts()
     drawStatusValues()
     drawLevelValue()
-    drawSnakeHead()
+    drawSnakeHead(ATTRIBUTE_FLASH_OFF)
     FOR i = 0 TO fruits - 1: putFruit(): NEXT i
     startSound()
 END SUB
 
 'Draws the flashing snake head and does the die sound
 SUB drawDeadSnakeHead()
-    FLASH TRUE
-    drawSnakeHead()
-    FLASH FALSE
+    drawSnakeHead(ATTRIBUTE_FLASH_ON)
     dieSound()
 END SUB
 
