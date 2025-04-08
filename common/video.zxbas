@@ -33,6 +33,8 @@
 #define ATTRIBUTES_END_ADDR   5AFFh
 #define ATTRIBUTE_PAPER_UNIT 8
 #define ATTRIBUTE_INK_UNIT   1
+#define ATTRIBUTE_FLASH_ON   128
+#define ATTRIBUTE_FLASH_OFF  0
 
 'Scroller
 #define SCROLLER_POINTER_START 0
@@ -82,6 +84,8 @@ DIM currentCharAttrAddr AS UINTEGER
 DIM currentAttributes AS UBYTE
 DIM tmpAddr AS UINTEGER
 
+#define createAttribute(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << 3) | ink)
+
 'Updates char addresses to next column
 SUB nextCharColumn()
     currentCharAddr = currentCharAddr + 1
@@ -99,6 +103,12 @@ END SUB
 
 'Sets the attributes for the next chars
 #define setAttributes(attributes) currentAttributes = attributes
+
+'Clears a char at (x, y) with [attributes]
+#define clearCharAt(x, y, attributes) setCharPosition(x, y): setAttributes(attributes): clearChar()
+
+'Puts a char at (x, y) with [attributes]
+#define putCharAt(x, y, attributes, charAddress) setCharPosition(x, y): setAttributes(attributes): putChar(charAddress)
 
 'Puts the cursor pixel pointer at the desired position
 SUB setCharPosition(x as UBYTE, y as UBYTE)

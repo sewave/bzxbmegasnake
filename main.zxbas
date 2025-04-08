@@ -13,6 +13,7 @@
 #include "gfx\\snakeUdg.udg.zxbas"
 #include "gfx\\enemiesUdg.udg.zxbas"
 #include "gfx\\reactor.fnt.zxbas"
+#include "gfx\\sprites.spr.zxbas"
 #include "game\\constants.zxbas"
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
