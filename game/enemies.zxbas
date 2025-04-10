@@ -8,7 +8,24 @@ DIM enemyWait(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_D_R, DIRECTION_U_L _
 }
-DIM enemyCharacters AS STRING =    " \A\C\E\G\I\K"
+DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
+    @reactorFnt,_
+    @enemiesUdg(0, 0),_
+    @enemiesUdg(2, 0),_
+    @enemiesUdg(4, 0),_
+    @enemiesUdg(6, 0),_
+    @enemiesUdg(8, 0),_
+    @enemiesUdg(10, 0)_
+}
+DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
+    createAttribute(FALSE, FALSE, BLACK, BLACK),_
+    createAttribute(FALSE, TRUE, BLACK, YELLOW),_
+    createAttribute(FALSE, TRUE, BLACK, PURPLE),_
+    createAttribute(FALSE, TRUE, BLACK, WHITE),_
+    createAttribute(FALSE, FALSE, BLACK, WHITE),_
+    createAttribute(FALSE, TRUE, BLACK, BLUE),_
+    createAttribute(FALSE, FALSE, BLACK, BLUE)_
+}
 DIM enemyCharactersAlt AS STRING = " \B\D\F\H\J\L"
 DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_EMPTY, BOARD_TYPE_ENEMY_U_D, BOARD_TYPE_ENEMY_L_R, BOARD_TYPE_ENEMY_DIAL,_
@@ -29,7 +46,6 @@ END SUB
 
 'Moves the active enemies
 SUB moveEnemies()
-    loadEnemiesGfx()
     FOR i = 0 TO LAST_ENEMY_INDEX
         IF(enemyType(i) <> ENEMY_TYPE_NONE)
             IF(enemyWait(i))
@@ -40,7 +56,6 @@ SUB moveEnemies()
             END IF
         END IF
     NEXT i
-    loadSnakeGfx()
 END SUB
 
 'Draws the active enemies
@@ -51,7 +66,7 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     DIM tmpEnemyDirection AS UBYTE = enemyDirection(enemyNumber)
 
     board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY
-    PRINT AT tmpEnemyY + PLAY_BOARD_Y_DEC, tmpEnemyX; enemyCharacters(ENEMY_TYPE_NONE);
+    clearCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, BOARD_ATTRIBUTES)
     IF(tmpEnemyType = ENEMY_TYPE_U_D)
         moveUpDownEnemy(enemyNumber, tmpEnemyX, tmpEnemyY, tmpEnemyDirection)
     ELSEIF(tmpEnemyType = ENEMY_TYPE_L_R)
@@ -67,8 +82,8 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     END IF
     board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
     enemyX(enemyNumber) = tmpEnemyX
-    enemyY(enemyNumber) = tmpEnemyY    
-    PRINT AT tmpEnemyY + PLAY_BOARD_Y_DEC, tmpEnemyX; enemyCharacters(tmpEnemyType);
+    enemyY(enemyNumber) = tmpEnemyY
+    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType) ,enemyCharacters(tmpEnemyType))
 END SUB
 
 'Moves an "DIAGONAL-LEFT" enemy
