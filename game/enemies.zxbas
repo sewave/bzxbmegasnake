@@ -4,6 +4,7 @@ DIM enemyType(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyDirection(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemySpeed(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyWait(LAST_ENEMY_INDEX) AS UBYTE
+DIM enemyFrame(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_D_R, DIRECTION_U_L _
 }
@@ -25,7 +26,6 @@ DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     createAttribute(FALSE, TRUE, BLACK, BLUE),_
     createAttribute(FALSE, FALSE, BLACK, BLUE)_
 }
-DIM enemyCharactersAlt AS STRING = " \B\D\F\H\J\L"
 DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_EMPTY, BOARD_TYPE_ENEMY_U_D, BOARD_TYPE_ENEMY_L_R, BOARD_TYPE_ENEMY_DIAL,_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
@@ -40,6 +40,7 @@ SUB initEnemies()
         enemySpeed(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
         enemyWait(i) = 0
         enemyDirection(i) = enemyInitialDirection(enemyType(i))
+        enemyFrame(i) = 0
     NEXT i
 END SUB
 
@@ -51,6 +52,7 @@ SUB moveEnemies()
                 enemyWait(i) = enemyWait(i) - 1
             ELSE
                 enemyWait(i) = enemySpeed(i)
+                enemyFrame(i) = enemyFrame(i) bXOR 1
                 moveEnemy(i)
             END IF
         END IF
@@ -63,6 +65,8 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     DIM tmpEnemyX AS UBYTE = enemyX(enemyNumber)
     DIM tmpEnemyY AS UBYTE = enemyY(enemyNumber)
     DIM tmpEnemyDirection AS UBYTE = enemyDirection(enemyNumber)
+    DIM tmpEnemyCharacter AS UINTEGER = enemyCharacters(tmpEnemyType)
+    IF(enemyFrame(enemyNumber)) tmpEnemyCharacter = tmpEnemyCharacter + CHARACTER_BYTES
 
     board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY
     clearCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, BOARD_ATTRIBUTES)
@@ -82,7 +86,8 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
     enemyX(enemyNumber) = tmpEnemyX
     enemyY(enemyNumber) = tmpEnemyY
-    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
+
+    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
 END SUB
 
 'Moves an "DIAGONAL-LEFT" enemy

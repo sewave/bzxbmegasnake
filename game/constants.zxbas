@@ -112,8 +112,6 @@
 #define SNAKE_OUT_BOUNDS_X 255
 #define SNAKE_OUT_BOUNDS_Y 255
 #define HEAD_SPEED 1
-#define SNAKE_START_X 1
-#define SNAKE_START_Y 3
 
 'Scores
 #define START_SCORE 0
@@ -338,7 +336,7 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define INTRO_CENTRAL_WINDOW_CLEAR " "
 
 'Starting values
-#define START_LIVES 3
+#define START_LIVES 9
 #define START_LEVEL 0
 #define LEVEL_FRUITS 10
 #define LEVEL_TIME 120
@@ -428,3 +426,8 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define BOARD_ATTRIBUTES createAttribute(FALSE, FALSE, BLACK, BLACK)
 #define FRUIT_ATTRIBUTES createAttribute(FALSE, FALSE, BLACK, RED)
 
+#define LEVEL_MISC_DATA_LAST_INDEX 3
+#define LEVEL_MISC_DATA_SNAKE_X_INDEX 0
+#define LEVEL_MISC_DATA_SNAKE_Y_INDEX 1
+#define LEVEL_MISC_DATA_FRUITS_INDEX 2
+#define LEVEL_MISC_DATA_TIME_INDEX 3

@@ -438,29 +438,40 @@ SUB drawGameWindows()
         STATUS_WINDOW_HEIGHT, STATUS_COLOR, OUT_WINDOW_CHARACTERS)
 END SUB
 
-'Resets game level
+'Loads the fruits for the level
+SUB initLevelFruits()
+    fruits = levelsMiscData(level, LEVEL_MISC_DATA_FRUITS_INDEX)
+END SUB
+
+'Inits the snake for the current level
+SUB initSnake()
+    clearSnakePositions()
+    snakeLength = MIN_SNAKE_LENGTH
+    growthLeft = START_GROWTH
+    headPosition = HEAD_START_INDEX
+    tailPosition = TAIL_START_INDEX
+    snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)
+    snakeY(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_Y_INDEX)
+    putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_SNAKE)
+    direction = DIRECTION_NONE
+    drawSnakeHead(ATTRIBUTE_FLASH_OFF)
+END SUB
+
+'Resets game level, only sets data that can be reloaded after death
 SUB resetGameLevel()
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
-    snakeLength = MIN_SNAKE_LENGTH
-    growthLeft = START_GROWTH
     timeRemainingFrames = FRAMES_IN_SECOND
-    remainingTime = LEVEL_TIME
-    clearSnakePositions()
-    headPosition = HEAD_START_INDEX
-    tailPosition = TAIL_START_INDEX
+    remainingTime = levelsMiscData(level, LEVEL_MISC_DATA_TIME_INDEX)
     initBoard()
     initEnemies()
-    snakeX(headPosition) = SNAKE_START_X
-    snakeY(headPosition) = SNAKE_START_Y
-    putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_SNAKE)
-    direction = DIRECTION_NONE
+    initSnake()
     drawGameWindows()
     PRINT AT HEADER_Y, HEADER_X; INK GUI_COLOR; HEADER_STRING;
     drawStatusTexts()
     drawStatusValues()
     drawLevelValue()
-    drawSnakeHead(ATTRIBUTE_FLASH_OFF)
+    'Puts the remaining fruits in the board
     FOR i = 0 TO fruits - 1: putFruit(): NEXT i
     startSound()
 END SUB

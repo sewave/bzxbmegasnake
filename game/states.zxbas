@@ -85,8 +85,8 @@ END SUB
 SUB stateStartGame()
     score = START_SCORE
     lives = START_LIVES
-    fruits = LEVEL_FRUITS
     level = START_LEVEL
+    initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
     resetGameLevel()
     setGameState(STATE_GAME_PLAYING)
@@ -239,7 +239,7 @@ SUB stateStartEndLevel()
     drawScores()
     
     level = level + 1
-    fruits = LEVEL_FRUITS
+    initLevelFruits()
     setStateWaitAnyKey(STATE_RESTART_LEVEL)
 END SUB
 

@@ -19,5 +19,5 @@
 
 'Video
 #define FRAMES_IN_SECOND 50
-
 #define INTEGER_BITS 16
+#define CHARACTER_BYTES 8
