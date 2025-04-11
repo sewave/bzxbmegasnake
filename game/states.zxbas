@@ -111,6 +111,7 @@ SUB stateGamePlaying()
         delayedFrames = 0
         processInput()
         updatePlayer()
+        checkItem()
         checkFruit()
         checkDeath()   
         drawScores()

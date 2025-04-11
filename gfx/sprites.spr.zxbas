@@ -56,5 +56,8 @@ DIM sprites_Snake_Body(5,7) AS UByte => { _
 	} _
 }
 DIM sprites_Fruit(7) AS UByte => { _
-	$04,$08,$3C,$7E,$7E,$7A,$76,$3C _
+	$7E,$CF,$BF,$FF,$FF,$F9,$F3,$7E _
+}
+DIM sprites_Reduction(7) AS UByte => { _
+	$81,$30,$40,$00,$00,$06,$0C,$81 _
 }

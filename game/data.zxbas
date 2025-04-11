@@ -67,7 +67,7 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
 
 'Level misc data snakeInitialX, snakeInitalY, levelFruits, time
 DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
-    {1, 3, 3, 60}, {1, 3, 5, 60},_
+    {1, 3, 15, 99}, {1, 3, 5, 60},_
     {1, 3, 5, 60}, {1, 3, 5, 60},_
     {1, 3, 5, 60}, {1, 3, 5, 60},_
     {1, 3, 5, 60}, {1, 3, 5, 60},_
@@ -77,18 +77,38 @@ DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
     {1, 3, 5, 60}, {1, 3, 5, 60}_
 }
 
+'Level item data type, xPos, yPos
+DIM levelsItemData(LAST_LEVEL_INDEX, LAST_LEVEL_ITEM_INDEX, LEVEL_ITEM_DATA_LAST_INDEX) AS UBYTE => {_
+    { {BOARD_TYPE_UNGROW, 10, 11}, {BOARD_TYPE_UNGROW, 15, 11}, {BOARD_TYPE_UNGROW, 28, 8}, {BOARD_TYPE_UNGROW, 20, 15} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} }_
+}
+
 DIM levelsEnemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_INDEX) AS UBYTE => {_
-    {_
-        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 26, 6, 5},_
-        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 26, 7, 4},_
-        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 26, 8, 3},_
-        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 26, 9, 2}_
-    },_
     {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 26, 6, 5},_
+        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 26, 7, 4},_
+        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 26, 8, 3},_
+        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 26, 9, 2}_
     },_
     {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_

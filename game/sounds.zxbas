@@ -12,3 +12,8 @@ END SUB
 SUB startSound()
     BEEP .4, 40
 END SUB
+
+'Beeps the item sound
+SUB itemSound()
+    BEEP .02, 15
+END SUB

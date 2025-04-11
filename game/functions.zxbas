@@ -15,6 +15,16 @@ DIM timeRemainingFrames AS UBYTE
 DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
+DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
+    @sprites_Reduction,_
+    @sprites_Reduction,_
+    @sprites_Reduction _
+}
+DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
+    createAttribute(TRUE, TRUE, BLACK, RED),_
+    createAttribute(TRUE, TRUE, BLACK, GREEN),_
+    createAttribute(TRUE, TRUE, BLACK, PURPLE)_
+}
 
 'Clears the board
 SUB clearBoard()
@@ -46,7 +56,7 @@ SUB initBoard()
     FOR i = 0 TO PLAY_BOARD_MAX_Y
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
-    NEXT i   
+    NEXT i
     
     'Draw the level layout
     DIM rectangle AS UBYTE = 0
@@ -73,6 +83,16 @@ END FUNCTION
 'Checks if max score has to be updated
 SUB checkMaxScore()
     IF(score > maxScore) maxScore = score
+END SUB
+
+'Checks if there is an item in the snake position
+SUB checkItem()
+    DIM boardType AS UBYTE = getBoardFromScreen(snakeX(headPosition), snakeY(headPosition))
+    IF(boardType = BOARD_TYPE_UNGROW)
+        itemSound()
+        growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
+        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+    END IF
 END SUB
 
 'Checks if the snake is colliding with the fruit to increase score and
@@ -459,6 +479,25 @@ SUB initSnake()
     drawSnakeHead(ATTRIBUTE_FLASH_OFF)
 END SUB
 
+'Inits the level items
+SUB initItems()
+    DIM item AS UBYTE = 0
+    WHILE(levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX) <> BOARD_TYPE_EMPTY)
+        putItem(item)
+        item = item + 1
+    END WHILE
+END SUB
+
+'Puts the item in the board and draws it
+SUB putItem(item AS UBYTE)
+    DIM itemX AS UBYTE = levelsItemData(level, item, LEVEL_ITEM_DATA_X_INDEX)
+    DIM itemY AS UBYTE = levelsItemData(level, item, LEVEL_ITEM_DATA_Y_INDEX)
+    DIM itemType AS UBYTE = levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX)
+    DIM itemIndex AS UBYTE = itemType - LEVEL_ITEM_TYPE_OFFSET
+    board(itemX, itemY) = itemType
+    putCharAt(itemX, itemY + PLAY_BOARD_Y_DEC, itemAttributes(itemIndex), itemChars(itemIndex))
+END SUB
+
 'Resets game level, only sets data that can be reloaded after death
 SUB resetGameLevel()
     RANDOMIZE timeRemainingFrames
@@ -467,6 +506,7 @@ SUB resetGameLevel()
     remainingTime = levelsMiscData(level, LEVEL_MISC_DATA_TIME_INDEX)
     initBoard()
     initEnemies()
+    initItems()
     initSnake()
     drawGameWindows()
     PRINT AT HEADER_Y, HEADER_X; INK GUI_COLOR; HEADER_STRING;
