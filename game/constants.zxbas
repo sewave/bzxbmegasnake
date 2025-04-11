@@ -36,7 +36,7 @@
 #define SNAKE_TAIL_ERASE " "
 #define SNAKE_ATTRIBUTES createAttribute(FALSE, TRUE, BLACK, GREEN)
 
-'Snake udgs
+'Snake gfx
 #define SNAKE_HEAD_RIGHT @sprites_Snake_Head(0, 0)
 #define SNAKE_HEAD_DOWN  @sprites_Snake_Head(1, 0)
 #define SNAKE_HEAD_LEFT  @sprites_Snake_Head(2, 0)
@@ -62,7 +62,7 @@
 #define GUI_COLOR WHITE
 
 'Fruit
-#define FRUIT_CHAR "\P"
+#define FRUIT_CHAR @sprites_Fruit
 #define FRUIT_COLOR RED
 #define FRUIT_GROWTH 4
 #define FRUIT_INC_SCORE 1
@@ -327,7 +327,7 @@
 #define TITLE_SCROLLER_FRAMES 10
 #define TITLE_SCROLLER_INK YELLOW
 #define TITLE_SCROLLER_PAPER BLUE
-DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote las 10 frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: \A Vertical, \C Horizontal, \E Diagonal Der, \G Diagonal Izq, \I Borde horario, \K Borde anti-horario                              "
+DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote todas las frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: \A Vertical, \C Horizontal, \E Diagonal Der, \G Diagonal Izq, \I Borde horario, \K Borde anti-horario                              "
 
 'Intro central window
 #define INTRO_CENTRAL_WINDOW_X 0
@@ -408,7 +408,7 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define RECT_END 255
 
 'Window chars for obstacles
-#define ROUND_WINDOW_PAPER "\Q\''\R\ :\T\..\S\: "
+#define ROUND_WINDOW_PAPER "\M\''\N\ :\P\..\O\: "
 
 #define LAST_ENEMY_INDEX 7
 #define LAST_ENEMY_PROPERTY_INDEX 3
@@ -426,3 +426,5 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define ENEMY_TYPE_CCLO 6
 
 #define BOARD_ATTRIBUTES createAttribute(FALSE, FALSE, BLACK, BLACK)
+#define FRUIT_ATTRIBUTES createAttribute(FALSE, FALSE, BLACK, RED)
+

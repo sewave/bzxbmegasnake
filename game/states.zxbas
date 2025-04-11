@@ -96,7 +96,7 @@ END SUB
 SUB stateInitGame()
     initInput()
     loadFont(@reactorFnt)
-    loadSnakeGfx()
+    loadUdgs(@udgs)
     maxScore = INITIAL_MAX_SCORE
     setGameState(STATE_START_TITLE)
 END SUB

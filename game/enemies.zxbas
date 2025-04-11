@@ -1,4 +1,3 @@
-
 DIM enemyX(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyY(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyType(LAST_ENEMY_INDEX) AS UBYTE
@@ -10,12 +9,12 @@ DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
 }
 DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
     @reactorFnt,_
-    @enemiesUdg(0, 0),_
-    @enemiesUdg(2, 0),_
-    @enemiesUdg(4, 0),_
-    @enemiesUdg(6, 0),_
-    @enemiesUdg(8, 0),_
-    @enemiesUdg(10, 0)_
+    @udgs(0, 0),_
+    @udgs(2, 0),_
+    @udgs(4, 0),_
+    @udgs(6, 0),_
+    @udgs(8, 0),_
+    @udgs(10, 0)_
 }
 DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     createAttribute(FALSE, FALSE, BLACK, BLACK),_
@@ -35,10 +34,10 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
     FOR i = 0 TO LAST_ENEMY_INDEX
-        enemyType(i) = enemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
-        enemyX(i) = enemiesData(level, i, ENEMY_PROPERTY_X_INDEX)
-        enemyY(i) = enemiesData(level, i, ENEMY_PROPERTY_Y_INDEX)
-        enemySpeed(i) = enemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
+        enemyType(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
+        enemyX(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_X_INDEX)
+        enemyY(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_Y_INDEX)
+        enemySpeed(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
         enemyWait(i) = 0
         enemyDirection(i) = enemyInitialDirection(enemyType(i))
     NEXT i
@@ -83,7 +82,7 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
     enemyX(enemyNumber) = tmpEnemyX
     enemyY(enemyNumber) = tmpEnemyY
-    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType) ,enemyCharacters(tmpEnemyType))
+    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
 END SUB
 
 'Moves an "DIAGONAL-LEFT" enemy

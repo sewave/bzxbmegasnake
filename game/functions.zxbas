@@ -16,12 +16,6 @@ DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 
-'Loads the UDGs of the snake parts
-#define loadSnakeGfx() loadUdgs(@snakeUdg)
-
-'Loads the UDGs of the enemies parts
-#define loadEnemiesGfx() loadUdgs(@enemiesUdg)
-
 'Clears the board
 SUB clearBoard()
     FOR i = 0 TO PLAY_BOARD_MAX_X
@@ -56,12 +50,12 @@ SUB initBoard()
     
     'Draw the level layout
     DIM rectangle AS UBYTE = 0
-    WHILE(levelsData(level, rectangle, 0) <> RECT_END)
+    WHILE(levelsBoardData(level, rectangle, 0) <> RECT_END)
         putBoardRectangle(_
-            levelsData(level, rectangle, RECT_X_INDEX),_
-            levelsData(level, rectangle, RECT_Y_INDEX),_
-            levelsData(level, rectangle, RECT_WIDTH_INDEX),_
-            levelsData(level, rectangle, RECT_HEIGHT_INDEX))
+            levelsBoardData(level, rectangle, RECT_X_INDEX),_
+            levelsBoardData(level, rectangle, RECT_Y_INDEX),_
+            levelsBoardData(level, rectangle, RECT_WIDTH_INDEX),_
+            levelsBoardData(level, rectangle, RECT_HEIGHT_INDEX))
         rectangle = rectangle + 1
     END WHILE
 END SUB
@@ -368,7 +362,7 @@ END SUB
 SUB putFruit()
     getRandomEmptyBoardPosition()
     putInBoardFromScreen(emptyScreenXPosition, emptyScreenYPosition, BOARD_TYPE_FRUIT)
-    PRINT AT emptyScreenYPosition, emptyScreenXPosition; INK FRUIT_COLOR; FRUIT_CHAR
+    putCharAt(emptyScreenXPosition, emptyScreenYPosition, FRUIT_ATTRIBUTES, FRUIT_CHAR)
 END SUB
 
 'Draws the title controls
@@ -422,10 +416,8 @@ END FUNCTION
 
 'Prints the scrolling text
 SUB printTitleScroller()
-    loadEnemiesGfx()
     INK TITLE_SCROLLER_INK: PAPER TITLE_SCROLLER_PAPER
     frameTextScroller(TITLE_TEXT_SCROLLER)
-    loadSnakeGfx()
 END SUB
 
 'Clears the central menu
