@@ -86,6 +86,7 @@ SUB stateStartGame()
     lives = START_LIVES
     level = START_LEVEL
     delayFrames = GAME_FRAMES
+    snakeLength = INITIAL_SNAKE_LENGTH
     initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
     resetGameLevel()
@@ -241,6 +242,8 @@ SUB stateStartEndLevel()
     drawScores()
     
     level = level + 1
+    snakeLength = INITIAL_SNAKE_LENGTH
+    growth = START_GROWTH
     initLevelFruits()
     setStateWaitAnyKey(STATE_RESTART_LEVEL)
 END SUB

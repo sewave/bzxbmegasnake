@@ -468,8 +468,12 @@ END SUB
 'Inits the snake for the current level
 SUB initSnake()
     clearSnakePositions()
+    IF(snakeLength > INITIAL_SNAKE_LENGTH)
+        growth = snakeLength - INITIAL_SNAKE_LENGTH
+    ELSE
+        growth = START_GROWTH
+    END IF
     snakeLength = INITIAL_SNAKE_LENGTH
-    growth = START_GROWTH
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
     snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)
