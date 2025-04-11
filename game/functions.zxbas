@@ -1,6 +1,6 @@
 'Game vars
 DIM headPosition, tailPosition AS UBYTE
-DIM growthLeft AS UBYTE
+DIM growth AS BYTE
 DIM direction AS UBYTE
 DIM snakeX(MAX_SNAKE_INDEX) AS UBYTE
 DIM snakeY(MAX_SNAKE_INDEX) AS UBYTE
@@ -86,7 +86,7 @@ SUB checkFruit()
         fruits = fruits - 1
         drawFruits()
         IF(fruits)
-            IF(snakeLength < MAX_SNAKE_LENGTH) growthLeft = FRUIT_GROWTH
+            IF(snakeLength < MAX_SNAKE_LENGTH) growth = growth + FRUIT_GROWTH
         ELSE           
             setGameState(STATE_START_END_LEVEL)
         END IF
@@ -246,17 +246,19 @@ END SUB
 'Updates the player snake and head if it is moving
 SUB updatePlayer()
     IF(direction <> DIRECTION_NONE)
+        growth = growth - 1
+        IF(snakeLength < MAX_SNAKE_LENGTH)
+            snakeLength = snakeLength + 1
+        END IF
         updateSnakeHeadPosition()
-        updateSnakeTailPosition()
     END IF
 END SUB
 
 'Updates the snake tail position, it does not move if there is growth left
 SUB updateSnakeTailPosition()
-    IF(growthLeft AND snakeLength < MAX_SNAKE_LENGTH)
-        growthLeft = growthLeft - 1
-        snakeLength = snakeLength + 1
-    ELSE
+    IF(growth < 0 AND snakeLength > MIN_SNAKE_LENGTH)
+        snakeLength = snakeLength - 1
+        growth = growth + 1
         eraseSnakeTail()
         tailPosition = tailPosition + 1
         IF(tailPosition > MAX_SNAKE_INDEX) tailPosition = 0
@@ -446,8 +448,8 @@ END SUB
 'Inits the snake for the current level
 SUB initSnake()
     clearSnakePositions()
-    snakeLength = MIN_SNAKE_LENGTH
-    growthLeft = START_GROWTH
+    snakeLength = INITIAL_SNAKE_LENGTH
+    growth = START_GROWTH
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
     snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)

@@ -75,7 +75,6 @@ SUB stateWaitMenu()
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
         IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
-            delayFrames = GAME_FRAMES
             setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
         END IF
     END IF
@@ -86,6 +85,7 @@ SUB stateStartGame()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
+    delayFrames = GAME_FRAMES
     initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
     resetGameLevel()
@@ -105,6 +105,7 @@ END SUB
 SUB stateGamePlaying()
     checkTime()
     moveEnemies()
+    updateSnakeTailPosition()
     delayedFrames = delayedFrames + 1
     IF(delayedFrames >= delayFrames)
         delayedFrames = 0
