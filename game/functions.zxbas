@@ -21,9 +21,9 @@ DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     @sprites_Reduction _
 }
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    createAttribute(TRUE, TRUE, BLACK, RED),_
-    createAttribute(TRUE, TRUE, BLACK, GREEN),_
-    createAttribute(TRUE, TRUE, BLACK, PURPLE)_
+    createAttributes(TRUE, TRUE, BLACK, RED),_
+    createAttributes(TRUE, TRUE, BLACK, GREEN),_
+    createAttributes(TRUE, TRUE, BLACK, PURPLE)_
 }
 'Windows characters
 DIM outWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
@@ -58,13 +58,13 @@ END SUB
 
 'Puts a solid rectangle in the board
 SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
-    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height, PURPLE,_
-        createAttribute(FALSE, FALSE, PURPLE, BLACK), inWindowsCharacters)
+    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height,_
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
+        inWindowsCharacters)
     FOR i = x TO x + width - 1
         FOR j = y TO y + height - 1
             board(i, j) = BOARD_TYPE_SOLID
     NEXT j: NEXT i
-    PAPER BLACK
 END SUB
 
 'Init the board
@@ -468,12 +468,12 @@ END SUB
 SUB clearCentralMenu()
     PAPER INTRO_CENTRAL_WINDOW_PAPER: INK GUI_COLOR
     clearRectangle(INTRO_CENTRAL_WINDOW_X, INTRO_CENTRAL_WINDOW_Y,_
-        INTRO_CENTRAL_WINDOW_WIDTH, INTRO_CENTRAL_WINDOW_HEIGHT, TOTAL_BLACK_ATTRIBUTE)
+        INTRO_CENTRAL_WINDOW_WIDTH, INTRO_CENTRAL_WINDOW_HEIGHT, TOTAL_BLACK_ATTRIBUTES)
 END SUB
 
 'Draws the main game windows
 SUB drawGameWindows()
-    setAttributes(BOARD_COLOR)
+    setAttributes(levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX))
     drawVerticalLine(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1,_
         @sprites_In_Window(WINDOW_LEFT_INDEX, 0))
     drawVerticalLine(BOARD_WINDOW_X_2, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1,_

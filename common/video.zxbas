@@ -92,8 +92,8 @@ DIM tmpAddr AS UINTEGER
 
 #define PAPER_SHIFT_BITS 3
 
-'Creates a new attribute byte
-#define createAttribute(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << 3) | ink)
+'Creates a new attributes byte
+#define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << 3) | ink)
 
 'Updates char addresses to next column
 SUB nextCharColumn()
