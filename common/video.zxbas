@@ -7,8 +7,14 @@
 #define WINDOW_DOWN_INDEX 5
 #define WINDOW_DOWN_LEFT_INDEX 6
 #define WINDOW_LEFT_INDEX 7
+#define WINDOW_LAST_INDEX WINDOW_LEFT_INDEX
 #define MIN_WINDOW_REPEAT_WIDTH  2
 #define MIN_WINDOW_REPEAT_HEIGHT 2
+
+'Video
+#define FRAMES_IN_SECOND 50
+
+#define CHARACTER_BYTES 8
 
 'UDGs address
 #define UDG_ADDRESS 23675
@@ -84,6 +90,9 @@ DIM currentCharAttrAddr AS UINTEGER
 DIM currentAttributes AS UBYTE
 DIM tmpAddr AS UINTEGER
 
+#define PAPER_SHIFT_BITS 3
+
+'Creates a new attribute byte
 #define createAttribute(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << 3) | ink)
 
 'Updates char addresses to next column
@@ -107,8 +116,17 @@ END SUB
 'Clears a char at (x, y) with [attributes]
 #define clearCharAt(x, y, attributes) setCharPosition(x, y): setAttributes(attributes): clearChar()
 
+'Clears [numChars] chars from (x, y) with [attributes]
+#define clearCharsAt(x, y, attributes, numChars) setCharPosition(x, y): setAttributes(attributes): clearChars(numChars)
+
 'Puts a char at (x, y) with [attributes]
 #define putCharAt(x, y, attributes, charAddress) setCharPosition(x, y): setAttributes(attributes): putChar(charAddress)
+
+'Puts a char at (x, y) with current attributes
+#define putNextCharAt(x, y, charAddress) setCharPosition(x, y): putChar(charAddress)
+
+'Puts chars at (x, y)
+#define putCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putChars(numChars, charAddress)
 
 'Puts the cursor pixel pointer at the desired position
 SUB setCharPosition(x as UBYTE, y as UBYTE)
@@ -186,18 +204,14 @@ SUB clearRowChars(numChars as UBYTE)
 END SUB
 
 'Draws a horizontal line from (x, y) to (x + length - 1, y) with [character]
-SUB drawHorizontalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
-    PRINT AT y, x; character;
-    FOR i = x + 1 TO x + length - 1
-        PRINT character;
-    NEXT i
+SUB drawHorizontalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as UINTEGER)
+    putCharsAt(x, y, length, character)
 END SUB
 
 'Draws a vertical line from (x, y) to (x, y + length - 1) with [character]
-SUB drawVerticalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as STRING)
-    FOR i = y TO y + length - 1
-        PRINT AT i, x; character;
-    NEXT i
+SUB drawVerticalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as UINTEGER)
+    setCharPosition(x, y)
+    putRowChars(length, character)
 END SUB
 
 'Clears the screen with the selected paper-border and ink
@@ -219,11 +233,10 @@ END SUB
 '7  3
 '7  3
 '6554
-SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, characters as STRING)
+SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, BYREF characters() as UINTEGER)
     DIM widthInc AS UBYTE = width - 1
     DIM heightInc AS UBYTE = height - 1
-    INK color
-    
+    setAttributes(color)
     IF(width > MIN_WINDOW_REPEAT_WIDTH)
         drawHorizontalLine(startX + 1, startY, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_UP_INDEX))
         drawHorizontalLine(startX + 1, startY + heightInc, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_DOWN_INDEX))
@@ -233,10 +246,10 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
         drawVerticalLine(startX + widthInc, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_RIGHT_INDEX))
     END IF
     'CORNERS
-    PRINT AT startY, startX; characters(WINDOW_UP_LEFT_INDEX);
-    PRINT AT startY, startX + widthInc; characters(WINDOW_UP_RIGHT_INDEX);
-    PRINT AT startY + heightInc, startX; characters(WINDOW_DOWN_LEFT_INDEX);
-    PRINT AT startY + heightInc, startX + widthInc; characters(WINDOW_DOWN_RIGHT_INDEX);
+    putNextCharAt(startX, startY, characters(WINDOW_UP_LEFT_INDEX))
+    putNextCharAt(startX + widthInc, startY, characters(WINDOW_UP_RIGHT_INDEX))
+    putNextCharAt(startX, startY + heightInc, characters(WINDOW_DOWN_LEFT_INDEX))
+    putNextCharAt(startX + widthInc, startY + heightInc, characters(WINDOW_DOWN_RIGHT_INDEX))
 END SUB
 
 'Initializes the text scroller
@@ -269,10 +282,9 @@ SUB frameTextScroller(BYREF scrollerText AS STRING)
 END SUB
 
 'Clears a rectangular region with space
-SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
+SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE, attributes AS UBYTE)
     FOR j = y TO (y + height - 1)
-        PRINT AT j, x; TAB (x + width - 1);
-        PRINT SPACE_STRING;
+        clearCharsAt(x, j, attributes, width)
     NEXT j
 END SUB
 
@@ -282,9 +294,9 @@ END SUB
 '7FF3
 '7FF3
 '6554
-SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, color as UBYTE, characters as STRING)
-    clearRectangle(startX, startY, width, height)
-    drawWindow(startX, startY, width, height, color, characters)    
+SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, attributes as UBYTE, fillAttributes AS UBYTE, BYREF characters() as UINTEGER)
+    clearRectangle(startX, startY, width, height, fillAttributes)
+    drawWindow(startX, startY, width, height, attributes, characters)
 END SUB
 
 'Decreases all attributes, starts by flash and bright, then paper and color
