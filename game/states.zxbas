@@ -1,6 +1,3 @@
-'File with the game states subroutines
-DIM delayFrames AS UBYTE
-
 'Kills the snake, showing GAME OVER
 SUB stateStartGameOver()
     PRINT AT GAME_OVER_Y, GAME_OVER_X; FLASH TRUE; INK GAME_OVER_INK;_
@@ -84,7 +81,6 @@ SUB stateStartGame()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
-    delayFrames = GAME_FRAMES
     snakeLength = INITIAL_SNAKE_LENGTH
     initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)

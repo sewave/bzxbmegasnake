@@ -13,7 +13,21 @@ SUB startSound()
     BEEP .4, 40
 END SUB
 
-'Beeps the item sound
-SUB itemSound()
+'Beeps the ungrow sound
+SUB ungrowSound()
     BEEP .02, 15
+END SUB
+
+'Beeps the speed up sound
+SUB speedUpSound()
+    BEEP .001, 12
+    BEEP .001, 13
+    BEEP .001, 14
+END SUB
+
+'Beeps the speed down sound
+SUB speedDownSound()
+    BEEP .001, 14
+    BEEP .001, 13
+    BEEP .001, 12
 END SUB

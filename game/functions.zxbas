@@ -1,4 +1,5 @@
 'Game vars
+DIM delayFrames AS UBYTE
 DIM headPosition, tailPosition AS UBYTE
 DIM growth AS BYTE
 DIM direction AS UBYTE
@@ -17,13 +18,13 @@ DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     @sprites_Reduction,_
-    @sprites_Reduction,_
-    @sprites_Reduction _
+    @sprites_Speed_Up,_
+    @sprites_Speed_Down _
 }
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     createAttributes(TRUE, TRUE, BLACK, RED),_
-    createAttributes(TRUE, TRUE, BLACK, GREEN),_
-    createAttributes(TRUE, TRUE, BLACK, PURPLE)_
+    createAttributes(TRUE, TRUE, BLUE, GREEN),_
+    createAttributes(TRUE, TRUE, RED, YELLOW)_
 }
 'Windows characters
 DIM outWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
@@ -111,8 +112,16 @@ END SUB
 SUB checkItem()
     DIM boardType AS UBYTE = getBoardFromScreen(snakeX(headPosition), snakeY(headPosition))
     IF(boardType = BOARD_TYPE_UNGROW)
-        itemSound()
+        ungrowSound()
         growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
+        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+    ELSEIF(boardType = BOARD_TYPE_SPEED_UP)
+        speedUpSound()
+        IF(delayFrames > MIN_GAME_FRAMES) delayFrames = delayFrames - 1
+        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+    ELSEIF(boardType = BOARD_TYPE_SPEED_DOWN)
+        speedDownSound()
+        IF(delayFrames < MAX_GAME_FRAMES) delayFrames = delayFrames + 1
         putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
     END IF
 END SUB
@@ -530,6 +539,7 @@ END SUB
 SUB resetGameLevel()
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
+    delayFrames = INITIAL_GAME_FRAMES
     timeRemainingFrames = FRAMES_IN_SECOND
     remainingTime = levelsMiscData(level, LEVEL_MISC_DATA_TIME_INDEX)
     initBoard()

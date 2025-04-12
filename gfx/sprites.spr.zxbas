@@ -113,3 +113,9 @@ DIM sprites_In_Window(7,7) AS UByte => { _
 		$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F _
 	} _
 }
+DIM sprites_Speed_Up(7) AS UByte => { _
+	$00,$18,$24,$42,$18,$24,$42,$00 _
+}
+DIM sprites_Speed_Down(7) AS UByte => { _
+	$00,$42,$24,$18,$42,$24,$18,$00 _
+}
