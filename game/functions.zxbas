@@ -16,37 +16,30 @@ DIM timeRemainingFrames AS UBYTE
 DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
+
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Reduction,_
-    @sprites_Speed_Up,_
+    @sprites_Reduction, @sprites_Speed_Up,_
     @sprites_Speed_Down _
 }
+
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    createAttributes(TRUE, TRUE, BLACK, RED),_
-    createAttributes(TRUE, TRUE, BLUE, GREEN),_
+    createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, BLUE, GREEN),_
     createAttributes(TRUE, TRUE, RED, YELLOW)_
 }
+
 'Windows characters
 DIM outWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Out_Window(0, 0),_
-    @sprites_Out_Window(1, 0),_
-    @sprites_Out_Window(2, 0),_
-    @sprites_Out_Window(3, 0),_
-    @sprites_Out_Window(4, 0),_
-    @sprites_Out_Window(5, 0),_
-    @sprites_Out_Window(6, 0),_
-    @sprites_Out_Window(7, 0)_
+    @sprites_Out_Window(0, 0), @sprites_Out_Window(1, 0),_
+    @sprites_Out_Window(2, 0), @sprites_Out_Window(3, 0),_
+    @sprites_Out_Window(4, 0), @sprites_Out_Window(5, 0),_
+    @sprites_Out_Window(6, 0), @sprites_Out_Window(7, 0)_
 }
 
 DIM inWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
-    @sprites_In_Window(0, 0),_
-    @sprites_In_Window(1, 0),_
-    @sprites_In_Window(2, 0),_
-    @sprites_In_Window(3, 0),_
-    @sprites_In_Window(4, 0),_
-    @sprites_In_Window(5, 0),_
-    @sprites_In_Window(6, 0),_
-    @sprites_In_Window(7, 0)_
+    @sprites_In_Window(0, 0), @sprites_In_Window(1, 0),_
+    @sprites_In_Window(2, 0), @sprites_In_Window(3, 0),_
+    @sprites_In_Window(4, 0), @sprites_In_Window(5, 0),_
+    @sprites_In_Window(6, 0), @sprites_In_Window(7, 0)_
 }
 
 'Clears the board
