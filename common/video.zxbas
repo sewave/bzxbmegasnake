@@ -13,8 +13,8 @@
 
 'Video
 #define FRAMES_IN_SECOND 50
-
 #define CHARACTER_BYTES 8
+#define PAPER_SHIFT_BITS 3
 
 'UDGs address
 #define UDG_ADDRESS 23675
@@ -34,7 +34,7 @@
 'Attributes
 #define ATTRIBUTE_PAPER %00111000
 #define ATTRIBUTE_INK   %00000111
-#define ATTRIBUTE_COLOR %00111111
+#define ATTRIBUTE_COLOR ATTRIBUTE_PAPER | ATTRIBUTE_INK
 #define ATTRIBUTES_START_ADDR 5800h
 #define ATTRIBUTES_END_ADDR   5AFFh
 #define ATTRIBUTE_PAPER_UNIT 8
@@ -90,8 +90,6 @@ DIM currentCharAttrAddr AS UINTEGER
 DIM currentAttributes AS UBYTE
 DIM tmpAddr AS UINTEGER
 
-#define PAPER_SHIFT_BITS 3
-
 'Creates a new attributes byte
 #define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << 3) | ink)
 
@@ -128,12 +126,15 @@ END SUB
 'Puts chars at (x, y)
 #define putCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putChars(numChars, charAddress)
 
+'Puts chars at (x, y) incrementing row
+#define putRowCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putRowChars(numChars, charAddress)
+
 'Puts the cursor pixel pointer at the desired position
 SUB setCharPosition(x as UBYTE, y as UBYTE)
-    DIM lowByte AS UBYTE = x bOR (y << 5)
+    DIM lowByte AS UBYTE = x | (y << 5)
     DIM third AS UINTEGER = CAST(UINTEGER, y >> 3)
-    currentCharAddr = PIXEL_BASE bOR (third << 11) bOR lowByte
-    currentCharAttrAddr = ATTR_BASE bOR (third << 8) bOR lowByte
+    currentCharAddr = PIXEL_BASE | (third << 11) | lowByte
+    currentCharAttrAddr = ATTR_BASE | (third << 8) | lowByte
 END SUB
 
 'Clears the current char position
@@ -210,8 +211,7 @@ END SUB
 
 'Draws a vertical line from (x, y) to (x, y + length - 1) with [character]
 SUB drawVerticalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as UINTEGER)
-    setCharPosition(x, y)
-    putRowChars(length, character)
+    putRowCharsAt(x, y, length, character)
 END SUB
 
 'Clears the screen with the selected paper-border and ink
@@ -295,7 +295,9 @@ END SUB
 '7FF3
 '6554
 SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, attributes as UBYTE, fillAttributes AS UBYTE, BYREF characters() as UINTEGER)
-    clearRectangle(startX, startY, width, height, fillAttributes)
+    IF(width > MIN_WINDOW_REPEAT_WIDTH & height > MIN_WINDOW_REPEAT_HEIGHT)
+        clearRectangle(startX + 1, startY + 1, width - 2, height - 2, fillAttributes)
+    END IF
     drawWindow(startX, startY, width, height, attributes, characters)
 END SUB
 
@@ -310,7 +312,7 @@ SUB fadeAttributesToBlack()
             tmpInk = tmpAttribute bAND ATTRIBUTE_INK
             IF(tmpPaper) tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
             IF(tmpInk) tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
-            tmpAttribute = tmpPaper bOR tmpInk
+            tmpAttribute = tmpPaper | tmpInk
         END IF
         POKE attrIndex, tmpAttribute
     NEXT attrIndex
