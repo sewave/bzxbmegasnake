@@ -34,13 +34,18 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
     FOR i = 0 TO LAST_ENEMY_INDEX
-        enemyType(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
+        DIM tmpEnemyType AS UBYTE = levelsEnemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
+        enemyType(i) = tmpEnemyType
         enemyX(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_X_INDEX)
         enemyY(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_Y_INDEX)
         enemySpeed(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
         enemyWait(i) = 0
-        enemyDirection(i) = enemyInitialDirection(enemyType(i))
+        enemyDirection(i) = enemyInitialDirection(tmpEnemyType)
         enemyFrame(i) = 0
+        IF(tmpEnemyType <> ENEMY_TYPE_NONE)
+            board(enemyX(i), enemyY(i)) = enemyBoardTypes(tmpEnemyType)
+            putCharAt(enemyX(i), enemyY(i), enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
+        END IF
     NEXT i
 END SUB
 
