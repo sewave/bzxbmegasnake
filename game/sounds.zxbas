@@ -31,3 +31,8 @@ SUB speedDownSound()
     BEEP .001, 13
     BEEP .001, 12
 END SUB
+
+'Beeps the go direction sound
+SUB goDirectionSound()
+    BEEP .1, 5
+END SUB

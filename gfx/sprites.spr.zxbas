@@ -119,3 +119,15 @@ DIM sprites_Speed_Up(7) AS UByte => { _
 DIM sprites_Speed_Down(7) AS UByte => { _
 	$00,$42,$24,$18,$42,$24,$18,$00 _
 }
+DIM sprites_Go_Up(7) AS UByte => { _
+	$00,$18,$3C,$7E,$18,$18,$18,$00 _
+}
+DIM sprites_Go_Right(7) AS UByte => { _
+	$00,$08,$0C,$7E,$7E,$0C,$08,$00 _
+}
+DIM sprites_Go_Down(7) AS UByte => { _
+	$00,$18,$18,$18,$7E,$3C,$18,$00 _
+}
+DIM sprites_Go_Left(7) AS UByte => { _
+	$00,$10,$30,$7E,$7E,$30,$10,$00 _
+}

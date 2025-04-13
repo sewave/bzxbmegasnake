@@ -19,12 +19,16 @@ DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     @sprites_Reduction, @sprites_Speed_Up,_
-    @sprites_Speed_Down _
+    @sprites_Speed_Down, @sprites_Go_Up, _
+    @sprites_Go_Right, @sprites_Go_Down, _
+    @sprites_Go_Left _
 }
 
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, BLUE, GREEN),_
-    createAttributes(TRUE, TRUE, RED, YELLOW)_
+    createAttributes(TRUE, TRUE, RED, YELLOW), createAttributes(TRUE, TRUE, WHITE, GREEN),_
+    createAttributes(TRUE, TRUE, WHITE, YELLOW), createAttributes(TRUE, TRUE, WHITE, RED),_
+    createAttributes(TRUE, TRUE, WHITE, PURPLE) _
 }
 
 'Windows characters
@@ -73,6 +77,8 @@ SUB initBoard()
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
+    drawWindow(0, 0 + PLAY_BOARD_Y_DEC, 32, 18,_
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), inWindowsCharacters)
     
     'Draw the level layout
     DIM rectangle AS UBYTE = 0
@@ -104,18 +110,30 @@ END SUB
 'Checks if there is an item in the snake position
 SUB checkItem()
     DIM boardType AS UBYTE = getBoardFromScreen(snakeX(headPosition), snakeY(headPosition))
-    IF(boardType = BOARD_TYPE_UNGROW)
-        ungrowSound()
-        growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
+    IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
         putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
-    ELSEIF(boardType = BOARD_TYPE_SPEED_UP)
-        speedUpSound()
-        IF(delayFrames > MIN_GAME_FRAMES) delayFrames = delayFrames - 1
-        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
-    ELSEIF(boardType = BOARD_TYPE_SPEED_DOWN)
-        speedDownSound()
-        IF(delayFrames < MAX_GAME_FRAMES) delayFrames = delayFrames + 1
-        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+        IF(boardType = BOARD_TYPE_UNGROW)
+            ungrowSound()
+            growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
+        ELSEIF(boardType = BOARD_TYPE_SPEED_UP)
+            speedUpSound()
+            IF(delayFrames > MIN_GAME_FRAMES) delayFrames = delayFrames - 1
+        ELSEIF(boardType = BOARD_TYPE_SPEED_DOWN)
+            speedDownSound()
+            IF(delayFrames < MAX_GAME_FRAMES) delayFrames = delayFrames + 1
+        ELSEIF(boardType = BOARD_TYPE_GO_UP)
+            goDirectionSound()
+            direction = DIRECTION_UP
+        ELSEIF(boardType = BOARD_TYPE_GO_RIGHT)
+            goDirectionSound()
+            direction = DIRECTION_RIGHT
+        ELSEIF(boardType = BOARD_TYPE_GO_DOWN)
+            goDirectionSound()
+            direction = DIRECTION_DOWN
+        ELSEIF(boardType = BOARD_TYPE_GO_LEFT)
+            goDirectionSound()
+            direction = DIRECTION_LEFT
+        END IF
     END IF
 END SUB
 

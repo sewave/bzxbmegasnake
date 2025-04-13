@@ -171,3 +171,11 @@ SUB updateControls()
         END IF        
     NEXT i
 END SUB
+
+'Returns true if any player is pressing controls
+FUNCTION anyControlPressed() AS UBYTE
+    FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
+        IF(getControls(i) <> CONTROL_NONE) RETURN TRUE
+    NEXT i
+    RETURN FALSE
+END FUNCTION

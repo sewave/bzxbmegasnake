@@ -91,12 +91,12 @@ END SUB
 
 'Waits for no key pressed, then goes to [nextGameState]
 SUB stateWaitNoKey()
-    IF(frameKey = NO_KEY) moveNextGameStateToGameState()
+    IF(frameKey = NO_KEY AND anyControlPressed() = FALSE) moveNextGameStateToGameState()
 END SUB
 
 'Waits for any key pressed, then goes to [nextGameState]
 SUB stateWaitAnyKey()
-    IF(frameKey <> NO_KEY) moveNextGameStateToGameState()
+    IF(frameKey <> NO_KEY OR anyControlPressed() = TRUE) moveNextGameStateToGameState()
 END SUB
 
 'Waits for [keyToWait] key pressed, then goes to [nextGameState]
