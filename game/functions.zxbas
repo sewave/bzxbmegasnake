@@ -78,7 +78,7 @@ SUB initBoard()
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
     drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTE, inWindowsCharacters)
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTES, inWindowsCharacters)
     
     'Draw the level layout
     DIM rectangle AS UBYTE = 0
@@ -209,7 +209,7 @@ END SUB
 
 'Draw level value
 SUB drawLevelValue()
-    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; (level + 1);
+    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; getPaddedNumber(level + 1, LEVEL_NUM_LENGTH, LEVEL_NUM_PAD);
 END SUB
 
 'Draws the score and max score numbers
@@ -492,6 +492,14 @@ END SUB
 SUB drawStatusWindow()
     drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH,_
         STATUS_WINDOW_HEIGHT, STATUS_COLOR, outWindowsCharacters)
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y_2, STATUS_WINDOW_WIDTH,_
+        STATUS_WINDOW_HEIGHT_2, STATUS_COLOR_2, outWindowsCharacters)    
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y_3, STATUS_WINDOW_WIDTH,_
+        STATUS_WINDOW_HEIGHT_3, STATUS_COLOR_3, outWindowsCharacters)    
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y_4, STATUS_WINDOW_WIDTH,_
+        STATUS_WINDOW_HEIGHT_4, STATUS_COLOR_4, outWindowsCharacters)    
+    drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y_5, STATUS_WINDOW_WIDTH,_
+        STATUS_WINDOW_HEIGHT_5, STATUS_COLOR_5, outWindowsCharacters)
     drawStatusTexts()
 END SUB
 

@@ -8,8 +8,8 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
         {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}_
     },_
     {_
-        {1, 3, 28, 2}, {27, 5, 2, 8}, {3, 13, 26, 2}, {3, 7, 2, 6},_
-        {5, 7, 19, 2}, {22, 9, 2, 3}, {7, 10, 15, 2}, {RECT_END, 0, 0, 0}_
+        {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0},_
+        {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}_
     },_
     {_
         {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0},_
@@ -116,10 +116,10 @@ DIM levelsEnemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_IN
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
     },_
     {_
-        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 26, 6, 5},_
-        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 26, 7, 4},_
-        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 26, 8, 3},_
-        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 26, 9, 2}_
+        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 20, 6, 5},_
+        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 20, 7, 4},_
+        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 20, 8, 3},_
+        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 20, 9, 2}_
     },_
     {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
