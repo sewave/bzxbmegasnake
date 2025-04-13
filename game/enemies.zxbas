@@ -69,7 +69,7 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     IF(enemyFrame(enemyNumber)) tmpEnemyCharacter = tmpEnemyCharacter + CHARACTER_BYTES
 
     board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY
-    clearCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, BOARD_ATTRIBUTES)
+    clearCharAt(tmpEnemyX, tmpEnemyY, BOARD_ATTRIBUTES)
     IF(tmpEnemyType = ENEMY_TYPE_U_D)
         moveUpDownEnemy(enemyNumber, tmpEnemyX, tmpEnemyY, tmpEnemyDirection)
     ELSEIF(tmpEnemyType = ENEMY_TYPE_L_R)
@@ -87,7 +87,7 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     enemyX(enemyNumber) = tmpEnemyX
     enemyY(enemyNumber) = tmpEnemyY
 
-    putCharAt(tmpEnemyX, tmpEnemyY + PLAY_BOARD_Y_DEC, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
+    putCharAt(tmpEnemyX, tmpEnemyY, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
 END SUB
 
 'Moves an "DIAGONAL-LEFT" enemy

@@ -207,7 +207,6 @@ END SUB
 
 'State to restart a level
 SUB stateRestartLevel()
-    clearRectangle(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT, TOTAL_BLACK_ATTRIBUTES)
     resetGameLevel()
     setGameState(STATE_GAME_PLAYING)
 END SUB

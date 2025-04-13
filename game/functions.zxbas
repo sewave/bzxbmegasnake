@@ -56,7 +56,7 @@ END SUB
 
 'Puts a solid rectangle in the board
 SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
-    drawWindowFilled(x, y + PLAY_BOARD_Y_DEC, width, height,_
+    drawWindowFilled(x, y, width, height,_
         levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
         inWindowsCharacters)
     FOR i = x TO x + width - 1
@@ -77,12 +77,12 @@ SUB initBoard()
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
-    drawWindow(0, 0 + PLAY_BOARD_Y_DEC, 32, 18,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), inWindowsCharacters)
+    drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTE, inWindowsCharacters)
     
     'Draw the level layout
     DIM rectangle AS UBYTE = 0
-    WHILE(levelsBoardData(level, rectangle, 0) <> RECT_END)
+    WHILE(rectangle <= LAST_LEVEL_RECTANGLE_INDEX AND levelsBoardData(level, rectangle, 0) <> RECT_END)
         putBoardRectangle(_
             levelsBoardData(level, rectangle, RECT_X_INDEX),_
             levelsBoardData(level, rectangle, RECT_Y_INDEX),_
@@ -92,16 +92,6 @@ SUB initBoard()
     END WHILE
 END SUB
 
-'Puts in the board a [boardType], moves from screen position to board position
-SUB putInBoardFromScreen(screenPositionX AS UBYTE, screenPositionY AS UBYTE, boardType AS UBYTE)
-    board(screenPositionX, screenPositionY - PLAY_BOARD_Y_DEC) = boardType
-END SUB
-
-'Gets the board type from screen coordinates, moves from screen position to board position
-FUNCTION getBoardFromScreen(screenPositionX AS UBYTE, screenPositionY AS UBYTE) AS UBYTE
-    RETURN board(screenPositionX, screenPositionY - PLAY_BOARD_Y_DEC)
-END FUNCTION
-
 'Checks if max score has to be updated
 SUB checkMaxScore()
     IF(score > maxScore) maxScore = score
@@ -109,9 +99,9 @@ END SUB
 
 'Checks if there is an item in the snake position
 SUB checkItem()
-    DIM boardType AS UBYTE = getBoardFromScreen(snakeX(headPosition), snakeY(headPosition))
+    DIM boardType AS UBYTE = board(snakeX(headPosition), snakeY(headPosition))
     IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
-        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+        board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY
         IF(boardType = BOARD_TYPE_UNGROW)
             ungrowSound()
             growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
@@ -140,9 +130,9 @@ END SUB
 'Checks if the snake is colliding with the fruit to increase score and
 'put a new fruit
 SUB checkFruit()
-    IF(getBoardFromScreen(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_FRUIT)
+    IF(board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_FRUIT)
         fruitSound()
-        putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_EMPTY)
+        board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY
         score = score + FRUIT_INC_SCORE
         checkMaxScore()
         fruits = fruits - 1
@@ -155,8 +145,14 @@ SUB checkFruit()
     END IF
 END SUB
 
+'Draws the level text
+SUB drawLevelText()
+    PRINT AT LEVEL_STRING_Y, LEVEL_STRING_X; INK GUI_COLOR; LEVEL_STRING;
+END SUB
+
 'Draws the status texts
 SUB drawStatusTexts()
+    drawLevelText()
     drawScoreTexts()
     drawFruitsText()
     drawLivesText() 
@@ -190,6 +186,7 @@ SUB drawStatusValues()
     drawLives()
     drawFruits()
     drawTime()
+    drawLevelValue()
 END SUB
 
 'Draws the lives numbers
@@ -236,8 +233,8 @@ END SUB
 'Checks if the snake has to die, if it does not die, fill position in board
 SUB checkDeath()
     IF(direction <> DIRECTION_NONE)
-        IF(getBoardFromScreen(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY)
-            putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_SNAKE)
+        IF(board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY)
+            board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_SNAKE
         ELSE
             loseLive()
         END IF
@@ -398,7 +395,7 @@ END SUB
 'Erases the snake tail
 SUB eraseSnakeTail()
     clearCharAt(snakeX(tailPosition), snakeY(tailPosition), BOARD_ATTRIBUTES)
-    putInBoardFromScreen(snakeX(tailPosition), snakeY(tailPosition), BOARD_TYPE_EMPTY)
+    board(snakeX(tailPosition), snakeY(tailPosition)) = BOARD_TYPE_EMPTY
     snakeX(tailPosition) = SNAKE_OUT_BOUNDS_X
     snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
 END SUB
@@ -411,7 +408,7 @@ SUB getRandomEmptyBoardPosition()
         emptyScreenXPosition = RND() * (PLAY_BOARD_MAX_X + 1)
         emptyScreenYPosition = RND() * (PLAY_BOARD_MAX_Y + 1)
     LOOP UNTIL board(emptyScreenXPosition, emptyScreenYPosition) = BOARD_TYPE_EMPTY
-    emptyScreenYPosition = emptyScreenYPosition + PLAY_BOARD_Y_DEC
+    emptyScreenYPosition = emptyScreenYPosition
 END SUB
 
 'Puts all the snake positions to out of bounds
@@ -425,7 +422,7 @@ END SUB
 'Puts a new fruit on a free board position
 SUB putFruit()
     getRandomEmptyBoardPosition()
-    putInBoardFromScreen(emptyScreenXPosition, emptyScreenYPosition, BOARD_TYPE_FRUIT)
+    board(emptyScreenXPosition, emptyScreenYPosition) = BOARD_TYPE_FRUIT
     putCharAt(emptyScreenXPosition, emptyScreenYPosition, FRUIT_ATTRIBUTES, FRUIT_CHAR)
 END SUB
 
@@ -491,17 +488,11 @@ SUB clearCentralMenu()
         INTRO_CENTRAL_WINDOW_WIDTH, INTRO_CENTRAL_WINDOW_HEIGHT, TOTAL_BLACK_ATTRIBUTES)
 END SUB
 
-'Draws the main game windows
-SUB drawGameWindows()
-    setAttributes(levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX))
-    drawVerticalLine(BOARD_WINDOW_X, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1,_
-        @sprites_In_Window(WINDOW_LEFT_INDEX, 0))
-    drawVerticalLine(BOARD_WINDOW_X_2, BOARD_WINDOW_Y, BOARD_WINDOW_Y_2 - BOARD_WINDOW_Y + 1,_
-        @sprites_In_Window(WINDOW_RIGHT_INDEX, 0))
-    drawWindow(HEADER_WINDOW_X, HEADER_WINDOW_Y, HEADER_WINDOW_WIDTH,_
-        HEADER_WINDOW_HEIGHT, HEADER_COLOR, outWindowsCharacters)
+'Draws the status window
+SUB drawStatusWindow()
     drawWindow(STATUS_WINDOW_X, STATUS_WINDOW_Y, STATUS_WINDOW_WIDTH,_
         STATUS_WINDOW_HEIGHT, STATUS_COLOR, outWindowsCharacters)
+    drawStatusTexts()
 END SUB
 
 'Loads the fruits for the level
@@ -522,7 +513,7 @@ SUB initSnake()
     tailPosition = TAIL_START_INDEX
     snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)
     snakeY(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_Y_INDEX)
-    putInBoardFromScreen(snakeX(headPosition), snakeY(headPosition), BOARD_TYPE_SNAKE)
+    board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_SNAKE
     direction = DIRECTION_NONE
     drawSnakeHead(ATTRIBUTE_FLASH_OFF)
 END SUB
@@ -543,7 +534,7 @@ SUB putItem(item AS UBYTE)
     DIM itemType AS UBYTE = levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX)
     DIM itemIndex AS UBYTE = itemType - LEVEL_ITEM_TYPE_OFFSET
     board(itemX, itemY) = itemType
-    putCharAt(itemX, itemY + PLAY_BOARD_Y_DEC, itemAttributes(itemIndex), itemChars(itemIndex))
+    putCharAt(itemX, itemY, itemAttributes(itemIndex), itemChars(itemIndex))
 END SUB
 
 'Resets game level, only sets data that can be reloaded after death
@@ -557,11 +548,8 @@ SUB resetGameLevel()
     initEnemies()
     initItems()
     initSnake()
-    drawGameWindows()
-    PRINT AT HEADER_Y, HEADER_X; INK GUI_COLOR; HEADER_STRING;
-    drawStatusTexts()
+    drawStatusWindow()
     drawStatusValues()
-    drawLevelValue()
     'Puts the remaining fruits in the board
     FOR i = 0 TO fruits - 1: putFruit(): NEXT i
     startSound()

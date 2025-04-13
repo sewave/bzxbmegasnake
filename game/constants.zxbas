@@ -74,28 +74,17 @@
 #define START_GROWTH MIN_SNAKE_LENGTH - INITIAL_SNAKE_LENGTH
 
 'Board
-#define MIN_BOARD_X 1
-#define MIN_BOARD_Y 3
-#define MAX_BOARD_X 30
-#define MAX_BOARD_Y 18
-#define BOARD_WIDTH 30
-#define BOARD_HEIGHT 16
+#define MIN_BOARD_X 0
+#define MIN_BOARD_Y 0
+#define BOARD_WIDTH 23
+#define BOARD_HEIGHT 24
 #define BOARD_COLOR PURPLE
-#define BOARD_WINDOW_X 0
-#define BOARD_WINDOW_Y 3
-#define BOARD_WINDOW_X_2 31
-#define BOARD_WINDOW_Y_2 18
-#define BOARD_WINDOW_LEFT  "\ :"
-#define BOARD_WINDOW_RIGHT "\: "
 
 'Status
-#define FIRST_STATUS_LINE_Y 20
-#define SECOND_STATUS_LINE_Y 21
-#define THIRD_STATUS_LINE_Y 22
-#define STATUS_WINDOW_X 0
-#define STATUS_WINDOW_Y 19
-#define STATUS_WINDOW_WIDTH 32
-#define STATUS_WINDOW_HEIGHT 5
+#define STATUS_WINDOW_X 23
+#define STATUS_WINDOW_Y 0
+#define STATUS_WINDOW_WIDTH 9
+#define STATUS_WINDOW_HEIGHT 24
 #define STATUS_COLOR BLUE
 
 'Game over
@@ -119,25 +108,25 @@
 #define SCORE_STRING "Puntos:";
 #define BEST_STRING "Mejor:";
 #define SCORE_NUM_X 26
-#define SCORE_NUM_Y FIRST_STATUS_LINE_Y
+#define SCORE_NUM_Y 6
 #define SCORE_NUM_PAD " "
 #define SCORE_NUM_LENGTH 4
 #define BEST_NUM_X 26
-#define BEST_NUM_Y SECOND_STATUS_LINE_Y
+#define BEST_NUM_Y 2
 #define BEST_NUM_PAD " "
 #define BEST_NUM_LENGTH 4
-#define SCORE_STRING_X 18
-#define SCORE_STRING_Y FIRST_STATUS_LINE_Y
-#define BEST_STRING_X 19
-#define BEST_STRING_Y SECOND_STATUS_LINE_Y
+#define SCORE_STRING_X 24
+#define SCORE_STRING_Y 5
+#define BEST_STRING_X 24
+#define BEST_STRING_Y 1
 #define INITIAL_MAX_SCORE 10
 
 'Lives, fruit and time
-#define LIVES_STRING_X 3
-#define LIVES_STRING_Y FIRST_STATUS_LINE_Y
+#define LIVES_STRING_X 24
+#define LIVES_STRING_Y 7
 #define LIVES_STRING "Vidas:"
-#define LIVES_NUM_X 10
-#define LIVES_NUM_Y FIRST_STATUS_LINE_Y
+#define LIVES_NUM_X 28
+#define LIVES_NUM_Y 8
 #define LIVES_NUM_PAD " "
 #define LIVES_NUM_LENGTH 2
 #define LOSE_LIVE_X 5
@@ -151,37 +140,32 @@
 #define LOSE_LIVE_FLASH TRUE
 #define LOSE_LIVE_FRAMES 60
 
-#define FRUITS_STRING_X 2
-#define FRUITS_STRING_Y SECOND_STATUS_LINE_Y
+#define FRUITS_STRING_X 24
+#define FRUITS_STRING_Y 9
 #define FRUITS_STRING "Frutas:"
-#define FRUITS_NUM_X 10
-#define FRUITS_NUM_Y SECOND_STATUS_LINE_Y
+#define FRUITS_NUM_X 28
+#define FRUITS_NUM_Y 10
 #define FRUITS_NUM_PAD " "
 #define FRUITS_NUM_LENGTH 2
-#define TIME_STRING_X 2
-#define TIME_STRING_Y THIRD_STATUS_LINE_Y
+#define TIME_STRING_X 24
+#define TIME_STRING_Y 11
 #define TIME_STRING "Tiempo:"
-#define TIME_BAR_X 9
-#define TIME_BAR_Y THIRD_STATUS_LINE_Y
+#define TIME_BAR_X 27
+#define TIME_BAR_Y 12
 #define TIME_BAR_PAD " "
 #define TIME_BAR_LENGTH 3
 
-'Header
-#define HEADER_COLOR BLUE
-#define HEADER_STRING "Nivel: "
-#define HEADER_X 1
-#define HEADER_Y 1
-#define HEADER_WINDOW_X 0
-#define HEADER_WINDOW_Y 0
-#define HEADER_WINDOW_WIDTH 32
-#define HEADER_WINDOW_HEIGHT 3
-#define LEVEL_NUM_Y 1
-#define LEVEL_NUM_X 8
+'Level
+#define LEVEL_STRING "Nivel: "
+#define LEVEL_STRING_X 24
+#define LEVEL_STRING_Y 3
+#define LEVEL_NUM_X 29
+#define LEVEL_NUM_Y 4
 
 'Pause
 #define PAUSE_FRAMES 60
-#define PAUSE_X 13
-#define PAUSE_Y SECOND_STATUS_LINE_Y
+#define PAUSE_X 25
+#define PAUSE_Y 17
 #define PAUSE_STRING "PAUSA"
 
 'Intro constants
@@ -399,10 +383,8 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define BOARD_TYPE_GO_DOWN    16
 #define BOARD_TYPE_GO_LEFT    17
 
-#define PLAY_BOARD_MAX_X 31
-#define PLAY_BOARD_MAX_Y 17
-
-#define PLAY_BOARD_Y_DEC 2
+#define PLAY_BOARD_MAX_X 22
+#define PLAY_BOARD_MAX_Y 23
 
 'Board definition
 #define LAST_LEVEL_INDEX 15

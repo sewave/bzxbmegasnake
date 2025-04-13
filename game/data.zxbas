@@ -68,27 +68,27 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
 'Level misc data snakeInitialX, snakeInitalY, levelFruits, time, board rectangle window Attributes,
 'board rectangle filler Attributes,
 DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
-    {1, 4, 1, 99, createAttributes(FALSE, FALSE, YELLOW, PURPLE), createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, BLUE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 4, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)}_
+    {1, 1, 1, 99, createAttributes(FALSE, FALSE, YELLOW, PURPLE), createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, BLUE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
+    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)}_
 }
 
 'Level item data type, xPos, yPos
 DIM levelsItemData(LAST_LEVEL_INDEX, LAST_LEVEL_ITEM_INDEX, LEVEL_ITEM_DATA_LAST_INDEX) AS UBYTE => {_
-    { {BOARD_TYPE_SPEED_UP, 10, 11}, {BOARD_TYPE_SPEED_UP, 15, 11}, {BOARD_TYPE_SPEED_DOWN, 28, 8}, {BOARD_TYPE_SPEED_DOWN, 20, 15},_
+    { {BOARD_TYPE_SPEED_UP, 10, 11}, {BOARD_TYPE_SPEED_UP, 15, 11}, {BOARD_TYPE_SPEED_DOWN, 17, 8}, {BOARD_TYPE_SPEED_DOWN, 20, 15},_
         {BOARD_TYPE_GO_RIGHT, 16, 5}, {BOARD_TYPE_GO_DOWN, 20, 5}, {BOARD_TYPE_GO_LEFT, 20, 10}, {BOARD_TYPE_GO_UP, 16, 10}_
     },_
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
