@@ -116,16 +116,16 @@ DIM levelsEnemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_IN
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
     },_
     {_
-        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 20, 6, 5},_
-        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 20, 7, 4},_
-        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 20, 8, 3},_
-        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 20, 9, 2}_
-    },_
-    {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+    },_
+    {_
+        {ENEMY_TYPE_U_D, 3, 5, 5}, {ENEMY_TYPE_L_R, 20, 6, 5},_
+        {ENEMY_TYPE_DIAR, 4, 5, 4}, {ENEMY_TYPE_DIAL, 20, 7, 4},_
+        {ENEMY_TYPE_U_D, 5, 5, 3}, {ENEMY_TYPE_L_R, 20, 8, 3},_
+        {ENEMY_TYPE_U_D, 6, 5, 2}, {ENEMY_TYPE_L_R, 20, 9, 2}_
     },_
     {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
