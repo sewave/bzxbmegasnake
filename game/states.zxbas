@@ -93,7 +93,7 @@ END SUB
 'Inits the game
 SUB stateInitGame()
     initInput()
-    loadFont(@reactorFnt)
+    loadFont(@font)
     loadUdgs(@udgs)
     maxScore = INITIAL_MAX_SCORE
     setGameState(STATE_START_TITLE)

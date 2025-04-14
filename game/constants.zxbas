@@ -241,10 +241,10 @@
 #define INTRO_MAX_SCORE_NUM_INK CYAN 
 #define INTRO_MAX_SCORE_NUM_PAPER BLUE
 
-'Game constants
-#define MIN_GAME_FRAMES      3
-#define INITIAL_GAME_FRAMES  6
-#define MAX_GAME_FRAMES      9
+'Speed
+#define MIN_GAME_FRAMES      1
+#define INITIAL_GAME_FRAMES  4
+#define MAX_GAME_FRAMES      7
 #define GAME_FADE    4
 
 'Intro window
@@ -335,8 +335,8 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define INTRO_CENTRAL_WINDOW_CLEAR " "
 
 'Starting values
-#define START_LIVES 3
-#define START_LEVEL 3
+#define START_LIVES 99
+#define START_LEVEL 0
 #define LEVEL_TIME_BONUS 2
 
 'End level

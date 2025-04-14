@@ -10,7 +10,7 @@
 #include "common\\video.zxbas"
 #include "common\\input.zxbas"
 #include "common\\states.zxbas"
-#include "gfx\\reactor.fnt.zxbas"
+#include "gfx\\font.fnt.zxbas"
 #include "gfx\\udgs.udg.zxbas"
 #include "gfx\\sprites.spr.zxbas"
 #include "game\\constants.zxbas"

@@ -9,7 +9,7 @@ DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_NONE, DIRECTION_NONE _
 }
 DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
-    @reactorFnt,_
+    @font,_
     @udgs(0, 0),_
     @udgs(2, 0),_
     @udgs(4, 0),_
