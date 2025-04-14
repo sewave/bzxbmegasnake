@@ -13,7 +13,7 @@
 DIM gameState AS UBYTE
 DIM nextGameState AS UBYTE
 DIM framesToWait AS UBYTE
-DIM keyToWait AS STRING
+DIM keyToWait AS UBYTE
 DIM targetFadeStepframes AS UBYTE
 DIM fadeStepframes AS UBYTE
 DIM remainingFadeSteps AS UBYTE
@@ -62,7 +62,7 @@ SUB setStateWaitAnyKey(nextGameState AS UBYTE)
 END SUB
 
 'Sets the state to wait for [newKeyToWait] key and the next game state to [nextGameState]
-SUB setStateWaitAKey(newKeyToWait AS STRING, nextGameState AS UBYTE)
+SUB setStateWaitAKey(newKeyToWait AS UBYTE, nextGameState AS UBYTE)
     keyToWait = newKeyToWait
     setGameStateAndNext(STATE_WAIT_A_KEY, nextGameState)
 END SUB
@@ -91,17 +91,17 @@ END SUB
 
 'Waits for no key pressed, then goes to [nextGameState]
 SUB stateWaitNoKey()
-    IF(frameKey = NO_KEY AND anyControlPressed() = FALSE) moveNextGameStateToGameState()
+    IF(getFirstKeyPressed() = NO_KEYBOARD_KEY_PRESSED AND anyControlPressed() = FALSE) moveNextGameStateToGameState()
 END SUB
 
 'Waits for any key pressed, then goes to [nextGameState]
 SUB stateWaitAnyKey()
-    IF(frameKey <> NO_KEY OR anyControlPressed() = TRUE) moveNextGameStateToGameState()
+    IF(getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE) moveNextGameStateToGameState()
 END SUB
 
 'Waits for [keyToWait] key pressed, then goes to [nextGameState]
 SUB stateWaitAKey()
-    IF(frameKey <> keyToWait) moveNextGameStateToGameState()
+    IF(getFirstKeyPressed() <> keyToWait) moveNextGameStateToGameState()
 END SUB
 
 'Waits for [targetFadeStepframes] frames and then lowers attributes, 8 steps

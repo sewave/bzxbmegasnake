@@ -1,8 +1,3 @@
-'Input constants
-#define FIRST_UPPERCASE_CHAR 60h
-#define LOWER_TO_UPPERCASE 20h
-#define NO_KEY ""
-
 'Controls
 #define CONTROL_NONE  %00000000
 #define CONTROL_UP    %00000001
@@ -50,41 +45,151 @@
 #define KEMPSTON_UP    %00001000
 #define KEMPSTON_FIRE  %00010000
 
+'Keyboard reading
+#define LAST_KEYBOARD_KEY_INDEX 39
+#define LAST_KEYBOARD_PORT_INDEX 7
+#define KEYBOARD_KEY_NOT_PRESSED 0
+#define NO_KEYBOARD_KEY_PRESSED 255
+#define KEYBOARD_ROW_PART_INTERLEAVE 2
+#define KEYBOARD_PORT_KEYS 5
+#define KEYBOARD_PORT_KEY_ONE   1
+#define KEYBOARD_PORT_KEY_TWO   2
+#define KEYBOARD_PORT_KEY_THREE 4
+#define KEYBOARD_PORT_KEY_FOUR  8
+#define KEYBOARD_PORT_KEY_FIVE  16
+#define KEYBOARD_PORT_INVERT_VALUE 255
+#define KEYBOARD_PORT_KEY_TWO_OFFSET   1
+#define KEYBOARD_PORT_KEY_THREE_OFFSET 2
+#define KEYBOARD_PORT_KEY_FOUR_OFFSET  3
+#define KEYBOARD_PORT_KEY_FIVE_OFFSET  4
+#define KEYBOARD_PORT_VALUE_SIZE 2
+'Keyboard key indexes
+#define KBD_IDX_1   0
+#define KBD_IDX_2   1
+#define KBD_IDX_3   2
+#define KBD_IDX_4   3
+#define KBD_IDX_5   4
+#define KBD_IDX_6   9
+#define KBD_IDX_7   8
+#define KBD_IDX_8   7
+#define KBD_IDX_9   6
+#define KBD_IDX_0   5
+#define KBD_IDX_Q   10
+#define KBD_IDX_W   11
+#define KBD_IDX_E   12
+#define KBD_IDX_R   13
+#define KBD_IDX_T   14
+#define KBD_IDX_Y   19
+#define KBD_IDX_U   18
+#define KBD_IDX_I   17
+#define KBD_IDX_O   16
+#define KBD_IDX_P   15
+#define KBD_IDX_A   20
+#define KBD_IDX_S   21
+#define KBD_IDX_D   22
+#define KBD_IDX_F   23
+#define KBD_IDX_G   24
+#define KBD_IDX_H   29
+#define KBD_IDX_J   28
+#define KBD_IDX_K   27
+#define KBD_IDX_L   26
+#define KBD_IDX_ENT 25
+#define KBD_IDX_SHF 30
+#define KBD_IDX_Z   31
+#define KBD_IDX_X   32
+#define KBD_IDX_C   33
+#define KBD_IDX_V   34
+#define KBD_IDX_B   39
+#define KBD_IDX_N   38
+#define KBD_IDX_M   37
+#define KBD_IDX_SYM 36
+#define KBD_IDX_SPC 35
+
 'Input vars
-DIM frameKey AS STRING
 DIM controls(NUM_PLAYERS_MAX_INDEX) AS UBYTE
 DIM controlTypes(NUM_PLAYERS_MAX_INDEX) AS UBYTE
 
-'Default keys OPQAM
-DIM keys(NUM_PLAYERS_MAX_INDEX, KEYS_MAX_INDEX) AS UBYTE => {_
-    { $4F, $50, $51, $41, $4D } _
-}
+'Player keys
+DIM keys(NUM_PLAYERS_MAX_INDEX, KEYS_MAX_INDEX) AS UBYTE
 DIM miscKeys AS STRING = "TYUFGHCVB"
 DIM miscKeysControl AS UBYTE
 
 'OPQAM
-DIM defaultKeys(KEYS_MAX_INDEX) AS UBYTE => { $4F, $50, $51, $41, $4D }
+DIM defaultKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_O, KBD_IDX_P, KBD_IDX_Q, KBD_IDX_A, KBD_IDX_M }
 'ONE (the one to the right) appears at keys 6 to 0
 '6 (left), 7 (right), 9 (up), 8 (down) and 0 (fire)
-DIM sinclairOne(KEYS_MAX_INDEX) AS UBYTE => { $36, $37, $39, $38, $30 }
+DIM sinclairOne(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_6, KBD_IDX_7, KBD_IDX_9, KBD_IDX_8, KBD_IDX_0 }
 'TWO (left) appears at keys 1 to 5
 '1 (left), 2 (right), 4 (up), 3 (down) and 5 (fire)
-DIM sinclairTwo(KEYS_MAX_INDEX) AS UBYTE => { $31, $32, $34, $33, $35 }
+DIM sinclairTwo(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_1, KBD_IDX_2, KBD_IDX_4, KBD_IDX_3, KBD_IDX_5 }
 '5 (left), 8 (right), 7 (up), 6 (down) and 0 (fire)
-DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { $35, $38, $37, $36, $30 }
+DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_5, KBD_IDX_8, KBD_IDX_7, KBD_IDX_6, KBD_IDX_0 }
 
 'Tmp vars for speed
 DIM tmpControl AS UBYTE
 DIM tmpInput AS UBYTE
 
-'Reads a key from keyboard and if its 60h or plus lowers it by 20h,
-'effectively making it uppercase in case of letters
-SUB readKeyUpperCase()
-    frameKey = INKEY
-    DIM charVal AS UBYTE = CODE(frameKey)
+'Keyboard ports in top to bottom left to right order
+DIM keyboardPorts(LAST_KEYBOARD_PORT_INDEX) AS UINTEGER => {_
+    0xF7FE, 0xEFFE, 0xFBFE, 0xDFFE, 0xFDFE, 0xBFFE, 0xFEFE, 0x7FFE _
+}
 
-    IF(charVal >= FIRST_UPPERCASE_CHAR) frameKey = CHR(charVal - LOWER_TO_UPPERCASE)
+'The status of the keyboard 0 not pressed otherwise pressed
+DIM keyboard(LAST_KEYBOARD_KEY_INDEX) AS UBYTE
+
+'12345 09876
+'QWERT POIUY
+'ASDFG eLKJH
+'sZXCV _yMNB
+'The ascii values of the keyboard keys
+DIM keyboardValues(LAST_KEYBOARD_KEY_INDEX) AS UBYTE => {_
+    31h, 32h, 33h, 34h, 35h, 30h, 39h, 38h, 37h, 36h,_
+    51h, 57h, 45h, 52h, 54h, 50h, 4Fh, 49h, 55h, 59h,_
+    41h, 53h, 44h, 46h, 47h, 65h, 4Ch, 4Bh, 4Ah, 48h,_
+    73h, 5Ah, 58h, 43h, 56h, 5Fh, 79h, 4Dh, 4Eh, 42h _
+}
+
+'To speed up and decrease code
+DIM portRead AS UBYTE
+DIM keyboardAddr AS UINTEGER
+DIM keyboardPortsAddr AS UINTEGER
+
+'Clears all keyboard keys status
+SUB clearKeyboard()
+    FOR keyboardAddr = @keyboard TO @keyboard + LAST_KEYBOARD_KEY_INDEX
+        POKE(keyboardAddr, KEYBOARD_KEY_NOT_PRESSED)
+    NEXT keyboardAddr
 END SUB
+
+'Reads a keyboard row half
+SUB readHalfKeyboardRow()
+    POKE(keyboardAddr, portRead bAND KEYBOARD_PORT_KEY_ONE)
+    POKE(keyboardAddr + KEYBOARD_PORT_KEY_TWO_OFFSET, portRead bAND KEYBOARD_PORT_KEY_TWO)
+    POKE(keyboardAddr + KEYBOARD_PORT_KEY_THREE_OFFSET, portRead bAND KEYBOARD_PORT_KEY_THREE)
+    POKE(keyboardAddr + KEYBOARD_PORT_KEY_FOUR_OFFSET, portRead bAND KEYBOARD_PORT_KEY_FOUR)
+    POKE(keyboardAddr + KEYBOARD_PORT_KEY_FIVE_OFFSET, portRead bAND KEYBOARD_PORT_KEY_FIVE)
+END SUB
+
+'Reads all keyboard keys status
+SUB readKeyboard()
+    keyboardAddr = @keyboard
+    FOR keyboardPortsAddr = @keyboardPorts TO _
+        @keyboardPorts + LAST_KEYBOARD_PORT_INDEX * KEYBOARD_PORT_VALUE_SIZE _
+            STEP KEYBOARD_PORT_VALUE_SIZE
+        portRead = IN(PEEK(UINTEGER, keyboardPortsAddr)) bXOR KEYBOARD_PORT_INVERT_VALUE
+        readHalfKeyboardRow()
+        keyboardAddr = keyboardAddr + KEYBOARD_PORT_KEYS
+    NEXT keyboardPortsAddr
+END SUB
+
+'Returns the index of the first key pressed from top to bottom, left to right on the keyboard
+'Returns 255 if no key pressed
+FUNCTION getFirstKeyPressed() AS UBYTE
+    FOR keyboardAddr = @keyboard TO @keyboard + LAST_KEYBOARD_KEY_INDEX
+        IF(PEEK(keyboardAddr) <> KEYBOARD_KEY_NOT_PRESSED) RETURN keyboardAddr - @keyboard
+    NEXT keyboardAddr
+    RETURN NO_KEYBOARD_KEY_PRESSED
+END FUNCTION
 
 'Returns the controls readed for the frame for the selected player
 FUNCTION getControls(playerIndex AS UBYTE) AS UBYTE
@@ -93,7 +198,7 @@ END FUNCTION
 
 'Returns the control char for the selected player
 FUNCTION getControlChar(playerIndex AS UBYTE, controlIndex AS UBYTE) AS STRING
-    RETURN CHR(keys(playerIndex, controlIndex))
+    RETURN CHR(keyboardValues(keys(playerIndex, controlIndex)))
 END FUNCTION
 
 'Returns the miscKeys readed for the frame
@@ -109,7 +214,7 @@ SUB initInput()
 END SUB
 
 'Copy the keys to the player
-SUB copyKeys(playerIndex AS UBYTE, newKeys() AS UBYTE)
+SUB copyKeys(playerIndex AS UBYTE, BYREF newKeys() AS UBYTE)
     FOR i = 0 TO KEYS_MAX_INDEX
         keys(playerIndex, i) = newKeys(i)       
     NEXT i
@@ -137,12 +242,11 @@ END FUNCTION
 'Reads the [playerIndex] player keyboard keys (Or Sinclair/Protek Joysticks)
 SUB readPlayerKeyboard(playerIndex AS UBYTE)
     tmpControl = CONTROL_NONE
-    tmpInput = CODE(frameKey)
-    IF(tmpInput = keys(playerIndex, CONTROL_UP_INDEX)) tmpControl = tmpControl + CONTROL_UP
-    IF(tmpInput = keys(playerIndex, CONTROL_DOWN_INDEX)) tmpControl = tmpControl + CONTROL_DOWN
-    IF(tmpInput = keys(playerIndex, CONTROL_LEFT_INDEX)) tmpControl = tmpControl + CONTROL_LEFT
-    IF(tmpInput = keys(playerIndex, CONTROL_RIGHT_INDEX)) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(tmpInput = keys(playerIndex, CONTROL_FIRE_INDEX)) tmpControl = tmpControl + CONTROL_FIRE
+    IF(keyboard(keys(playerIndex, CONTROL_UP_INDEX))) tmpControl = tmpControl + CONTROL_UP
+    IF(keyboard(keys(playerIndex, CONTROL_DOWN_INDEX))) tmpControl = tmpControl + CONTROL_DOWN
+    IF(keyboard(keys(playerIndex, CONTROL_LEFT_INDEX))) tmpControl = tmpControl + CONTROL_LEFT
+    IF(keyboard(keys(playerIndex, CONTROL_RIGHT_INDEX))) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(keyboard(keys(playerIndex, CONTROL_FIRE_INDEX))) tmpControl = tmpControl + CONTROL_FIRE
     controls(playerIndex) = tmpControl
 END SUB
 
@@ -162,7 +266,7 @@ END SUB
 
 'Updates the controls reading the [keys]
 SUB updateControls()
-    readKeyUpperCase()
+    readKeyboard()
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
             readPlayerKempston(i)
