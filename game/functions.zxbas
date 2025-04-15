@@ -25,8 +25,8 @@ DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
 }
 
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, BLUE, GREEN),_
-    createAttributes(TRUE, TRUE, RED, YELLOW), createAttributes(TRUE, TRUE, WHITE, GREEN),_
+    createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, RED, YELLOW),_
+    createAttributes(TRUE, TRUE, BLUE, GREEN), createAttributes(TRUE, TRUE, WHITE, GREEN),_
     createAttributes(TRUE, TRUE, WHITE, YELLOW), createAttributes(TRUE, TRUE, WHITE, RED),_
     createAttributes(TRUE, TRUE, WHITE, PURPLE) _
 }

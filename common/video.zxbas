@@ -174,7 +174,7 @@ END SUB
 
 'Puts [numChars] characters in line, stops at next char
 SUB putChars(numChars as UBYTE, charAddress AS UINTEGER)
-    FOR i = 0 TO numChars - 1
+    FOR i = 1 TO numChars
         putChar(charAddress)
         nextCharColumn()
     NEXT i
@@ -182,7 +182,7 @@ END SUB
 
 'Clears [numChars] characters in line, stops at next char
 SUB clearChars(numChars as UBYTE)
-    FOR i = 0 TO numChars - 1
+    FOR i = 1 TO numChars
         clearChar()
         nextCharColumn()
     NEXT i
@@ -190,7 +190,7 @@ END SUB
 
 'Puts [numChars] characters in row, stops at next char
 SUB putRowChars(numChars as UBYTE, charAddress AS UINTEGER)
-    FOR i = 0 TO numChars - 1
+    FOR i = 1 TO numChars
         putChar(charAddress)
         nextCharRow()
     NEXT i
@@ -198,7 +198,7 @@ END SUB
 
 'Clears row [numChars] characters in row, stops at next char
 SUB clearRowChars(numChars as UBYTE)
-    FOR i = 0 TO numChars - 1
+    FOR i = 1 TO numChars
         clearChar()
         nextCharRow()
     NEXT i
@@ -281,7 +281,7 @@ SUB frameTextScroller(BYREF scrollerText AS STRING)
     END IF
 END SUB
 
-'Clears a rectangular region with space
+'Clears a rectangular region
 SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE, attributes AS UBYTE)
     FOR j = y TO (y + height - 1)
         clearCharsAt(x, j, attributes, width)
@@ -314,6 +314,6 @@ SUB fadeAttributesToBlack()
             IF(tmpInk) tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
             tmpAttribute = tmpPaper | tmpInk
         END IF
-        POKE attrIndex, tmpAttribute
+        POKE(attrIndex, tmpAttribute)
     NEXT attrIndex
 END SUB

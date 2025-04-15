@@ -239,14 +239,15 @@ FUNCTION getControlType(playerIndex AS UBYTE) AS UBYTE
     RETURN controlTypes(playerIndex)
 END FUNCTION
 
-'Reads the [playerIndex] player keyboard keys (Or Sinclair/Protek Joysticks)
+'Reads the [playerIndex] player keyboard keys (Or Sinclair/Cursor Joysticks)
 SUB readPlayerKeyboard(playerIndex AS UBYTE)
     tmpControl = CONTROL_NONE
-    IF(keyboard(keys(playerIndex, CONTROL_UP_INDEX))) tmpControl = tmpControl + CONTROL_UP
-    IF(keyboard(keys(playerIndex, CONTROL_DOWN_INDEX))) tmpControl = tmpControl + CONTROL_DOWN
-    IF(keyboard(keys(playerIndex, CONTROL_LEFT_INDEX))) tmpControl = tmpControl + CONTROL_LEFT
-    IF(keyboard(keys(playerIndex, CONTROL_RIGHT_INDEX))) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(keyboard(keys(playerIndex, CONTROL_FIRE_INDEX))) tmpControl = tmpControl + CONTROL_FIRE
+    keyboardAddr = @keys(playerIndex, 0)
+    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_LEFT_INDEX))) tmpControl = tmpControl + CONTROL_LEFT
+    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_RIGHT_INDEX))) tmpControl = tmpControl + CONTROL_RIGHT
+    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_UP_INDEX))) tmpControl = tmpControl + CONTROL_UP
+    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_DOWN_INDEX))) tmpControl = tmpControl + CONTROL_DOWN
+    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_FIRE_INDEX))) tmpControl = tmpControl + CONTROL_FIRE
     controls(playerIndex) = tmpControl
 END SUB
 
