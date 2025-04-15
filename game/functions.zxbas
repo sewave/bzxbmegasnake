@@ -17,6 +17,9 @@ DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 
+'Tmp vars to speed up
+DIM snakeHeadBoardAddress AS UINTEGER
+
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
     @sprites_Reduction, @sprites_Speed_Up,_
     @sprites_Speed_Down, @sprites_Go_Up, _
@@ -45,6 +48,18 @@ DIM inWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
     @sprites_In_Window(4, 0), @sprites_In_Window(5, 0),_
     @sprites_In_Window(6, 0), @sprites_In_Window(7, 0)_
 }
+
+'Updates the snake head board address
+#define updateSnakeHeadBoardAddress() snakeHeadBoardAddress = @board(snakeX(headPosition), snakeY(headPosition))
+
+'Get the board type on the snake head position
+#define getBoardOnSnakePosition() PEEK(snakeHeadBoardAddress)
+
+'Put the board type on the snake head position
+#define putBoardOnSnakePosition(value) POKE(snakeHeadBoardAddress, value)
+
+'Clears the board on the snake head position
+#define clearBoardSnakePosition() putBoardOnSnakePosition(BOARD_TYPE_EMPTY)
 
 'Clears the board
 SUB clearBoard()
@@ -99,9 +114,9 @@ END SUB
 
 'Checks if there is an item in the snake position
 SUB checkItem()
-    DIM boardType AS UBYTE = board(snakeX(headPosition), snakeY(headPosition))
+    DIM boardType AS UBYTE = getBoardOnSnakePosition()
     IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
-        board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY
+        clearBoardSnakePosition()
         IF(boardType = BOARD_TYPE_UNGROW)
             ungrowSound()
             growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
@@ -130,9 +145,9 @@ END SUB
 'Checks if the snake is colliding with the fruit to increase score and
 'put a new fruit
 SUB checkFruit()
-    IF(board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_FRUIT)
+    IF(getBoardOnSnakePosition() = BOARD_TYPE_FRUIT)
         fruitSound()
-        board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY
+        clearBoardSnakePosition()
         score = score + FRUIT_INC_SCORE
         checkMaxScore()
         fruits = fruits - 1
@@ -233,8 +248,8 @@ END SUB
 'Checks if the snake has to die, if it does not die, fill position in board
 SUB checkDeath()
     IF(direction <> DIRECTION_NONE)
-        IF(board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_EMPTY)
-            board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_SNAKE
+        IF(getBoardOnSnakePosition() = BOARD_TYPE_EMPTY)
+            putBoardOnSnakePosition(BOARD_TYPE_SNAKE)
         ELSE
             loseLive()
         END IF
@@ -551,6 +566,7 @@ SUB resetGameLevel()
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES
     timeRemainingFrames = FRAMES_IN_SECOND
+    'TODO only if dead by time
     remainingTime = levelsMiscData(level, LEVEL_MISC_DATA_TIME_INDEX)
     initBoard()
     initEnemies()

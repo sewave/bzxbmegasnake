@@ -109,6 +109,8 @@ SUB stateGamePlaying()
         delayedFrames = 0
         processInput()
         updatePlayer()
+        updateSnakeHeadBoardAddress()
+        'chekItem, checkFruit, checkDeath use snakeHeadBoardAddress
         checkItem()
         checkFruit()
         checkDeath()   
