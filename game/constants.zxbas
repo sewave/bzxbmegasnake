@@ -407,9 +407,6 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define RECT_HEIGHT_INDEX 3
 #define RECT_END 255
 
-'Window chars for obstacles
-#define ROUND_WINDOW_PAPER "\M\''\N\ :\P\..\O\: "
-
 #define LAST_ENEMY_INDEX 7
 #define LAST_ENEMY_PROPERTY_INDEX 3
 #define LAST_ENEMY_TYPE_INDEX 6
@@ -445,3 +442,5 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define LEVEL_ITEM_TYPES_LAST_INDEX 6
 
 #define TOTAL_BLACK_ATTRIBUTES createAttributes(FALSE, FALSE, BLACK, BLACK)
+
+DIM STATUS_NUM_PAD AS STRING = " "

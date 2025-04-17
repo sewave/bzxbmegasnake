@@ -152,6 +152,7 @@ SUB checkFruit()
         checkMaxScore()
         fruits = fruits - 1
         drawFruits()
+        drawScores()
         IF(fruits)
             IF(snakeLength < MAX_SNAKE_LENGTH) growth = growth + FRUIT_GROWTH
         ELSE           
@@ -206,33 +207,33 @@ END SUB
 
 'Draws the lives numbers
 SUB drawLives()
-   PRINT AT LIVES_NUM_Y, LIVES_NUM_X; INK GUI_COLOR;_
-    getPaddedNumber(lives, LIVES_NUM_LENGTH, LIVES_NUM_PAD);
+    INK GUI_COLOR
+    printPaddedNumberTensAt(LIVES_NUM_X, LIVES_NUM_Y, lives, STATUS_NUM_PAD)
 END SUB
 
 'Draws the fruits numbers
 SUB drawFruits()
-   PRINT AT FRUITS_NUM_Y, FRUITS_NUM_X; INK GUI_COLOR;_
-    getPaddedNumber(fruits, FRUITS_NUM_LENGTH, FRUITS_NUM_PAD);
+    INK GUI_COLOR
+    printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
 END SUB
 
 'Draws the Time
 SUB drawTime()
-   PRINT AT TIME_BAR_Y, TIME_BAR_X; INK GUI_COLOR;_
-    getPaddedNumber(remainingTime, TIME_BAR_LENGTH, TIME_BAR_PAD);
+    INK GUI_COLOR
+    printPaddedNumberByteAt(TIME_BAR_X, TIME_BAR_Y, remainingTime, STATUS_NUM_PAD)
 END SUB
 
 'Draw level value
 SUB drawLevelValue()
-    PRINT AT LEVEL_NUM_Y, LEVEL_NUM_X; INK GUI_COLOR; getPaddedNumber(level + 1, LEVEL_NUM_LENGTH, LEVEL_NUM_PAD);
+    INK GUI_COLOR
+    printPaddedNumberTensAt(LEVEL_NUM_X, LEVEL_NUM_Y, level + 1, STATUS_NUM_PAD)
 END SUB
 
 'Draws the score and max score numbers
 SUB drawScores()
-   PRINT AT SCORE_NUM_Y, SCORE_NUM_X; INK GUI_COLOR;_
-    getPaddedNumber(score, SCORE_NUM_LENGTH ,SCORE_NUM_PAD);
-   PRINT AT BEST_NUM_Y, BEST_NUM_X; INK GUI_COLOR;_
-   getPaddedNumber(maxScore, BEST_NUM_LENGTH ,BEST_NUM_PAD);
+    INK GUI_COLOR
+    printPaddedNumberThousandsAt(SCORE_NUM_X, SCORE_NUM_Y, score, STATUS_NUM_PAD)
+    printPaddedNumberThousandsAt(BEST_NUM_X, BEST_NUM_Y, maxScore, STATUS_NUM_PAD)
 END SUB
 
 'Loses live and checks to see new state

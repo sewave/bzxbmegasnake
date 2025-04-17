@@ -15,4 +15,6 @@
 
 #define INTEGER_BITS 16
 
-
+#define THOUSAND 1000
+#define HUNDRED 100
+#define TEN 10

@@ -317,3 +317,43 @@ SUB fadeAttributesToBlack()
         POKE(attrIndex, tmpAttribute)
     NEXT attrIndex
 END SUB
+
+SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
+    IF(number >= THOUSAND)
+        PRINT AT y, x; number;
+    ELSEIF(number >= HUNDRED)
+        PRINT AT y, x; padding; number;
+    ELSEIF(number >= TEN)
+        PRINT AT y, x; padding; padding; number;
+    ELSE
+        PRINT AT y, x; padding; padding; padding; number;
+    END IF
+END SUB
+
+SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
+    IF(number >= HUNDRED)
+        PRINT AT y, x; number;
+    ELSEIF(number >= TEN)
+        PRINT AT y, x; padding; number;
+    ELSE
+        PRINT AT y, x; padding; padding; number;
+    END IF
+END SUB
+
+SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
+    IF(number >= HUNDRED)
+        PRINT AT y, x; number;
+    ELSEIF(number >= TEN)
+        PRINT AT y, x; padding; number;
+    ELSE
+        PRINT AT y, x; padding; padding; number;
+    END IF
+END SUB
+
+SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
+    IF(number >= TEN)
+        PRINT AT y, x; number;
+    ELSE
+        PRINT AT y, x; padding; number;
+    END IF
+END SUB
