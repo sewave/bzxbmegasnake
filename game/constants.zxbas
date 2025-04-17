@@ -105,7 +105,6 @@
 #define GAME_OVER_X 3
 #define GAME_OVER_INK RED
 #define GAME_OVER_PAPER YELLOW
-#define GAME_OVER_STRING "FIN DE LA PARTIDA"
 #define DIE_FRAMES 60
 #define DIE_FADE_FRAMES 1
 
@@ -118,8 +117,6 @@
 
 'Scores
 #define START_SCORE 0
-#define SCORE_STRING "Puntos";
-#define BEST_STRING "Mejor";
 #define SCORE_NUM_X 27
 #define SCORE_NUM_Y 8
 #define SCORE_NUM_PAD " "
@@ -137,17 +134,14 @@
 'Lives, fruit and time
 #define LIVES_STRING_X STATUS_WINDOW_INFO_X
 #define LIVES_STRING_Y 11
-#define LIVES_STRING "Vidas"
 #define LIVES_NUM_X 29
 #define LIVES_NUM_Y 12
 #define LIVES_NUM_PAD " "
 #define LIVES_NUM_LENGTH 2
 #define LOSE_LIVE_X 2
 #define LOSE_LIVE_Y 11
-#define LOSE_LIVE_STRING START_EXCL + "PERDISTE UNA VIDA!"
 #define LOSE_LIVE_TIME_X 5
 #define LOSE_LIVE_TIME_Y 11
-#define LOSE_LIVE_TIME_STRING START_EXCL + "SIN TIEMPO!"
 #define LOSE_LIVE_INK YELLOW
 #define LOSE_LIVE_PAPER RED
 #define LOSE_LIVE_FLASH TRUE
@@ -155,21 +149,18 @@
 
 #define FRUITS_STRING_X STATUS_WINDOW_INFO_X
 #define FRUITS_STRING_Y 13
-#define FRUITS_STRING "Frutas"
 #define FRUITS_NUM_X 29
 #define FRUITS_NUM_Y 14
 #define FRUITS_NUM_PAD " "
 #define FRUITS_NUM_LENGTH 2
 #define TIME_STRING_X STATUS_WINDOW_INFO_X
 #define TIME_STRING_Y 17
-#define TIME_STRING "Tiempo"
 #define TIME_BAR_X 28
 #define TIME_BAR_Y 18
 #define TIME_BAR_PAD " "
 #define TIME_BAR_LENGTH 3
 
 'Level
-#define LEVEL_STRING "Nivel"
 #define LEVEL_STRING_X STATUS_WINDOW_INFO_X
 #define LEVEL_STRING_Y 1
 #define LEVEL_NUM_X 29
@@ -181,7 +172,6 @@
 #define PAUSE_FRAMES 60
 #define PAUSE_X 25
 #define PAUSE_Y 22
-#define PAUSE_STRING "PAUSA"
 
 'Intro constants
 #define INTRO_TITLE_X 1
@@ -203,30 +193,22 @@
 #define INTRO_CREDITS_X 2
 #define INTRO_CREDITS_Y 11
 #define INTRO_CREDITS_COLOR YELLOW
-#define INTRO_CREDITS "\* Wave 2025  Fuente: DamienG"
 
 'Intro instructions
 #define INTRO_CONTROLS_X 11
 #define INTRO_CONTROLS_Y 14
-#define INTRO_CONTROLS "CONTROLES"
 #define INTRO_INSTRUCTIONS_X_1 4
 #define INTRO_INSTRUCTIONS_Y_1 16
-#define INTRO_INSTRUCTIONS_1_A ": Izquierda "
-#define INTRO_INSTRUCTIONS_1_B ": Derecha"
 #define INTRO_INSTRUCTIONS_X_2 4
 #define INTRO_INSTRUCTIONS_Y_2 17
-#define INTRO_INSTRUCTIONS_2_A  ": Arriba    "
-#define INTRO_INSTRUCTIONS_2_B  ": Abajo"
 #define INTRO_INSTRUCTIONS_X_3 3
 #define INTRO_INSTRUCTIONS_Y_3 18
-#define INTRO_INSTRUCTIONS_3  ": Elige/Pausa R: Redefine"
 
 #define INTRO_INSTRUCTIONS_JOYSTICK   "Joystick"
 #define INTRO_INSTRUCTIONS_SINCLAIR_1 "Sinclair 1"
 #define INTRO_INSTRUCTIONS_SINCLAIR_2 "Sinclair 2"
 #define INTRO_INSTRUCTIONS_CURSOR     "Cursor"
 #define INTRO_INSTRUCTIONS_KEMPSTON   "Kempston"
-#define INTRO_INSTRUCTIONS_JOY_OTHERS "FUEGO: Elige/Pausa R: Redefine"
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_1 12
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_2 10
 #define INTRO_INSTRUCTIONS_JOYSTICK_X_3 10
@@ -237,7 +219,6 @@
 'Intro max score
 #define INTRO_MAX_SCORE_X 11
 #define INTRO_MAX_SCORE_Y 20
-#define INTRO_MAX_SCORE_STRING "Mejor: "
 #define INTRO_MAX_SCORE_NUM_INK CYAN 
 #define INTRO_MAX_SCORE_NUM_PAPER BLUE
 
@@ -270,8 +251,6 @@
 #define SELECT_INPUT_INK   YELLOW
 #define SELECT_INPUT_TITLE_Y 14
 #define SELECT_INPUT_TITLE_X 9
-#define SELECT_INPUT_TITLE   "ELIGE CONTROL"
-#define SELECT_INPUT_ENTRY_1 "1-Teclado"
 #define SELECT_INPUT_ENTRY_2 "2-Sinclair 1"
 #define SELECT_INPUT_ENTRY_3 "3-Sinclair 2"
 #define SELECT_INPUT_ENTRY_4 "4-Cursor"
@@ -294,7 +273,6 @@
 'Select keys
 #define SELECT_KEYS_TITLE_Y 14
 #define SELECT_KEYS_TITLE_X 9
-#define SELECT_KEYS_TITLE   "ELIGE TECLAS"
 #define SELECT_KEYS_COLOR   PURPLE
 #define SELECT_KEYS_PAPER   BLACK
 #define SELECT_KEYS_ENTRY_X   8
@@ -303,13 +281,6 @@
 #define SELECT_KEYS_ENTRY_Y_3 18
 #define SELECT_KEYS_ENTRY_Y_4 19
 #define SELECT_KEYS_ENTRY_Y_5 20
-
-#define SELECT_KEYS_ENTRY_1 "IZQUIERDA..."
-#define SELECT_KEYS_ENTRY_2 "DERECHA....."
-#define SELECT_KEYS_ENTRY_3 "ARRIBA......"
-#define SELECT_KEYS_ENTRY_4 "ABAJO......."
-#define SELECT_KEYS_ENTRY_5 "FUEGO......."
-
 #define REDEFINED_KEYS_OFFSET 12
 
 'Title text
@@ -324,7 +295,6 @@
 #define TITLE_SCROLLER_FRAMES 10
 #define TITLE_SCROLLER_INK YELLOW
 #define TITLE_SCROLLER_PAPER BLUE
-DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"Bienvenido a Mega Snake!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote todas las frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Pero cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!    LOS BICHOS: \A Vertical, \C Horizontal, \E Diagonal Der, \G Diagonal Izq, \I Borde horario, \K Borde anti-horario                              "
 
 'Intro central window
 #define INTRO_CENTRAL_WINDOW_X 0
@@ -336,7 +306,7 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 
 'Starting values
 #define START_LIVES 99
-#define START_LEVEL 0
+#define START_LEVEL 6
 #define LEVEL_TIME_BONUS 2
 
 'End level
@@ -354,8 +324,6 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 
 #define END_LEVEL_FINISHED_X 2
 #define END_LEVEL_FINISHED_Y 8
-#define END_LEVEL_FINISHED_STRING START_EXCL + "NIVEL "
-#define END_LEVEL_FINISHED_STRING_2 " TERMINADO!"
 
 #define END_LEVEL_NUMBER_LENGTH 2
 #define END_LEVEL_NUMBER_PAD " "
@@ -364,14 +332,12 @@ DIM TITLE_TEXT_SCROLLER AS STRING = "                             "+START_EXCL+"
 #define END_LEVEL_TIME_Y 11
 #define END_LEVEL_TIME_LENGTH 3
 #define END_LEVEL_TIME_PAD " "
-#define END_LEVEL_TIME_STRING "Tiempo 2 x"
 #define END_LEVEL_TIME_STRING_2 " = "
 #define END_LEVEL_TIME_BONUS_LENGTH 4
 #define END_LEVEL_TIME_BONUS_PAD " "
 
 #define END_LEVEL_TOTAL_X 2
 #define END_LEVEL_TOTAL_Y 15
-#define END_LEVEL_TOTAL_STRING "Total         = "
 #define END_LEVEL_TOTAL_PAD " "
 #define END_LEVEL_TOTAL_LENGTH 4
 

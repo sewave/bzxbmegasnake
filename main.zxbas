@@ -14,6 +14,7 @@
 #include "gfx\\udgs.udg.zxbas"
 #include "gfx\\sprites.spr.zxbas"
 #include "game\\constants.zxbas"
+#include "game\\lang.zxbas"
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"
