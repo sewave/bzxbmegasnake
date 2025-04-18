@@ -67,6 +67,9 @@ DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
 DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
 DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
 
+'Returns the X position for the string to be centered on the screen
+#define centerScreenX(str) ((32 - LEN(str)) >> 1)
+
 'Loads [udgs] address into system to switch udgs graphics
 #define loadUdgs(udgs) POKE UINTEGER UDG_ADDRESS, udgs
 

@@ -102,7 +102,6 @@
 
 'Game over
 #define GAME_OVER_Y 11
-#define GAME_OVER_X 3
 #define GAME_OVER_INK RED
 #define GAME_OVER_PAPER YELLOW
 #define DIE_FRAMES 60
@@ -138,9 +137,7 @@
 #define LIVES_NUM_Y 12
 #define LIVES_NUM_PAD " "
 #define LIVES_NUM_LENGTH 2
-#define LOSE_LIVE_X 2
 #define LOSE_LIVE_Y 11
-#define LOSE_LIVE_TIME_X 5
 #define LOSE_LIVE_TIME_Y 11
 #define LOSE_LIVE_INK YELLOW
 #define LOSE_LIVE_PAPER RED
@@ -250,7 +247,6 @@
 #define SELECT_INPUT_PAPER BLACK
 #define SELECT_INPUT_INK   YELLOW
 #define SELECT_INPUT_TITLE_Y 14
-#define SELECT_INPUT_TITLE_X 9
 #define SELECT_INPUT_ENTRY_2 "2-Sinclair 1"
 #define SELECT_INPUT_ENTRY_3 "3-Sinclair 2"
 #define SELECT_INPUT_ENTRY_4 "4-Cursor"
@@ -272,7 +268,6 @@
 
 'Select keys
 #define SELECT_KEYS_TITLE_Y 14
-#define SELECT_KEYS_TITLE_X 9
 #define SELECT_KEYS_COLOR   PURPLE
 #define SELECT_KEYS_PAPER   BLACK
 #define SELECT_KEYS_ENTRY_X   8
@@ -281,7 +276,7 @@
 #define SELECT_KEYS_ENTRY_Y_3 18
 #define SELECT_KEYS_ENTRY_Y_4 19
 #define SELECT_KEYS_ENTRY_Y_5 20
-#define REDEFINED_KEYS_OFFSET 12
+#define SELECTED_KEY_TITLE_X 21
 
 'Title text
 #define TITLE_SCROLLER_WINDOW_X 0
@@ -410,3 +405,5 @@
 #define TOTAL_BLACK_ATTRIBUTES createAttributes(FALSE, FALSE, BLACK, BLACK)
 
 DIM STATUS_NUM_PAD AS STRING = " "
+
+#define centerBoardX(str) (BOARD_WIDTH - LEN(str) >> 1)
