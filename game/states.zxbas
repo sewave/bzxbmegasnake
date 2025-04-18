@@ -102,6 +102,7 @@ SUB stateStartGame()
     lives = START_LIVES
     level = START_LEVEL
     snakeLength = INITIAL_SNAKE_LENGTH
+    reloadTime = TRUE
     initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
     resetGameLevel()
@@ -265,6 +266,7 @@ SUB stateStartEndLevel()
     drawScores()
     
     level = level + 1
+    reloadTime = TRUE
     snakeLength = INITIAL_SNAKE_LENGTH
     growth = START_GROWTH
     initLevelFruits()
