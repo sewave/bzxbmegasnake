@@ -1,6 +1,6 @@
 #define GAME_OVER_STRING              "GAME OVER"
-#define SCORE_STRING                  "Points";
-#define BEST_STRING                   "Best";
+#define SCORE_STRING                  "Points"
+#define BEST_STRING                   "Best"
 #define LIVES_STRING                  "Lives"
 #define LOSE_LIVE_STRING              "YOU LOST A LIVE!"
 #define LOSE_LIVE_TIME_STRING         "TIME OVER!"

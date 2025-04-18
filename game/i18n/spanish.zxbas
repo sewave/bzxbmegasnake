@@ -1,6 +1,6 @@
 #define GAME_OVER_STRING              "FIN DE LA PARTIDA"
-#define SCORE_STRING                  "Puntos";
-#define BEST_STRING                   "Mejor";
+#define SCORE_STRING                  "Puntos"
+#define BEST_STRING                   "Mejor"
 #define LIVES_STRING                  "Vidas"
 #define LOSE_LIVE_STRING              START_EXCL + "PERDISTE UNA VIDA!"
 #define LOSE_LIVE_TIME_STRING         START_EXCL + "SIN TIEMPO!"
