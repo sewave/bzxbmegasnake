@@ -99,6 +99,7 @@
 #define STATUS_COLOR_3 CYAN
 #define STATUS_COLOR_4 PURPLE
 #define STATUS_COLOR_5 YELLOW
+#define STATUS_WINDOW_PRINT_WIDTH 6
 
 'Game over
 #define GAME_OVER_Y 11
@@ -168,7 +169,8 @@
 'Pause
 #define PAUSE_FRAMES 60
 #define PAUSE_X 25
-#define PAUSE_Y 22
+#define PAUSE_Y 21
+#define PAUSE_EXIT_Y 22
 
 'Intro constants
 #define INTRO_TITLE_X 1

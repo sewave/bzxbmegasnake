@@ -8,6 +8,8 @@
 #define TIME_STRING                   "Tiempo"
 #define LEVEL_STRING                  "Nivel"
 #define PAUSE_STRING                  "PAUSA"
+#define PAUSE_CONTINUE_STRING         "SEGUIR"
+#define PAUSE_EXIT_STRING             "SALIR"
 #define INTRO_CREDITS                 "\* Wave 2025  Fuente: DamienG"
 #define INTRO_CONTROLS                "CONTROLES"
 #define INTRO_INSTRUCTIONS_1_A        ": Izquierda "

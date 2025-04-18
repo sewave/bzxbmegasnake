@@ -13,17 +13,35 @@ SUB stateWaitKeyGameOver()
     END IF
 END SUB
 
+DIM pauseExits AS UBYTE = FALSE
+
 'Shows the pause string and changes to wait unpause on next state after no key
 SUB stateStartPause()
     PRINT AT PAUSE_Y, PAUSE_X; INK RED; PAPER YELLOW; FLASH TRUE ; PAUSE_STRING
+    printPauseContinue()
+    pauseExits = FALSE
     setStateWaitNoKey(STATE_WAIT_UNPAUSE)
 END SUB
 
 'Waits to unpause to reanudate the game on next state after no key
 SUB stateWaitUnpause()
-    IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
-        clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, LEN(PAUSE_STRING))
-        setStateWaitNoKey(STATE_GAME_PLAYING)
+    DIM control AS UBYTE = getControls(PLAYER_1_INDEX)
+    IF(control bAND CONTROL_FIRE)
+        IF(pauseExits)
+            setStateFadeToBlack(DIE_FADE_FRAMES, STATE_START_TITLE)
+        ELSE
+            clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+            clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+            setStateWaitNoKey(STATE_GAME_PLAYING)
+        END IF
+    ELSEIF(control bAND CONTROL_LEFT)
+        clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+        printPauseContinue()
+        pauseExits = FALSE
+    ELSEIF(control bAND CONTROL_RIGHT)
+        clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+        printPauseExit()
+        pauseExits = TRUE
     END IF
 END SUB
 

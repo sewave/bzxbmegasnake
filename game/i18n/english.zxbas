@@ -8,6 +8,8 @@
 #define TIME_STRING                   "Time"
 #define LEVEL_STRING                  "Level"
 #define PAUSE_STRING                  "PAUSE"
+#define PAUSE_CONTINUE_STRING         "RESUME"
+#define PAUSE_EXIT_STRING             "EXIT"
 #define INTRO_CREDITS                 "\* Wave 2025    Font: DamienG"
 #define INTRO_CONTROLS                "CONTROLS"
 #define INTRO_INSTRUCTIONS_1_A        ": Left      "

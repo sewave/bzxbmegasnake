@@ -612,3 +612,13 @@ SUB checkTime()
         IF(remainingTime = 0) setGameState(STATE_START_LOSE_LIVE)
     END IF
 END SUB
+
+'Prints the continue on pause
+SUB printPauseContinue()
+    PRINT AT PAUSE_EXIT_Y, PAUSE_X; INK RED; PAPER YELLOW; FLASH TRUE ; PAUSE_CONTINUE_STRING
+END SUB
+
+'Prints the exit on pause
+SUB printPauseExit()
+    PRINT AT PAUSE_EXIT_Y, PAUSE_X; INK RED; PAPER YELLOW; FLASH TRUE ; PAUSE_EXIT_STRING
+END SUB
