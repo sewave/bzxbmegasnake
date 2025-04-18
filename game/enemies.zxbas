@@ -1,6 +1,9 @@
 'To speed up enemy movement
 DIM tmpEnemyX AS UBYTE
 DIM tmpEnemyY AS UBYTE
+DIM tmpEnemyNumber AS UBYTE
+DIM tmpEnemyDirection AS UBYTE
+DIM tmpEnemyType AS UBYTE
 
 'Enemy properties
 DIM enemyX(LAST_ENEMY_INDEX) AS UBYTE
@@ -36,87 +39,87 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
 }
 
+
 'Returns true if board position is free and has adjacent board
 FUNCTION isBoardSafePosition(x AS UBYTE, y AS UBYTE) AS UBYTE
-    DIM i, j AS UBYTE
+    DIM tmpI, tmpJ AS UBYTE
     DIM boardType AS UBYTE = board(x, y)
 
     IF(boardType = BOARD_TYPE_EMPTY)
-        FOR i = x - 1 to x + 1
-            FOR j = y - 1 to y + 1
-                boardType = board(i, j)
-                IF((i <> x OR j <> y) AND boardType = BOARD_TYPE_SOLID OR boardType = BOARD_TYPE_SNAKE) RETURN TRUE
-            NEXT j
-        NEXT i
+        FOR tmpI = x - 1 to x + 1
+            FOR tmpJ = y - 1 to y + 1
+                IF(tmpI <> x OR tmpJ <> y)
+                    boardType = board(tmpI, tmpJ)
+                    IF(boardType = BOARD_TYPE_SOLID OR boardType = BOARD_TYPE_SNAKE) RETURN TRUE
+                END IF
+            NEXT tmpJ
+        NEXT tmpI
     END IF
     RETURN FALSE
 END FUNCTION
 
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
-    DIM i AS UBYTE
-
-    FOR i = 0 TO LAST_ENEMY_INDEX
-        DIM tmpEnemyType AS UBYTE = levelsEnemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
-        enemyType(i) = tmpEnemyType
-        enemyX(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_X_INDEX)
-        enemyY(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_Y_INDEX)
-        enemySpeed(i) = levelsEnemiesData(level, i, ENEMY_PROPERTY_SPEED_INDEX)
-        enemyWait(i) = 0
-        enemyDirection(i) = enemyInitialDirection(tmpEnemyType)
-        enemyFrame(i) = 0
+    FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
+        tmpEnemyType = levelsEnemiesData(level, tmpEnemyNumber, ENEMY_PROPERTY_TYPE_INDEX)
+        enemyType(tmpEnemyNumber) = tmpEnemyType
+        enemyX(tmpEnemyNumber) = levelsEnemiesData(level, tmpEnemyNumber, ENEMY_PROPERTY_X_INDEX)
+        enemyY(tmpEnemyNumber) = levelsEnemiesData(level, tmpEnemyNumber, ENEMY_PROPERTY_Y_INDEX)
+        enemySpeed(tmpEnemyNumber) = levelsEnemiesData(level, tmpEnemyNumber, ENEMY_PROPERTY_SPEED_INDEX)
+        enemyWait(tmpEnemyNumber) = 0
+        enemyDirection(tmpEnemyNumber) = enemyInitialDirection(tmpEnemyType)
+        enemyFrame(tmpEnemyNumber) = 0
         IF(tmpEnemyType <> ENEMY_TYPE_NONE)
-            board(enemyX(i), enemyY(i)) = enemyBoardTypes(tmpEnemyType)
-            putCharAt(enemyX(i), enemyY(i), enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
+            board(enemyX(tmpEnemyNumber), enemyY(tmpEnemyNumber)) = enemyBoardTypes(tmpEnemyType)
+            putCharAt(enemyX(tmpEnemyNumber), enemyY(tmpEnemyNumber), enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
         END IF
-    NEXT i
+    NEXT tmpEnemyNumber
 END SUB
 
 'Moves the active enemies
 SUB moveEnemies()
-    DIM i AS UBYTE
-
-    FOR i = 0 TO LAST_ENEMY_INDEX
-        IF(enemyType(i) = ENEMY_TYPE_NONE) EXIT FOR
-        IF(enemyWait(i))
-            enemyWait(i) = enemyWait(i) - 1
+    FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
+        IF(enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE) EXIT FOR
+        IF(enemyWait(tmpEnemyNumber))
+            enemyWait(tmpEnemyNumber) = enemyWait(tmpEnemyNumber) - 1
         ELSE
-            enemyWait(i) = enemySpeed(i)
-            enemyFrame(i) = enemyFrame(i) bXOR 1
-            moveEnemy(i)
+            enemyWait(tmpEnemyNumber) = enemySpeed(tmpEnemyNumber)
+            enemyFrame(tmpEnemyNumber) = enemyFrame(tmpEnemyNumber) bXOR 1
+            moveEnemy()
         END IF
-    NEXT i
+    NEXT tmpEnemyNumber
 END SUB
 
 'Draws the active enemies
-SUB moveEnemy(enemyNumber AS UBYTE)
-    DIM tmpEnemyType AS UBYTE = enemyType(enemyNumber)
-    DIM tmpEnemyDirection AS UBYTE = enemyDirection(enemyNumber)
+SUB moveEnemy()
+    tmpEnemyType = enemyType(tmpEnemyNumber)
     DIM tmpEnemyCharacter AS UINTEGER = enemyCharacters(tmpEnemyType)
-    tmpEnemyX = enemyX(enemyNumber)
-    tmpEnemyY = enemyY(enemyNumber)
-    DIM tmpOldEnemyX AS UBYTE = tmpEnemyX
-    DIM tmpOldEnemyY AS UBYTE = tmpEnemyY
-
-    IF(enemyFrame(enemyNumber)) tmpEnemyCharacter = tmpEnemyCharacter + CHARACTER_BYTES
+    DIM tmpOldEnemyX AS UBYTE = enemyX(tmpEnemyNumber)
+    DIM tmpOldEnemyY AS UBYTE = enemyY(tmpEnemyNumber)
+    
+    tmpEnemyX = tmpOldEnemyX
+    tmpEnemyY = tmpOldEnemyY
+    tmpEnemyDirection = enemyDirection(tmpEnemyNumber)
+    
+    IF(enemyFrame(tmpEnemyNumber)) tmpEnemyCharacter = tmpEnemyCharacter + CHARACTER_BYTES
 
     board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY
     IF(tmpEnemyType = ENEMY_TYPE_U_D)
-        moveUpDownEnemy(enemyNumber, tmpEnemyDirection)
+        moveUpDownEnemy()
     ELSEIF(tmpEnemyType = ENEMY_TYPE_L_R)
-        moveLeftRightEnemy(enemyNumber, tmpEnemyDirection)
+        moveLeftRightEnemy()
     ELSEIF(tmpEnemyType = ENEMY_TYPE_DIAR)
-        moveDiagonalRightEnemy(enemyNumber, tmpEnemyDirection)
+        moveDiagonalRightEnemy()
     ELSEIF(tmpEnemyType = ENEMY_TYPE_DIAL)
-        moveDiagonalLeftEnemy(enemyNumber, tmpEnemyDirection)
+        moveDiagonalLeftEnemy()
     ELSEIF(tmpEnemyType = ENEMY_TYPE_CLO)
-        moveClockwiseEnemy(enemyNumber, tmpEnemyDirection)
+        moveClockwiseEnemy() 
     ELSEIF(tmpEnemyType = ENEMY_TYPE_CCLO)
-        moveCounterClockwiseEnemy(enemyNumber, tmpEnemyDirection)
+        moveCounterClockwiseEnemy()
     END IF
     board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
-    enemyX(enemyNumber) = tmpEnemyX
-    enemyY(enemyNumber) = tmpEnemyY
+    enemyX(tmpEnemyNumber) = tmpEnemyX
+    enemyY(tmpEnemyNumber) = tmpEnemyY
 
     clearCharAt(tmpOldEnemyX, tmpOldEnemyY, BOARD_ATTRIBUTES)
     putCharAt(tmpEnemyX, tmpEnemyY, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
@@ -124,135 +127,156 @@ SUB moveEnemy(enemyNumber AS UBYTE)
 END SUB
 
 'Moves a clockwise enemy
-SUB moveClockwiseEnemy(number as UBYTE, direction as UBYTE)
-    IF(isBoardSafePosition(tmpEnemyX + 1, tmpEnemyY) AND direction <> DIRECTION_LEFT)
+SUB moveClockwiseEnemy()
+    IF(tmpEnemyDirection = DIRECTION_RIGHT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
         tmpEnemyX = tmpEnemyX + 1
-        enemyDirection(number) = DIRECTION_RIGHT
-    ELSEIF(isBoardSafePosition(tmpEnemyX, tmpEnemyY + 1) AND direction <> DIRECTION_UP)
+    ELSEIF(tmpEnemyDirection = DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
         tmpEnemyY = tmpEnemyY + 1
-        enemyDirection(number) = DIRECTION_DOWN
-    ELSEIF(isBoardSafePosition(tmpEnemyX - 1, tmpEnemyY) AND direction <> DIRECTION_RIGHT)
+    ELSEIF(tmpEnemyDirection = DIRECTION_LEFT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
         tmpEnemyX = tmpEnemyX - 1
-        enemyDirection(number) = DIRECTION_LEFT
-    ELSEIF(isBoardSafePosition(tmpEnemyX, tmpEnemyY - 1) AND direction <> DIRECTION_DOWN)
+    ELSEIF(tmpEnemyDirection = DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
         tmpEnemyY = tmpEnemyY - 1
-        enemyDirection(number) = DIRECTION_UP
+    ELSE
+        IF(tmpEnemyDirection <> DIRECTION_LEFT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
+            tmpEnemyX = tmpEnemyX + 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_RIGHT
+        ELSEIF(tmpEnemyDirection <> DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
+            tmpEnemyY = tmpEnemyY + 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN
+        ELSEIF(tmpEnemyDirection <> DIRECTION_RIGHT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
+            tmpEnemyX = tmpEnemyX - 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_LEFT
+        ELSEIF(tmpEnemyDirection <> DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
+            tmpEnemyY = tmpEnemyY - 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_UP
+        END IF
     END IF
 END SUB
 
 'Moves a counter clockwise enemy
-SUB moveCounterClockwiseEnemy(number as UBYTE, direction as UBYTE)
-    IF(isBoardSafePosition(tmpEnemyX - 1, tmpEnemyY) AND direction <> DIRECTION_RIGHT)
-        tmpEnemyX = tmpEnemyX - 1
-        enemyDirection(number) = DIRECTION_LEFT
-    ELSEIF(isBoardSafePosition(tmpEnemyX, tmpEnemyY + 1) AND direction <> DIRECTION_UP)
-        tmpEnemyY = tmpEnemyY + 1
-        enemyDirection(number) = DIRECTION_DOWN
-    ELSEIF(isBoardSafePosition(tmpEnemyX + 1, tmpEnemyY) AND direction <> DIRECTION_LEFT)
+SUB moveCounterClockwiseEnemy()
+    IF(tmpEnemyDirection = DIRECTION_RIGHT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
         tmpEnemyX = tmpEnemyX + 1
-        enemyDirection(number) = DIRECTION_RIGHT
-    ELSEIF(isBoardSafePosition(tmpEnemyX, tmpEnemyY - 1) AND direction <> DIRECTION_DOWN)
+    ELSEIF(tmpEnemyDirection = DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
+        tmpEnemyY = tmpEnemyY + 1
+    ELSEIF(tmpEnemyDirection = DIRECTION_LEFT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
+        tmpEnemyX = tmpEnemyX - 1
+    ELSEIF(tmpEnemyDirection = DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
         tmpEnemyY = tmpEnemyY - 1
-        enemyDirection(number) = DIRECTION_UP
+    ELSE
+        IF(tmpEnemyDirection <> DIRECTION_RIGHT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
+            tmpEnemyX = tmpEnemyX - 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_LEFT
+        ELSEIF(tmpEnemyDirection <> DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
+            tmpEnemyY = tmpEnemyY + 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN
+
+        ELSEIF(tmpEnemyDirection <> DIRECTION_LEFT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
+            tmpEnemyX = tmpEnemyX + 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_RIGHT
+        ELSEIF(tmpEnemyDirection <> DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
+            tmpEnemyY = tmpEnemyY - 1
+            enemyDirection(tmpEnemyNumber) = DIRECTION_UP
+        END IF
     END IF
 END SUB
 
 'Moves an "DIAGONAL-LEFT" enemy
-SUB moveDiagonalLeftEnemy(number as UBYTE, direction as UBYTE)
-    IF(direction = DIRECTION_D_L)
+SUB moveDiagonalLeftEnemy()
+    IF(tmpEnemyDirection = DIRECTION_D_L)
         IF(board(tmpEnemyX - 1 , tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX - 1
             tmpEnemyY = tmpEnemyY + 1
         ELSE
-            enemyDirection(number) = DIRECTION_D_R
+            enemyDirection(tmpEnemyNumber) = DIRECTION_D_R
         END IF
-    ELSEIF(direction = DIRECTION_D_R)
+    ELSEIF(tmpEnemyDirection = DIRECTION_D_R)
         IF(board(tmpEnemyX + 1 , tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX + 1
             tmpEnemyY = tmpEnemyY + 1
         ELSE
-            enemyDirection(number) = DIRECTION_U_R
+            enemyDirection(tmpEnemyNumber) = DIRECTION_U_R
         END IF
-    ELSEIF(direction = DIRECTION_U_R)
+    ELSEIF(tmpEnemyDirection = DIRECTION_U_R)
         IF(board(tmpEnemyX + 1 , tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX + 1
             tmpEnemyY = tmpEnemyY - 1
         ELSE
-            enemyDirection(number) = DIRECTION_U_L
+            enemyDirection(tmpEnemyNumber) = DIRECTION_U_L
         END IF
-    ELSEIF(direction = DIRECTION_U_L)
+    ELSEIF(tmpEnemyDirection = DIRECTION_U_L)
         IF(board(tmpEnemyX - 1 , tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX - 1
             tmpEnemyY = tmpEnemyY - 1
         ELSE
-            enemyDirection(number) = DIRECTION_D_L
+            enemyDirection(tmpEnemyNumber) = DIRECTION_D_L
         END IF
     END IF
 END SUB
 
 'Moves an "DIAGONAL-RIGHT" enemy
-SUB moveDiagonalRightEnemy(number as UBYTE, direction as UBYTE)
-    IF(direction = DIRECTION_U_R)
+SUB moveDiagonalRightEnemy()
+    IF(tmpEnemyDirection = DIRECTION_U_R)
         IF(board(tmpEnemyX + 1 , tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX + 1
             tmpEnemyY = tmpEnemyY - 1
         ELSE
-            enemyDirection(number) = DIRECTION_D_R
+            enemyDirection(tmpEnemyNumber) = DIRECTION_D_R
         END IF
-    ELSEIF(direction = DIRECTION_D_R)
+    ELSEIF(tmpEnemyDirection = DIRECTION_D_R)
         IF(board(tmpEnemyX + 1 , tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX + 1
             tmpEnemyY = tmpEnemyY + 1
         ELSE
-            enemyDirection(number) = DIRECTION_D_L
+            enemyDirection(tmpEnemyNumber) = DIRECTION_D_L
         END IF
-    ELSEIF(direction = DIRECTION_D_L)
+    ELSEIF(tmpEnemyDirection = DIRECTION_D_L)
         IF(board(tmpEnemyX - 1 , tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX - 1
             tmpEnemyY = tmpEnemyY + 1
         ELSE
-            enemyDirection(number) = DIRECTION_U_L
+            enemyDirection(tmpEnemyNumber) = DIRECTION_U_L
         END IF
-    ELSEIF(direction = DIRECTION_U_L)
+    ELSEIF(tmpEnemyDirection = DIRECTION_U_L)
         IF(board(tmpEnemyX - 1 , tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX - 1
             tmpEnemyY = tmpEnemyY - 1
         ELSE
-            enemyDirection(number) = DIRECTION_U_R
+            enemyDirection(tmpEnemyNumber) = DIRECTION_U_R
         END IF
     END IF
 END SUB
 
 'Moves an "LEFT-RIGHT" enemy
-SUB moveLeftRightEnemy(number as UBYTE, direction as UBYTE)
-    IF(direction = DIRECTION_LEFT)
+SUB moveLeftRightEnemy()
+    IF(tmpEnemyDirection = DIRECTION_LEFT)
         IF(board(tmpEnemyX - 1 , tmpEnemyY) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX - 1
         ELSE
-            enemyDirection(number) = DIRECTION_RIGHT   
+            enemyDirection(tmpEnemyNumber) = DIRECTION_RIGHT   
         END IF
-    ELSEIF(direction = DIRECTION_RIGHT)
+    ELSEIF(tmpEnemyDirection = DIRECTION_RIGHT)
         IF(board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY)
             tmpEnemyX = tmpEnemyX + 1
         ELSE
-            enemyDirection(number) = DIRECTION_LEFT
+            enemyDirection(tmpEnemyNumber) = DIRECTION_LEFT
         END IF
     END IF
 END SUB
 
 'Moves an "UP-DOWN" enemy
-SUB moveUpDownEnemy(number as UBYTE, direction as UBYTE)
-    IF(direction = DIRECTION_UP)
+SUB moveUpDownEnemy()
+    IF(tmpEnemyDirection = DIRECTION_UP)
         IF(board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY)
             tmpEnemyY = tmpEnemyY - 1
         ELSE
-            enemyDirection(number) = DIRECTION_DOWN    
+            enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN    
         END IF
-    ELSEIF(direction = DIRECTION_DOWN)
+    ELSEIF(tmpEnemyDirection = DIRECTION_DOWN)
         IF(board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY)
             tmpEnemyY = tmpEnemyY + 1
         ELSE
-            enemyDirection(number) = DIRECTION_UP
+            enemyDirection(tmpEnemyNumber) = DIRECTION_UP
         END IF
     END IF
 END SUB
