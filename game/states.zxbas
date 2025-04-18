@@ -167,7 +167,14 @@ SUB stateWaitSelectInput()
         setGameState(STATE_START_MENU)
     ELSEIF(frameKey = SELECT_INPUT_ENTRY_5_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
-        setGameState(STATE_START_MENU)
+        'This is to protect against random values on Kempston unconnected port
+        'as it can block the program
+        updateControls()
+        if(getControls(PLAYER_1_INDEX) = CONTROL_NONE)
+            setGameState(STATE_START_MENU)
+        ELSE
+            setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
+        END IF
     END IF
 END SUB
 
