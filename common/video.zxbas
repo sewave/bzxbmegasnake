@@ -174,6 +174,8 @@ END SUB
 
 'Puts [numChars] characters in line, stops at next char
 SUB putChars(numChars as UBYTE, charAddress AS UINTEGER)
+    DIM i AS UBYTE
+
     FOR i = 1 TO numChars
         putChar(charAddress)
         nextCharColumn()
@@ -182,6 +184,8 @@ END SUB
 
 'Clears [numChars] characters in line, stops at next char
 SUB clearChars(numChars as UBYTE)
+    DIM i AS UBYTE
+
     FOR i = 1 TO numChars
         clearChar()
         nextCharColumn()
@@ -190,6 +194,8 @@ END SUB
 
 'Puts [numChars] characters in row, stops at next char
 SUB putRowChars(numChars as UBYTE, charAddress AS UINTEGER)
+    DIM i AS UBYTE
+
     FOR i = 1 TO numChars
         putChar(charAddress)
         nextCharRow()
@@ -198,6 +204,8 @@ END SUB
 
 'Clears row [numChars] characters in row, stops at next char
 SUB clearRowChars(numChars as UBYTE)
+    DIM i AS UBYTE
+
     FOR i = 1 TO numChars
         clearChar()
         nextCharRow()
@@ -283,9 +291,11 @@ END SUB
 
 'Clears a rectangular region
 SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE, attributes AS UBYTE)
-    FOR j = y TO (y + height - 1)
-        clearCharsAt(x, j, attributes, width)
-    NEXT j
+    DIM i AS UBYTE
+
+    FOR i = y TO (y + height - 1)
+        clearCharsAt(x, i, attributes, width)
+    NEXT i
 END SUB
 
 'Draws a space filled window using the string characters to cover all

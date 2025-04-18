@@ -1,0 +1,14 @@
+#ifndef LANG
+    'Spanish as default
+    #define LANG es
+#endif
+
+'English
+#if LANG == en
+    #include "i18n\\english.zxbas"
+#endif
+
+'Spanish
+#if LANG == es
+    #include "i18n\\spanish.zxbas"
+#endif

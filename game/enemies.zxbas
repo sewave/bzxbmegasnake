@@ -38,7 +38,9 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
 
 'Returns true if board position is free and has adjacent board
 FUNCTION isBoardSafePosition(x AS UBYTE, y AS UBYTE) AS UBYTE
+    DIM i, j AS UBYTE
     DIM boardType AS UBYTE = board(x, y)
+
     IF(boardType = BOARD_TYPE_EMPTY)
         FOR i = x - 1 to x + 1
             FOR j = y - 1 to y + 1
@@ -52,6 +54,8 @@ END FUNCTION
 
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
+    DIM i AS UBYTE
+
     FOR i = 0 TO LAST_ENEMY_INDEX
         DIM tmpEnemyType AS UBYTE = levelsEnemiesData(level, i, ENEMY_PROPERTY_TYPE_INDEX)
         enemyType(i) = tmpEnemyType
@@ -70,6 +74,8 @@ END SUB
 
 'Moves the active enemies
 SUB moveEnemies()
+    DIM i AS UBYTE
+
     FOR i = 0 TO LAST_ENEMY_INDEX
         IF(enemyType(i) = ENEMY_TYPE_NONE) EXIT FOR
         IF(enemyWait(i))
@@ -91,6 +97,7 @@ SUB moveEnemy(enemyNumber AS UBYTE)
     tmpEnemyY = enemyY(enemyNumber)
     DIM tmpOldEnemyX AS UBYTE = tmpEnemyX
     DIM tmpOldEnemyY AS UBYTE = tmpEnemyY
+
     IF(enemyFrame(enemyNumber)) tmpEnemyCharacter = tmpEnemyCharacter + CHARACTER_BYTES
 
     board(tmpEnemyX, tmpEnemyY) = BOARD_TYPE_EMPTY

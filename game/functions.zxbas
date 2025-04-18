@@ -63,6 +63,8 @@ DIM inWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
 
 'Clears the board
 SUB clearBoard()
+    DIM i, j AS UBYTE
+
     FOR i = 0 TO PLAY_BOARD_MAX_X
         FOR j = 0 TO PLAY_BOARD_MAX_Y
             board(i, j) = BOARD_TYPE_EMPTY
@@ -71,6 +73,8 @@ END SUB
 
 'Puts a solid rectangle in the board
 SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
+    DIM i, j AS UBYTE
+
     drawWindowFilled(x, y, width, height,_
         levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
         inWindowsCharacters)
@@ -82,6 +86,8 @@ END SUB
 
 'Init the board
 SUB initBoard()
+    DIM i AS UBYTE
+
     clearBoard()
     'Draw the board limits
     FOR i = 0 TO PLAY_BOARD_MAX_X
@@ -115,6 +121,7 @@ END SUB
 'Checks if there is an item in the snake position
 SUB checkItem()
     DIM boardType AS UBYTE = getBoardOnSnakePosition()
+
     IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
         clearBoardSnakePosition()
         IF(boardType = BOARD_TYPE_UNGROW)
@@ -305,6 +312,7 @@ END SUB
 'Reads the input and sets the snake direction, checks for pause too
 SUB processInput()
     DIM controls AS UBYTE = getControls(PLAYER_1_INDEX)
+
     IF((controls bAND CONTROL_LEFT) AND direction <> DIRECTION_RIGHT)
         direction = DIRECTION_LEFT
     ELSEIF((controls bAND CONTROL_RIGHT) AND direction <> DIRECTION_LEFT)
@@ -429,6 +437,8 @@ END SUB
 
 'Puts all the snake positions to out of bounds
 SUB clearSnakePositions()
+    DIM i AS UBYTE
+
     FOR i = MIN_SNAKE_INDEX TO MAX_SNAKE_INDEX
         snakeX(i) = SNAKE_OUT_BOUNDS_X
         snakeY(i) = SNAKE_OUT_BOUNDS_Y
@@ -482,6 +492,8 @@ END SUB
 'Returns true if the new key is not already defined and is on the printable
 'uppercase range
 FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
+    DIM i AS UBYTE
+
     IF(keyCode = NO_KEYBOARD_KEY_PRESSED) RETURN FALSE
     IF(redefinedKeys)
         FOR i = 0 TO redefinedKeys - 1
@@ -545,6 +557,7 @@ END SUB
 'Inits the level items
 SUB initItems()
     DIM item AS UBYTE = 0
+
     WHILE(levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX) <> BOARD_TYPE_EMPTY)
         putItem(item)
         item = item + 1
@@ -563,6 +576,8 @@ END SUB
 
 'Resets game level, only sets data that can be reloaded after death
 SUB resetGameLevel()
+    DIM i AS UBYTE
+
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES

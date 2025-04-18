@@ -3,6 +3,9 @@
 'for the awesome fonts
 'Wave 2025
 
+#pragma explicit = true
+#pragma strict = true
+
 'Set up max players to use less memory
 #define NUM_PLAYERS 1
 #include "common\\constants.zxbas"
@@ -14,7 +17,7 @@
 #include "gfx\\udgs.udg.zxbas"
 #include "gfx\\sprites.spr.zxbas"
 #include "game\\constants.zxbas"
-#include "game\\lang.zxbas"
+#include "game\\localize.zxbas"
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
 #include "game\\functions.zxbas"

@@ -208,6 +208,8 @@ END FUNCTION
 
 'Inits the input system, sets all control types to keyboard
 SUB initInput()
+    DIM i AS UBYTE
+
     FOR i = 0 TO NUM_PLAYERS_MAX_INDEX
         setControlType(i, CONTROL_TYPE_KEYBOARD)
     NEXT i
@@ -215,6 +217,8 @@ END SUB
 
 'Copy the keys to the player
 SUB copyKeys(playerIndex AS UBYTE, BYREF newKeys() AS UBYTE)
+    DIM i AS UBYTE
+
     FOR i = 0 TO KEYS_MAX_INDEX
         keys(playerIndex, i) = newKeys(i)       
     NEXT i
@@ -267,6 +271,8 @@ END SUB
 
 'Updates the controls reading the [keys]
 SUB updateControls()
+    DIM i AS UBYTE
+
     readKeyboard()
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
@@ -279,6 +285,8 @@ END SUB
 
 'Returns true if any player is pressing controls
 FUNCTION anyControlPressed() AS UBYTE
+    DIM i AS UBYTE
+
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF(getControls(i) <> CONTROL_NONE) RETURN TRUE
     NEXT i
