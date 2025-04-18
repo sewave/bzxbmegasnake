@@ -1,4 +1,4 @@
-# Mega Snake
+# Mega Serpiente
 For the **ZX Spectrum** using **Boriel ZX Basic**.
 
 Special thanks to DamienG (https://damieng.com/typography/zx-origins/) for the awesome fonts.

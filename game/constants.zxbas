@@ -175,11 +175,11 @@
 'Intro constants
 #define INTRO_TITLE_X 1
 #define INTRO_TITLE_Y 5
-#define INTRO_TITLE_1  " __      __   _            __ "
-#define INTRO_TITLE_2  "/ _\\  /\\ \\ \\ /_\\    /\\ /\\ /__\\"
-#define INTRO_TITLE_3  "\\ \\  /  \\/ ///_\\\\  / //_//_\\  "
-#define INTRO_TITLE_4  "_\\ \\/ /\\  //  _  \\/ __ \\//__  "
-#define INTRO_TITLE_5  "\\__/\\_\\ \\/ \\_/ \\_/\\/  \\/\\__/  "
+#define INTRO_TITLE_1  " _             _        _     "
+#define INTRO_TITLE_2  "/_| __ _ _ _ _(_)__ _ _| |___ "
+#define INTRO_TITLE_3  "\\_\\/-_) '_| '_\\ /-_) ' \\ _/-_)"
+#define INTRO_TITLE_4  "|_/\\__|_| | ._/_\\__|_||_\\_\\__|"
+#define INTRO_TITLE_5  "          |_|                 "
 
 #define INTRO_TITLE_2_X 4
 #define INTRO_TITLE_2_Y 1
@@ -303,7 +303,7 @@
 
 'Starting values
 #define START_LIVES 99
-#define START_LEVEL 6
+#define START_LEVEL 0
 #define LEVEL_TIME_BONUS 2
 
 'End level
