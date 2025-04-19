@@ -10,7 +10,7 @@
   "EnableBreak": false,
   "Explicit": false,
   "Defines": [
-    "LANG=es"
+    "DEBUG=1"
   ],
   "IgnoreCase": false,
   "Strict": false,

@@ -17,6 +17,7 @@ DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM reloadTime AS UBYTE
+DIM noDeathInLevel AS UBYTE
 
 'Tmp vars to speed up
 DIM snakeHeadBoardAddress AS UINTEGER
@@ -247,6 +248,7 @@ END SUB
 'Loses live and checks to see new state
 SUB loseLive()
     lives = lives - 1
+    noDeathInLevel = FALSE
     IF(lives)
         setGameState(STATE_START_LOSE_LIVE)
     ELSE

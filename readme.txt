@@ -1,7 +1,7 @@
 MEGA SERPIENTE
 ©2025 Wave 
 
-Gracias epseciales a DamienG (https://damieng.com/typography/zx-origins/) por las increibles fuentes.
+Gracias especiales a DamienG (https://damieng.com/typography/zx-origins/) por las increibles fuentes.
 Usa la fuente Koncrete (https://damieng.com/typography/zx-origins/koncrete/).
 
 El juego:
@@ -18,6 +18,8 @@ A: Abajo
 M: Elegir/Pausa
 Pero se pueden redefinir o elegir Sinclair 1, Sinclair 2, Cursor o Kempston.
 
+Al pausar el juego puedes elegir con izquierda y derecha si quieres seguir o salir.
+
 LOS ÍTEMS:
 Fruta: Incrementa el tamaño de la serpiente, da puntos y permite terminar el nivel.
 : Hace que la serpiente vuelva al tamaño original.
@@ -30,8 +32,7 @@ Encontrarás diferentes formas rectangulares en cada nivel, ¡no choques con ell
 LOS BICHOS:
 
 
-
-
 Algunas pistas:
--Si mueres por chocarte, el tiempo no se reinicia
--El
+-Si mueres por chocarte, el tiempo no se reiniciará.
+-Ganarás más puntos si no mueres en el nivel.
+-Ganarás más puntos si completas rápidamente el nivel.

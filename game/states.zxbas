@@ -103,6 +103,7 @@ SUB stateStartGame()
     level = START_LEVEL
     snakeLength = INITIAL_SNAKE_LENGTH
     reloadTime = TRUE
+    noDeathInLevel = TRUE
     initLevelFruits()
     clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
     resetGameLevel()
@@ -135,6 +136,11 @@ SUB stateGamePlaying()
     ELSE
         moveEnemies()
     END IF
+#ifdef DEBUG
+    IF((getControls(PLAYER_1_INDEX) bAND (CONTROL_DOWN bOR CONTROL_UP)) = (CONTROL_DOWN bOR CONTROL_UP))
+        setGameState(STATE_START_END_LEVEL)
+    END IF
+#endif
 END SUB
 
 'Draws the select input screen
@@ -244,8 +250,9 @@ END SUB
 'Starts the end level printing bonus
 SUB stateStartEndLevel()
     DIM timeBonus AS UINTEGER = remainingTime * LEVEL_TIME_BONUS
+    DIM oldScore AS UINTEGER = score
     score = score + timeBonus
-    'TODO NO DEATH, PACIFISTA
+
     drawWindowFilled(END_LEVEL_BIG_WINDOW_X, END_LEVEL_BIG_WINDOW_Y,_
         END_LEVEL_BIG_WINDOW_WIDTH, END_LEVEL_BIG_WINDOW_HEIGHT,_
             END_LEVEL_BIG_WINDOW_COLOR, TOTAL_BLACK_ATTRIBUTES, outWindowsCharacters)
@@ -256,6 +263,12 @@ SUB stateStartEndLevel()
     PRINT AT END_LEVEL_FINISHED_Y, END_LEVEL_FINISHED_X; END_LEVEL_FINISHED_STRING;_
         getPaddedNumber(level + 1, END_LEVEL_NUMBER_LENGTH, END_LEVEL_NUMBER_PAD);_
             END_LEVEL_FINISHED_STRING_2;
+    IF(noDeathInLevel)
+        PRINT AT END_LEVEL_NO_DEATH_Y, END_LEVEL_NO_DEATH_X; END_LEVEL_NO_DEATH_STRING;
+        score = score + NO_DEATH_BONUS
+    END IF
+    PRINT AT END_LEVEL_SCORE_Y, END_LEVEL_SCORE_X; END_LEVEL_SCORE_STRING;_
+        getPaddedNumber(oldScore, END_LEVEL_SCORE_LENGTH, END_LEVEL_SCORE_PAD)
     PRINT AT END_LEVEL_TIME_Y, END_LEVEL_TIME_X; END_LEVEL_TIME_STRING;_
         getPaddedNumber(remainingTime, END_LEVEL_TIME_LENGTH, END_LEVEL_TIME_PAD);_
             END_LEVEL_TIME_STRING_2; getPaddedNumber(timeBonus,_
@@ -263,10 +276,11 @@ SUB stateStartEndLevel()
     PRINT AT END_LEVEL_TOTAL_Y, END_LEVEL_TOTAL_X; END_LEVEL_TOTAL_STRING;_
         getPaddedNumber(score, END_LEVEL_TOTAL_LENGTH, END_LEVEL_TOTAL_PAD)
     checkMaxScore()
-    drawScores()
-    
+
+    'Increase level and restore initial level vars
     level = level + 1
     reloadTime = TRUE
+    noDeathInLevel = TRUE
     snakeLength = INITIAL_SNAKE_LENGTH
     growth = START_GROWTH
     initLevelFruits()
