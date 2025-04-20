@@ -18,6 +18,7 @@ DIM delayedFrames AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM reloadTime AS UBYTE
 DIM noDeathInLevel AS UBYTE
+DIM pauseExits AS UBYTE = FALSE
 
 'Tmp vars to speed up
 DIM snakeHeadBoardAddress AS UINTEGER
@@ -162,9 +163,9 @@ SUB checkFruit()
         fruits = fruits - 1
         drawFruits()
         drawScores()
-        IF(fruits)
+        IF fruits > 0 THEN
             IF(snakeLength < MAX_SNAKE_LENGTH) growth = growth + FRUIT_GROWTH
-        ELSE           
+        ELSE
             setGameState(STATE_START_END_LEVEL)
         END IF
     END IF
@@ -487,8 +488,8 @@ SUB printControls()
             PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_5;_
                 INTRO_INSTRUCTIONS_KEMPSTON;
         END IF
-            PRINT AT INTRO_INSTRUCTIONS_Y_3, INTRO_INSTRUCTIONS_JOYSTICK_X_6;_
-                INTRO_INSTRUCTIONS_JOY_OTHERS;
+        PRINT AT INTRO_INSTRUCTIONS_Y_3, INTRO_INSTRUCTIONS_JOYSTICK_X_6;_
+            INTRO_INSTRUCTIONS_JOY_OTHERS;
     END IF
 END SUB
 
@@ -608,7 +609,7 @@ END SUB
 
 'Check remaining time to lose a live and redraws it
 SUB checkTime()
-    IF(timeRemainingFrames)
+    IF timeRemainingFrames > 0 THEN
         timeRemainingFrames = timeRemainingFrames - 1
     ELSE
         timeRemainingFrames = FRAMES_IN_SECOND

@@ -13,8 +13,6 @@ SUB stateWaitKeyGameOver()
     END IF
 END SUB
 
-DIM pauseExits AS UBYTE = FALSE
-
 'Shows the pause string and changes to wait unpause on next state after no key
 SUB stateStartPause()
     PRINT AT PAUSE_Y, PAUSE_X; INK RED; PAPER YELLOW; FLASH TRUE ; PAUSE_STRING
