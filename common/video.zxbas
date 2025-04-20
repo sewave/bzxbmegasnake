@@ -23,11 +23,6 @@
 #define FONT_ADDRESS 23606
 #define FONT_OFFSET 256
 
-'Spectrum frame counter bytes
-#define FRAME_LOW_BYTE 23672
-#define FRAME_MED_BYTE 23673
-#define FRAME_HI_BYTE 23674
-
 'Wait frames
 #define FRAMES_WAITED_START 0
 
@@ -47,14 +42,33 @@
 #define SCROLLER_FRAMES_DONE   0
 #define SCROLLER_REMAINIG_FRAMES_START 1
 
+'010TTSSS RRRCCCCC
+#define PIXEL_BASE %0100000000000000
+#define SCAN_LINE_INC 256
+#define ROW_INC %0000011100100000
+#define SCAN_LINE_CLEAR %1111100011111111
+'010110TT RRRCCCCC FBPPPIII
+#define ATTR_BASE %0101100000000000
+#define ATTR_ROW_INC %00100000
+
 'Common constants
 #define SPACE_STRING " "
+
+'Spectrum frame counter bytes
+#define FRAME_LOW_BYTE 23672
+#define FRAME_MED_BYTE 23673
+#define FRAME_HI_BYTE 23674
 
 DIM scrollerTargetFrames AS UBYTE
 DIM scrollerRemainingFrames AS UBYTE
 DIM scrollerX, scrollerY AS UBYTE
 DIM scrollerTargetWidth AS UBYTE
 DIM scrollerPointer AS UINTEGER
+
+DIM currentCharAddr AS UINTEGER
+DIM currentCharAttrAddr AS UINTEGER
+DIM currentAttributes AS UBYTE
+DIM tmpAddr AS UINTEGER
 
 'Fade global variables, to speed up processing
 DIM tmpAttribute AS UBYTE
@@ -67,6 +81,15 @@ DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
 DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
 DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
 
+DIM customFullFrameCounter AS ULONG = 0
+
+'Get the 24 bit frame counter
+FUNCTION getfullFrameCounter() AS ULONG
+    POKE(UINTEGER, @customFullFrameCounter, integerFrameCounter)
+    POKE(UBYTE, @customFullFrameCounter + INTEGER_BYTES, highFrameCounter)
+    RETURN customFullFrameCounter
+END FUNCTION
+
 'Returns the X position for the string to be centered on the screen
 #define centerScreenX(str) ((32 - LEN(str)) >> 1)
 
@@ -75,23 +98,6 @@ DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
 
 'Loads [font] address into system to switch font graphics
 #define loadFont(font) POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
-
-'Get the 24 bit frame counter
-#define fullFrameCounter (CAST(ULONG, highFrameCounter) << INTEGER_BITS) + integerFrameCounter
-
-'010TTSSS RRRCCCCC
-#define PIXEL_BASE %0100000000000000
-#define SCAN_LINE_INC 256
-#define ROW_INC %0000011100100000
-#define SCAN_LINE_CLEAR %1111100011111111
-'010110TT RRRCCCCC FBPPPIII
-#define ATTR_BASE %0101100000000000
-#define ATTR_ROW_INC %00100000
-
-DIM currentCharAddr AS UINTEGER
-DIM currentCharAttrAddr AS UINTEGER
-DIM currentAttributes AS UBYTE
-DIM tmpAddr AS UINTEGER
 
 'Creates a new attributes byte
 #define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << PAPER_SHIFT_BITS) | ink)
