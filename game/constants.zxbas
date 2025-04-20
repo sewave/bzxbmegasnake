@@ -222,9 +222,9 @@
 #define INTRO_MAX_SCORE_NUM_PAPER BLUE
 
 'Speed
-#define MIN_GAME_FRAMES      1
-#define INITIAL_GAME_FRAMES  4
-#define MAX_GAME_FRAMES      7
+#define MIN_GAME_FRAMES      3
+#define INITIAL_GAME_FRAMES  5
+#define MAX_GAME_FRAMES      8
 #define GAME_FADE    4
 
 'Intro window
@@ -416,6 +416,19 @@
 
 DIM STATUS_NUM_PAD AS STRING = " "
 
-#define centerBoardX(str) (BOARD_WIDTH - LEN(str) >> 1)
-
 #define NO_DEATH_BONUS 100
+
+'Windows characters
+DIM outWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
+    @sprites_Out_Window(0, 0), @sprites_Out_Window(1, 0),_
+    @sprites_Out_Window(2, 0), @sprites_Out_Window(3, 0),_
+    @sprites_Out_Window(4, 0), @sprites_Out_Window(5, 0),_
+    @sprites_Out_Window(6, 0), @sprites_Out_Window(7, 0)_
+}
+
+DIM inWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
+    @sprites_In_Window(0, 0), @sprites_In_Window(1, 0),_
+    @sprites_In_Window(2, 0), @sprites_In_Window(3, 0),_
+    @sprites_In_Window(4, 0), @sprites_In_Window(5, 0),_
+    @sprites_In_Window(6, 0), @sprites_In_Window(7, 0)_
+}

@@ -20,6 +20,8 @@
 #include "game\\localize.zxbas"
 #include "game\\data.zxbas"
 #include "game\\sounds.zxbas"
+#include "game\\vars.zxbas"
+#include "game\\board.zxbas"
 #include "game\\functions.zxbas"
 #include "game\\enemies.zxbas"
 #include "game\\states.zxbas"

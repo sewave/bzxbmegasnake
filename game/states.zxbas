@@ -24,19 +24,19 @@ END SUB
 'Waits to unpause to reanudate the game on next state after no key
 SUB stateWaitUnpause()
     DIM control AS UBYTE = getControls(PLAYER_1_INDEX)
-    IF(control bAND CONTROL_FIRE)
-        IF(pauseExits)
+    IF (control bAND CONTROL_FIRE) THEN
+        IF (pauseExits) THEN
             setStateFadeToBlack(DIE_FADE_FRAMES, STATE_START_TITLE)
         ELSE
             clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
             clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
             setStateWaitNoKey(STATE_GAME_PLAYING)
         END IF
-    ELSEIF(control bAND CONTROL_LEFT)
+    ELSEIF (control bAND CONTROL_LEFT)
         clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
         printPauseContinue()
         pauseExits = FALSE
-    ELSEIF(control bAND CONTROL_RIGHT)
+    ELSEIF (control bAND CONTROL_RIGHT)
         clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
         printPauseExit()
         pauseExits = TRUE
@@ -85,10 +85,10 @@ END SUB
 'Waits menu selection to change game state
 SUB stateWaitMenu()
     printTitleScroller()
-    IF(getFirstKeyPressed() = SELECT_INPUT_KEY)
+    IF getFirstKeyPressed() = SELECT_INPUT_KEY THEN
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
-        IF(getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE)
+        IF getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
             setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
         END IF
     END IF
@@ -158,24 +158,24 @@ END SUB
 SUB stateWaitSelectInput()
     printTitleScroller()
     DIM frameKey AS UBYTE = getFirstKeyPressed()
-    IF(frameKey = SELECT_INPUT_ENTRY_1_KEY)
+    IF (frameKey = SELECT_INPUT_ENTRY_1_KEY) THEN
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
         setGameState(STATE_START_SELECT_KEYS)
-    ELSEIF(frameKey = SELECT_INPUT_ENTRY_2_KEY)
+    ELSEIF (frameKey = SELECT_INPUT_ENTRY_2_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_1)
         setGameState(STATE_START_MENU)
-    ELSEIF(frameKey = SELECT_INPUT_ENTRY_3_KEY)
+    ELSEIF (frameKey = SELECT_INPUT_ENTRY_3_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_2)
         setGameState(STATE_START_MENU)
-    ELSEIF(frameKey = SELECT_INPUT_ENTRY_4_KEY)
+    ELSEIF (frameKey = SELECT_INPUT_ENTRY_4_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_CURSOR)
         setGameState(STATE_START_MENU)
-    ELSEIF(frameKey = SELECT_INPUT_ENTRY_5_KEY)
+    ELSEIF (frameKey = SELECT_INPUT_ENTRY_5_KEY)
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
         'This is to protect against random values on Kempston unconnected port
         'as it can block the program
         updateControls()
-        if(getControls(PLAYER_1_INDEX) = CONTROL_NONE)
+        IF (getControls(PLAYER_1_INDEX) = CONTROL_NONE) THEN
             setGameState(STATE_START_MENU)
         ELSE
             setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
@@ -201,9 +201,9 @@ SUB stateWaitSelectKeys()
     DIM keyCode AS UBYTE = getFirstKeyPressed()
     
     printTitleScroller()
-    IF(redefinedKeys > KEYS_MAX_INDEX)
+    IF (redefinedKeys > KEYS_MAX_INDEX) THEN
         setStateWaitNoKey(STATE_START_MENU)
-    ELSEIF(keyCodeAcceptable(keyCode, PLAYER_1_INDEX))
+    ELSEIF (keyCodeAcceptable(keyCode, PLAYER_1_INDEX))
         PRINT AT SELECT_KEYS_ENTRY_Y_1 + redefinedKeys, SELECTED_KEY_TITLE_X;_
             PAPER INTRO_CENTRAL_WINDOW_PAPER; INK GUI_COLOR; CHR(keyboardValues(keyCode));
         keys(PLAYER_1_INDEX, redefinedKeys) = keyCode

@@ -1,174 +1,6 @@
-'Game vars
-DIM delayFrames AS UBYTE
-DIM headPosition, tailPosition AS UBYTE
-DIM growth AS BYTE
-DIM direction AS UBYTE
-DIM snakeX(MAX_SNAKE_INDEX) AS UBYTE
-DIM snakeY(MAX_SNAKE_INDEX) AS UBYTE
-DIM score AS UINTEGER
-DIM maxScore AS UINTEGER
-DIM snakeLength AS UBYTE
-DIM redefinedKeys AS UBYTE
-DIM level AS UBYTE
-DIM lives AS UBYTE
-DIM fruits AS UBYTE
-DIM timeRemainingFrames AS UBYTE
-DIM remainingTime AS UBYTE
-DIM delayedFrames AS UBYTE
-DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
-DIM reloadTime AS UBYTE
-DIM noDeathInLevel AS UBYTE
-DIM pauseExits AS UBYTE = FALSE
-
-'Tmp vars to speed up
-DIM snakeHeadBoardAddress AS UINTEGER
-
-DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Reduction, @sprites_Speed_Up,_
-    @sprites_Speed_Down, @sprites_Go_Up, _
-    @sprites_Go_Right, @sprites_Go_Down, _
-    @sprites_Go_Left _
-}
-
-DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, RED, YELLOW),_
-    createAttributes(TRUE, TRUE, BLUE, GREEN), createAttributes(TRUE, TRUE, WHITE, GREEN),_
-    createAttributes(TRUE, TRUE, WHITE, YELLOW), createAttributes(TRUE, TRUE, WHITE, RED),_
-    createAttributes(TRUE, TRUE, WHITE, PURPLE) _
-}
-
-'Windows characters
-DIM outWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Out_Window(0, 0), @sprites_Out_Window(1, 0),_
-    @sprites_Out_Window(2, 0), @sprites_Out_Window(3, 0),_
-    @sprites_Out_Window(4, 0), @sprites_Out_Window(5, 0),_
-    @sprites_Out_Window(6, 0), @sprites_Out_Window(7, 0)_
-}
-
-DIM inWindowsCharacters(WINDOW_LAST_INDEX) AS UINTEGER => {_
-    @sprites_In_Window(0, 0), @sprites_In_Window(1, 0),_
-    @sprites_In_Window(2, 0), @sprites_In_Window(3, 0),_
-    @sprites_In_Window(4, 0), @sprites_In_Window(5, 0),_
-    @sprites_In_Window(6, 0), @sprites_In_Window(7, 0)_
-}
-
-'Updates the snake head board address
-#define updateSnakeHeadBoardAddress() snakeHeadBoardAddress = @board(snakeX(headPosition), snakeY(headPosition))
-
-'Get the board type on the snake head position
-#define getBoardOnSnakePosition() PEEK(snakeHeadBoardAddress)
-
-'Put the board type on the snake head position
-#define putBoardOnSnakePosition(value) POKE(snakeHeadBoardAddress, value)
-
-'Clears the board on the snake head position
-#define clearBoardSnakePosition() putBoardOnSnakePosition(BOARD_TYPE_EMPTY)
-
-'Clears the board
-SUB clearBoard()
-    DIM i, j AS UBYTE
-
-    FOR i = 0 TO PLAY_BOARD_MAX_X
-        FOR j = 0 TO PLAY_BOARD_MAX_Y
-            board(i, j) = BOARD_TYPE_EMPTY
-    NEXT j: NEXT i
-END SUB
-
-'Puts a solid rectangle in the board
-SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
-    DIM i, j AS UBYTE
-
-    drawWindowFilled(x, y, width, height,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
-        inWindowsCharacters)
-    FOR i = x TO x + width - 1
-        FOR j = y TO y + height - 1
-            board(i, j) = BOARD_TYPE_SOLID
-    NEXT j: NEXT i
-END SUB
-
-'Init the board
-SUB initBoard()
-    DIM i AS UBYTE
-
-    clearBoard()
-    'Draw the board limits
-    FOR i = 0 TO PLAY_BOARD_MAX_X
-        board(i, 0) = BOARD_TYPE_SOLID
-        board(i, PLAY_BOARD_MAX_Y) = BOARD_TYPE_SOLID
-    NEXT i
-    FOR i = 0 TO PLAY_BOARD_MAX_Y
-        board(0, i) = BOARD_TYPE_SOLID
-        board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
-    NEXT i
-    drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTES, inWindowsCharacters)
-    
-    'Draw the level layout
-    DIM rectangle AS UBYTE = 0
-    WHILE(rectangle <= LAST_LEVEL_RECTANGLE_INDEX AND levelsBoardData(level, rectangle, 0) <> RECT_END)
-        putBoardRectangle(_
-            levelsBoardData(level, rectangle, RECT_X_INDEX),_
-            levelsBoardData(level, rectangle, RECT_Y_INDEX),_
-            levelsBoardData(level, rectangle, RECT_WIDTH_INDEX),_
-            levelsBoardData(level, rectangle, RECT_HEIGHT_INDEX))
-        rectangle = rectangle + 1
-    END WHILE
-END SUB
-
 'Checks if max score has to be updated
 SUB checkMaxScore()
     IF(score > maxScore) maxScore = score
-END SUB
-
-'Checks if there is an item in the snake position
-SUB checkItem()
-    DIM boardType AS UBYTE = getBoardOnSnakePosition()
-
-    IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
-        clearBoardSnakePosition()
-        IF(boardType = BOARD_TYPE_UNGROW)
-            ungrowSound()
-            growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
-        ELSEIF(boardType = BOARD_TYPE_SPEED_UP)
-            speedUpSound()
-            IF(delayFrames > MIN_GAME_FRAMES) delayFrames = delayFrames - 1
-        ELSEIF(boardType = BOARD_TYPE_SPEED_DOWN)
-            speedDownSound()
-            IF(delayFrames < MAX_GAME_FRAMES) delayFrames = delayFrames + 1
-        ELSEIF(boardType = BOARD_TYPE_GO_UP)
-            goDirectionSound()
-            direction = DIRECTION_UP
-        ELSEIF(boardType = BOARD_TYPE_GO_RIGHT)
-            goDirectionSound()
-            direction = DIRECTION_RIGHT
-        ELSEIF(boardType = BOARD_TYPE_GO_DOWN)
-            goDirectionSound()
-            direction = DIRECTION_DOWN
-        ELSEIF(boardType = BOARD_TYPE_GO_LEFT)
-            goDirectionSound()
-            direction = DIRECTION_LEFT
-        END IF
-    END IF
-END SUB
-
-'Checks if the snake is colliding with the fruit to increase score and
-'put a new fruit
-SUB checkFruit()
-    IF(getBoardOnSnakePosition() = BOARD_TYPE_FRUIT)
-        fruitSound()
-        clearBoardSnakePosition()
-        score = score + FRUIT_INC_SCORE
-        checkMaxScore()
-        fruits = fruits - 1
-        drawFruits()
-        drawScores()
-        IF fruits > 0 THEN
-            IF(snakeLength < MAX_SNAKE_LENGTH) growth = growth + FRUIT_GROWTH
-        ELSE
-            setGameState(STATE_START_END_LEVEL)
-        END IF
-    END IF
 END SUB
 
 'Draws the level text
@@ -250,21 +82,10 @@ END SUB
 SUB loseLive()
     lives = lives - 1
     noDeathInLevel = FALSE
-    IF(lives)
+    IF lives > 0 THEN
         setGameState(STATE_START_LOSE_LIVE)
     ELSE
         setGameState(STATE_START_GAME_OVER)
-    END IF
-END SUB
-
-'Checks if the snake has to die, if it does not die, fill position in board
-SUB checkDeath()
-    IF(direction <> DIRECTION_NONE)
-        IF(getBoardOnSnakePosition() = BOARD_TYPE_EMPTY)
-            putBoardOnSnakePosition(BOARD_TYPE_SNAKE)
-        ELSE
-            loseLive()
-        END IF
     END IF
 END SUB
 
@@ -281,13 +102,13 @@ SUB drawSnakeTail()
     tailX = snakeX(tailPosition)
     tailY = snakeY(tailPosition)
     
-    IF(nextTailX > tailX)
+    IF nextTailX > tailX THEN
         tailChar = SNAKE_TAIL_RIGHT
-    ELSEIF (nextTailX < tailX)
+    ELSEIF nextTailX < tailX THEN
         tailChar = SNAKE_TAIL_LEFT
-    ELSEIF (nextTailY > tailY)
+    ELSEIF nextTailY > tailY THEN
         tailChar = SNAKE_TAIL_UP
-    ELSEIF (nextTailY < tailY)
+    ELSEIF nextTailY < tailY THEN
         tailChar = SNAKE_TAIL_DOWN
     ELSE
         tailChar = SNAKE_TAIL_RIGHT
@@ -343,12 +164,12 @@ END SUB
 
 'Updates the snake tail position, it does not move if there is growth left
 SUB updateSnakeTailPosition()
-    IF(growth < 0 AND snakeLength > MIN_SNAKE_LENGTH)
+    IF growth < 0 AND snakeLength > MIN_SNAKE_LENGTH THEN
         snakeLength = snakeLength - 1
         growth = growth + 1
         eraseSnakeTail()
         tailPosition = tailPosition + 1
-        IF(tailPosition > MAX_SNAKE_INDEX) tailPosition = 0
+        IF tailPosition > MAX_SNAKE_INDEX THEN tailPosition = 0
         drawSnakeTail()
     END IF
 END SUB
@@ -428,17 +249,6 @@ SUB eraseSnakeTail()
     snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
 END SUB
 
-DIM emptyScreenXPosition, emptyScreenYPosition AS UBYTE
-
-'Populates [emptyScreenXPosition, emptyScreenYPosition] with an empty board position in screen coordinates
-SUB getRandomEmptyBoardPosition()
-    DO
-        emptyScreenXPosition = RND() * (PLAY_BOARD_MAX_X + 1)
-        emptyScreenYPosition = RND() * (PLAY_BOARD_MAX_Y + 1)
-    LOOP UNTIL board(emptyScreenXPosition, emptyScreenYPosition) = BOARD_TYPE_EMPTY
-    emptyScreenYPosition = emptyScreenYPosition
-END SUB
-
 'Puts all the snake positions to out of bounds
 SUB clearSnakePositions()
     DIM i AS UBYTE
@@ -449,13 +259,6 @@ SUB clearSnakePositions()
     NEXT i
 END SUB
 
-'Puts a new fruit on a free board position
-SUB putFruit()
-    getRandomEmptyBoardPosition()
-    board(emptyScreenXPosition, emptyScreenYPosition) = BOARD_TYPE_FRUIT
-    putCharAt(emptyScreenXPosition, emptyScreenYPosition, FRUIT_ATTRIBUTES, FRUIT_CHAR)
-END SUB
-
 'Draws the title controls
 SUB printControls()
     DIM controlType AS UBYTE = getControlType(PLAYER_1_INDEX)
@@ -463,7 +266,7 @@ SUB printControls()
     INK GUI_COLOR
     
     PRINT AT INTRO_CONTROLS_Y, INTRO_CONTROLS_X; INTRO_CONTROLS;
-    if(controlType = CONTROL_TYPE_KEYBOARD)
+    IF controlType = CONTROL_TYPE_KEYBOARD THEN
         PRINT AT INTRO_INSTRUCTIONS_Y_1, INTRO_INSTRUCTIONS_X_1;_
             getControlChar(PLAYER_1_INDEX, CONTROL_LEFT_INDEX); INTRO_INSTRUCTIONS_1_A;_
             getControlChar(PLAYER_1_INDEX, CONTROL_RIGHT_INDEX); INTRO_INSTRUCTIONS_1_B;
@@ -615,7 +418,7 @@ SUB checkTime()
         timeRemainingFrames = FRAMES_IN_SECOND
         remainingTime = remainingTime - 1
         drawTime()
-        IF(remainingTime = 0)
+        IF remainingTime = 0 THEN
             reloadTime = TRUE
             setGameState(STATE_START_LOSE_LIVE)
         END IF
