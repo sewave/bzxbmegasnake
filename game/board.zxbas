@@ -88,27 +88,27 @@ END SUB
 SUB checkItem()
     DIM boardType AS UBYTE = getBoardOnSnakePosition()
 
-    IF(boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT)
+    IF boardType >=  BOARD_TYPE_UNGROW AND boardType <= BOARD_TYPE_GO_LEFT THEN
         clearBoardSnakePosition()
-        IF(boardType = BOARD_TYPE_UNGROW)
+        IF boardType = BOARD_TYPE_UNGROW THEN
             ungrowSound()
             growth = MIN_SNAKE_LENGTH + (snakeLength * -1)
-        ELSEIF(boardType = BOARD_TYPE_SPEED_UP)
+        ELSEIF boardType = BOARD_TYPE_SPEED_UP THEN
             speedUpSound()
-            IF(delayFrames > MIN_GAME_FRAMES) delayFrames = delayFrames - 1
-        ELSEIF(boardType = BOARD_TYPE_SPEED_DOWN)
+            IF delayFrames > MIN_GAME_FRAMES THEN delayFrames = delayFrames - 1
+        ELSEIF boardType = BOARD_TYPE_SPEED_DOWN THEN
             speedDownSound()
-            IF(delayFrames < MAX_GAME_FRAMES) delayFrames = delayFrames + 1
-        ELSEIF(boardType = BOARD_TYPE_GO_UP)
+            IF delayFrames < MAX_GAME_FRAMES THEN delayFrames = delayFrames + 1
+        ELSEIF boardType = BOARD_TYPE_GO_UP THEN
             goDirectionSound()
             direction = DIRECTION_UP
-        ELSEIF(boardType = BOARD_TYPE_GO_RIGHT)
+        ELSEIF boardType = BOARD_TYPE_GO_RIGHT THEN
             goDirectionSound()
             direction = DIRECTION_RIGHT
-        ELSEIF(boardType = BOARD_TYPE_GO_DOWN)
+        ELSEIF boardType = BOARD_TYPE_GO_DOWN THEN
             goDirectionSound()
             direction = DIRECTION_DOWN
-        ELSEIF(boardType = BOARD_TYPE_GO_LEFT)
+        ELSEIF boardType = BOARD_TYPE_GO_LEFT THEN
             goDirectionSound()
             direction = DIRECTION_LEFT
         END IF
@@ -118,7 +118,7 @@ END SUB
 'Checks if the snake is colliding with the fruit to increase score and
 'put a new fruit
 SUB checkFruit()
-    IF(getBoardOnSnakePosition() = BOARD_TYPE_FRUIT)
+    IF getBoardOnSnakePosition() = BOARD_TYPE_FRUIT THEN
         fruitSound()
         clearBoardSnakePosition()
         score = score + FRUIT_INC_SCORE
@@ -127,7 +127,7 @@ SUB checkFruit()
         drawFruits()
         drawScores()
         IF fruits > 0 THEN
-            IF(snakeLength < MAX_SNAKE_LENGTH) growth = growth + FRUIT_GROWTH
+            IF snakeLength < MAX_SNAKE_LENGTH THEN growth = growth + FRUIT_GROWTH
         ELSE
             setGameState(STATE_START_END_LEVEL)
         END IF
@@ -136,8 +136,8 @@ END SUB
 
 'Checks if the snake has to die, if it does not die, fill position in board
 SUB checkDeath()
-    IF(direction <> DIRECTION_NONE)
-        IF(getBoardOnSnakePosition() = BOARD_TYPE_EMPTY)
+    IF direction <> DIRECTION_NONE THEN
+        IF getBoardOnSnakePosition() = BOARD_TYPE_EMPTY THEN
             putBoardOnSnakePosition(BOARD_TYPE_SNAKE)
         ELSE
             loseLive()

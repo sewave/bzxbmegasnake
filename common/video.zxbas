@@ -254,11 +254,11 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
     DIM widthInc AS UBYTE = width - 1
     DIM heightInc AS UBYTE = height - 1
     setAttributes(color)
-    IF(width > MIN_WINDOW_REPEAT_WIDTH)
+    IF width > MIN_WINDOW_REPEAT_WIDTH THEN
         drawHorizontalLine(startX + 1, startY, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_UP_INDEX))
         drawHorizontalLine(startX + 1, startY + heightInc, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_DOWN_INDEX))
     END IF
-    IF(height > MIN_WINDOW_REPEAT_HEIGHT)
+    IF height > MIN_WINDOW_REPEAT_HEIGHT THEN
         drawVerticalLine(startX, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_LEFT_INDEX))
         drawVerticalLine(startX + widthInc, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_RIGHT_INDEX))
     END IF
@@ -287,10 +287,10 @@ END SUB
 'Call it on each frame
 SUB frameTextScroller(BYREF scrollerText AS STRING)
     scrollerRemainingFrames = scrollerRemainingFrames - 1
-    IF(scrollerRemainingFrames = SCROLLER_FRAMES_DONE)
+    IF scrollerRemainingFrames = SCROLLER_FRAMES_DONE THEN
         scrollerRemainingFrames = scrollerTargetFrames
         PRINT AT scrollerY, scrollerX; scrollerText(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
-        IF(scrollerPointer + scrollerTargetWidth >= LEN(scrollerText))
+        IF scrollerPointer + scrollerTargetWidth >= LEN(scrollerText) THEN
             scrollerPointer = SCROLLER_POINTER_START
         ELSE
             scrollerPointer = scrollerPointer + 1
@@ -314,7 +314,7 @@ END SUB
 '7FF3
 '6554
 SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, attributes as UBYTE, fillAttributes AS UBYTE, BYREF characters() as UINTEGER)
-    IF(width > MIN_WINDOW_REPEAT_WIDTH AND height > MIN_WINDOW_REPEAT_HEIGHT)
+    IF width > MIN_WINDOW_REPEAT_WIDTH AND height > MIN_WINDOW_REPEAT_HEIGHT THEN
         clearRectangle(startX + 1, startY + 1, width - 2, height - 2, fillAttributes)
     END IF
     drawWindow(startX, startY, width, height, attributes, characters)
@@ -324,13 +324,13 @@ END SUB
 SUB fadeAttributesToBlack()
     FOR attrIndex = ATTRIBUTES_START_ADDR TO ATTRIBUTES_END_ADDR
         tmpAttribute = PEEK(attrIndex)
-        IF(tmpAttribute > ATTRIBUTE_COLOR)
+        IF tmpAttribute > ATTRIBUTE_COLOR THEN
             tmpAttribute = tmpAttribute bAND ATTRIBUTE_COLOR
         ELSE
             tmpPaper = tmpAttribute bAND ATTRIBUTE_PAPER
             tmpInk = tmpAttribute bAND ATTRIBUTE_INK
-            IF(tmpPaper) tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
-            IF(tmpInk) tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
+            IF tmpPaper THEN tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
+            IF tmpInk THEN tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
             tmpAttribute = tmpPaper | tmpInk
         END IF
         POKE(attrIndex, tmpAttribute)
@@ -338,11 +338,11 @@ SUB fadeAttributesToBlack()
 END SUB
 
 SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
-    IF(number >= THOUSAND)
+    IF number >= THOUSAND THEN
         PRINT AT y, x; number;
-    ELSEIF(number >= HUNDRED)
+    ELSEIF number >= HUNDRED THEN
         PRINT AT y, x; padding; number;
-    ELSEIF(number >= TEN)
+    ELSEIF number >= TEN THEN
         PRINT AT y, x; padding; padding; number;
     ELSE
         PRINT AT y, x; padding; padding; padding; number;
@@ -350,9 +350,9 @@ SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYR
 END SUB
 
 SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
-    IF(number >= HUNDRED)
+    IF number >= HUNDRED THEN
         PRINT AT y, x; number;
-    ELSEIF(number >= TEN)
+    ELSEIF number >= TEN THEN
         PRINT AT y, x; padding; number;
     ELSE
         PRINT AT y, x; padding; padding; number;
@@ -360,9 +360,9 @@ SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYRE
 END SUB
 
 SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
-    IF(number >= HUNDRED)
+    IF number >= HUNDRED THEN
         PRINT AT y, x; number;
-    ELSEIF(number >= TEN)
+    ELSEIF number >= TEN THEN
         PRINT AT y, x; padding; number;
     ELSE
         PRINT AT y, x; padding; padding; number;
@@ -370,7 +370,7 @@ SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF paddi
 END SUB
 
 SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
-    IF(number >= TEN)
+    IF number >= TEN THEN
         PRINT AT y, x; number;
     ELSE
         PRINT AT y, x; padding; number;

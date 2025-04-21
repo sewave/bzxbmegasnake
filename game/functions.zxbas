@@ -1,6 +1,6 @@
 'Checks if max score has to be updated
 SUB checkMaxScore()
-    IF(score > maxScore) maxScore = score
+    IF score > maxScore THEN maxScore = score
 END SUB
 
 'Draws the level text
@@ -96,7 +96,7 @@ SUB drawSnakeTail()
     DIM nextTailPosition AS UBYTE
 
     nextTailPosition = tailPosition + 1
-    IF(nextTailPosition > MAX_SNAKE_INDEX) nextTailPosition = 0
+    IF nextTailPosition > MAX_SNAKE_INDEX THEN nextTailPosition = 0
     nextTailX = snakeX(nextTailPosition)
     nextTailY = snakeY(nextTailPosition)
     tailX = snakeX(tailPosition)
@@ -120,15 +120,15 @@ END SUB
 SUB drawSnakeHead(flashAttr AS UBYTE)
     DIM snakeChar AS UINTEGER
 
-    IF(direction = DIRECTION_NONE)
+    IF direction = DIRECTION_NONE THEN
         snakeChar = SNAKE_HEAD_FRONT
-    ELSEIF(direction = DIRECTION_RIGHT)
+    ELSEIF direction = DIRECTION_RIGHT THEN
         snakeChar = SNAKE_HEAD_RIGHT
-    ELSEIF (direction = DIRECTION_LEFT)
+    ELSEIF direction = DIRECTION_LEFT THEN
         snakeChar = SNAKE_HEAD_LEFT
-    ELSEIF (direction = DIRECTION_UP)
+    ELSEIF direction = DIRECTION_UP THEN
         snakeChar = SNAKE_HEAD_UP
-    ELSEIF (direction = DIRECTION_DOWN)
+    ELSEIF direction = DIRECTION_DOWN THEN
         snakeChar = SNAKE_HEAD_DOWN
     END IF
     putCharAt(snakeX(headPosition), snakeY(headPosition), flashAttr | SNAKE_ATTRIBUTES, snakeChar)
@@ -138,24 +138,24 @@ END SUB
 SUB processInput()
     DIM controls AS UBYTE = getControls(PLAYER_1_INDEX)
 
-    IF((controls bAND CONTROL_LEFT) AND direction <> DIRECTION_RIGHT)
+    IF (controls bAND CONTROL_LEFT) AND direction <> DIRECTION_RIGHT THEN
         direction = DIRECTION_LEFT
-    ELSEIF((controls bAND CONTROL_RIGHT) AND direction <> DIRECTION_LEFT)
+    ELSEIF (controls bAND CONTROL_RIGHT) AND direction <> DIRECTION_LEFT THEN
         direction = DIRECTION_RIGHT
-    ELSEIF((controls bAND CONTROL_UP) AND direction <> DIRECTION_DOWN)
+    ELSEIF (controls bAND CONTROL_UP) AND direction <> DIRECTION_DOWN THEN
         direction = DIRECTION_UP
-    ELSEIF((controls bAND CONTROL_DOWN) AND direction <> DIRECTION_UP)
+    ELSEIF (controls bAND CONTROL_DOWN) AND direction <> DIRECTION_UP THEN
         direction = DIRECTION_DOWN
-    ELSEIF(controls bAND CONTROL_FIRE)
+    ELSEIF controls bAND CONTROL_FIRE THEN
         setGameState(STATE_START_PAUSE)
     END IF
 END SUB
 
 'Updates the player snake and head if it is moving
 SUB updatePlayer()
-    IF(direction <> DIRECTION_NONE)
+    IF direction <> DIRECTION_NONE THEN
         growth = growth - 1
-        IF(snakeLength < MAX_SNAKE_LENGTH)
+        IF snakeLength < MAX_SNAKE_LENGTH THEN
             snakeLength = snakeLength + 1
         END IF
         updateSnakeHeadPosition()
@@ -186,56 +186,56 @@ SUB updateSnakeHeadPosition()
     prevHeadY = snakeY(headPosition)
     
     oldHeadPos = headPosition - 1
-    IF(oldHeadPos > MAX_SNAKE_INDEX) oldHeadPos = MAX_SNAKE_INDEX
+    IF oldHeadPos > MAX_SNAKE_INDEX THEN oldHeadPos = MAX_SNAKE_INDEX
     oldHeadX = snakeX(oldHeadPos)
     oldHeadY = snakeY(oldHeadPos)
     
     headPosition = headPosition + 1
-    IF(headPosition > MAX_SNAKE_INDEX) headPosition = MIN_SNAKE_INDEX
-    IF(direction = DIRECTION_RIGHT)
+    IF headPosition > MAX_SNAKE_INDEX THEN headPosition = MIN_SNAKE_INDEX
+    IF direction = DIRECTION_RIGHT THEN
         snakeX(headPosition) = prevHeadX + HEAD_SPEED
         snakeY(headPosition) = prevHeadY
-        IF(oldHeadY > prevHeadY)
+        IF oldHeadY > prevHeadY THEN
             prevHeadChar = SNAKE_BODY_DW_RI
-        ELSEIF(oldHeadY < prevHeadY)
+        ELSEIF oldHeadY < prevHeadY THEN
             prevHeadChar = SNAKE_BODY_UP_RI
         ELSE
             prevHeadChar = SNAKE_BODY_HOR
         END IF
-        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_RIGHT
-    ELSEIF(direction = DIRECTION_LEFT)
+        IF oldHeadX = SNAKE_OUT_BOUNDS_X THEN prevHeadChar = SNAKE_TAIL_RIGHT
+    ELSEIF direction = DIRECTION_LEFT THEN
         snakeX(headPosition) = prevHeadX - HEAD_SPEED
         snakeY(headPosition) = prevHeadY
-        IF(oldHeadY > prevHeadY)
+        IF oldHeadY > prevHeadY THEN
             prevHeadChar = SNAKE_BODY_LF_DW
-        ELSEIF(oldHeadY < prevHeadY)
+        ELSEIF oldHeadY < prevHeadY THEN
             prevHeadChar = SNAKE_BODY_LF_UP
         ELSE
             prevHeadChar = SNAKE_BODY_HOR
         END IF
-        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_LEFT
-    ELSEIF(direction = DIRECTION_UP)
+        IF oldHeadX = SNAKE_OUT_BOUNDS_X THEN prevHeadChar = SNAKE_TAIL_LEFT
+    ELSEIF direction = DIRECTION_UP THEN
         snakeX(headPosition) = prevHeadX
         snakeY(headPosition) = prevHeadY - HEAD_SPEED
-        IF(oldHeadX > prevHeadX)
+        IF oldHeadX > prevHeadX THEN
             prevHeadChar = SNAKE_BODY_UP_RI
-        ELSEIF(oldHeadX < prevHeadX)
+        ELSEIF oldHeadX < prevHeadX THEN
             prevHeadChar = SNAKE_BODY_LF_UP
         ELSE
             prevHeadChar = SNAKE_BODY_VER
         END IF
-        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_DOWN
-    ELSEIF(direction = DIRECTION_DOWN)
+        IF oldHeadX = SNAKE_OUT_BOUNDS_X THEN prevHeadChar = SNAKE_TAIL_DOWN
+    ELSEIF direction = DIRECTION_DOWN THEN
         snakeX(headPosition) = prevHeadX
         snakeY(headPosition) = prevHeadY + HEAD_SPEED
-        IF(oldHeadX > prevHeadX)
+        IF oldHeadX > prevHeadX THEN
             prevHeadChar = SNAKE_BODY_DW_RI
-        ELSEIF(oldHeadX < prevHeadX)
+        ELSEIF oldHeadX < prevHeadX THEN
             prevHeadChar = SNAKE_BODY_LF_DW
         ELSE
             prevHeadChar = SNAKE_BODY_VER
         END IF
-        IF(oldHeadX = SNAKE_OUT_BOUNDS_X) prevHeadChar = SNAKE_TAIL_UP
+        IF oldHeadX = SNAKE_OUT_BOUNDS_X THEN prevHeadChar = SNAKE_TAIL_UP
     END IF
     putCharAt(prevHeadX, prevHeadY, SNAKE_ATTRIBUTES, prevHeadChar)
     drawSnakeHead(ATTRIBUTE_FLASH_OFF)
@@ -278,16 +278,16 @@ SUB printControls()
     ELSE
         PRINT AT INTRO_INSTRUCTIONS_Y_1, INTRO_INSTRUCTIONS_JOYSTICK_X_1;_
             INTRO_INSTRUCTIONS_JOYSTICK;
-        IF(controlType = CONTROL_TYPE_SINCLAIR_1)
+        IF controlType = CONTROL_TYPE_SINCLAIR_1 THEN
             PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_2;_
                 INTRO_INSTRUCTIONS_SINCLAIR_1;
-        ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_2)
+        ELSEIF controlType = CONTROL_TYPE_SINCLAIR_2 THEN
             PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_3;_
                 INTRO_INSTRUCTIONS_SINCLAIR_2;
-        ELSEIF(controlType = CONTROL_TYPE_CURSOR)
+        ELSEIF controlType = CONTROL_TYPE_CURSOR THEN
             PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_4;_
                 INTRO_INSTRUCTIONS_CURSOR;
-        ELSEIF(controlType = CONTROL_TYPE_KEMPSTON)
+        ELSEIF controlType = CONTROL_TYPE_KEMPSTON THEN
             PRINT AT INTRO_INSTRUCTIONS_Y_2, INTRO_INSTRUCTIONS_JOYSTICK_X_5;_
                 INTRO_INSTRUCTIONS_KEMPSTON;
         END IF
@@ -301,10 +301,10 @@ END SUB
 FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
     DIM i AS UBYTE
 
-    IF(keyCode = NO_KEYBOARD_KEY_PRESSED) RETURN FALSE
-    IF(redefinedKeys)
+    IF keyCode = NO_KEYBOARD_KEY_PRESSED THEN RETURN FALSE
+    IF redefinedKeys THEN
         FOR i = 0 TO redefinedKeys - 1
-            IF(keys(playerIndex, i) = keyCode) return FALSE
+            IF keys(playerIndex, i) = keyCode THEN return FALSE
         NEXT i
     END IF
     RETURN TRUE
@@ -346,7 +346,7 @@ END SUB
 'Inits the snake for the current level
 SUB initSnake()
     clearSnakePositions()
-    IF(snakeLength > INITIAL_SNAKE_LENGTH)
+    IF snakeLength > INITIAL_SNAKE_LENGTH THEN
         growth = snakeLength - INITIAL_SNAKE_LENGTH
     ELSE
         growth = START_GROWTH
@@ -389,7 +389,7 @@ SUB resetGameLevel()
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES
     timeRemainingFrames = FRAMES_IN_SECOND
-    IF(reloadTime)
+    IF reloadTime THEN
         remainingTime = levelsMiscData(level, LEVEL_MISC_DATA_TIME_INDEX)
         reloadTime = FALSE
     END IF
