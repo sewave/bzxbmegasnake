@@ -86,31 +86,31 @@ END SUB
 'Waits for [framesToWait] frames and then goes to next game state
 SUB stateWaitFrames()
     framesToWait = framesToWait - FRAMES_TO_WAIT_DEC
-    IF(framesToWait = NO_FRAMES_TO_WAIT) moveNextGameStateToGameState()
+    IF framesToWait = NO_FRAMES_TO_WAIT THEN moveNextGameStateToGameState()
 END SUB
 
 'Waits for no key pressed, then goes to [nextGameState]
 SUB stateWaitNoKey()
-    IF(getFirstKeyPressed() = NO_KEYBOARD_KEY_PRESSED AND anyControlPressed() = FALSE) moveNextGameStateToGameState()
+    IF getFirstKeyPressed() = NO_KEYBOARD_KEY_PRESSED AND anyControlPressed() = FALSE THEN moveNextGameStateToGameState()
 END SUB
 
 'Waits for any key pressed, then goes to [nextGameState]
 SUB stateWaitAnyKey()
-    IF(getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE) moveNextGameStateToGameState()
+    IF getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE THEN moveNextGameStateToGameState()
 END SUB
 
 'Waits for [keyToWait] key pressed, then goes to [nextGameState]
 SUB stateWaitAKey()
-    IF(getFirstKeyPressed() <> keyToWait) moveNextGameStateToGameState()
+    IF getFirstKeyPressed() <> keyToWait THEN moveNextGameStateToGameState()
 END SUB
 
 'Waits for [targetFadeStepframes] frames and then lowers attributes, 8 steps
 SUB stateFadeToBlack()
     fadeStepframes = fadeStepframes - 1
-    if(fadeStepframes = 0)
+    if fadeStepframes = 0 THEN
         fadeAttributesToBlack()
         fadeStepframes = targetFadeStepframes
         remainingFadeSteps = remainingFadeSteps - 1
-        IF(remainingFadeSteps = 0) moveNextGameStateToGameState()
+        IF remainingFadeSteps = 0 THEN moveNextGameStateToGameState()
     END IF
 END SUB

@@ -186,7 +186,7 @@ END SUB
 'Returns 255 if no key pressed
 FUNCTION getFirstKeyPressed() AS UBYTE
     FOR keyboardAddr = @keyboard TO @keyboard + LAST_KEYBOARD_KEY_INDEX
-        IF(PEEK(keyboardAddr) <> KEYBOARD_KEY_NOT_PRESSED) RETURN keyboardAddr - @keyboard
+        IF PEEK(keyboardAddr) <> KEYBOARD_KEY_NOT_PRESSED THEN RETURN keyboardAddr - @keyboard
     NEXT keyboardAddr
     RETURN NO_KEYBOARD_KEY_PRESSED
 END FUNCTION
@@ -227,13 +227,13 @@ END SUB
 'Sets the control type of a player
 SUB setControlType(playerIndex AS UBYTE, controlType AS UBYTE)
     controlTypes(playerIndex) = controlType
-    IF(controlType = CONTROL_TYPE_KEYBOARD)
+    IF controlType = CONTROL_TYPE_KEYBOARD THEN
         copyKeys(playerIndex, defaultKeys)
-    ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_1)
+    ELSEIF controlType = CONTROL_TYPE_SINCLAIR_1 THEN
         copyKeys(playerIndex, sinclairOne)
-    ELSEIF(controlType = CONTROL_TYPE_SINCLAIR_2)
+    ELSEIF controlType = CONTROL_TYPE_SINCLAIR_2 THEN
         copyKeys(playerIndex, sinclairTwo)
-    ELSEIF(controlType = CONTROL_TYPE_CURSOR)
+    ELSEIF controlType = CONTROL_TYPE_CURSOR THEN
         copyKeys(playerIndex, cursor)
     END IF
 END SUB
@@ -247,11 +247,11 @@ END FUNCTION
 SUB readPlayerKeyboard(playerIndex AS UBYTE)
     tmpControl = CONTROL_NONE
     keyboardAddr = @keys(playerIndex, 0)
-    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_LEFT_INDEX))) tmpControl = tmpControl + CONTROL_LEFT
-    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_RIGHT_INDEX))) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_UP_INDEX))) tmpControl = tmpControl + CONTROL_UP
-    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_DOWN_INDEX))) tmpControl = tmpControl + CONTROL_DOWN
-    IF(PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_FIRE_INDEX))) tmpControl = tmpControl + CONTROL_FIRE
+    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_LEFT_INDEX)) THEN tmpControl = tmpControl + CONTROL_LEFT
+    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_RIGHT_INDEX)) THEN tmpControl = tmpControl + CONTROL_RIGHT
+    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_UP_INDEX)) THEN tmpControl = tmpControl + CONTROL_UP
+    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_DOWN_INDEX)) THEN tmpControl = tmpControl + CONTROL_DOWN
+    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_FIRE_INDEX)) THEN tmpControl = tmpControl + CONTROL_FIRE
     controls(playerIndex) = tmpControl
 END SUB
 
@@ -260,11 +260,11 @@ SUB readPlayerKempston(playerIndex AS UBYTE)
     tmpControl = CONTROL_NONE
     tmpInput = IN KEMPSTON_PORT
 
-    IF(tmpInput bAND KEMPSTON_UP) tmpControl = tmpControl + CONTROL_UP
-    IF(tmpInput bAND KEMPSTON_DOWN) tmpControl = tmpControl + CONTROL_DOWN
-    IF(tmpInput bAND KEMPSTON_LEFT) tmpControl = tmpControl + CONTROL_LEFT
-    IF(tmpInput bAND KEMPSTON_RIGHT) tmpControl = tmpControl + CONTROL_RIGHT
-    IF(tmpInput bAND KEMPSTON_FIRE) tmpControl = tmpControl + CONTROL_FIRE
+    IF tmpInput bAND KEMPSTON_UP THEN tmpControl = tmpControl + CONTROL_UP
+    IF tmpInput bAND KEMPSTON_DOWN THEN tmpControl = tmpControl + CONTROL_DOWN
+    IF tmpInput bAND KEMPSTON_LEFT THEN tmpControl = tmpControl + CONTROL_LEFT
+    IF tmpInput bAND KEMPSTON_RIGHT THEN tmpControl = tmpControl + CONTROL_RIGHT
+    IF tmpInput bAND KEMPSTON_FIRE THEN tmpControl = tmpControl + CONTROL_FIRE
 
     controls(playerIndex) = tmpControl
 END SUB
@@ -275,7 +275,7 @@ SUB updateControls()
 
     readKeyboard()
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
-        IF(getControlType(i) = CONTROL_TYPE_KEMPSTON)
+        IF getControlType(i) = CONTROL_TYPE_KEMPSTON THEN
             readPlayerKempston(i)
         ELSE
             readPlayerKeyboard(i)
@@ -288,7 +288,7 @@ FUNCTION anyControlPressed() AS UBYTE
     DIM i AS UBYTE
 
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
-        IF(getControls(i) <> CONTROL_NONE) RETURN TRUE
+        IF getControls(i) <> CONTROL_NONE THEN RETURN TRUE
     NEXT i
     RETURN FALSE
 END FUNCTION

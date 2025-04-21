@@ -39,25 +39,6 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
 }
 
-
-'Returns true if board position is free and has adjacent board
-FUNCTION isBoardSafePosition(x AS UBYTE, y AS UBYTE) AS UBYTE
-    DIM tmpI, tmpJ AS UBYTE
-    DIM boardType AS UBYTE = board(x, y)
-
-    IF(boardType = BOARD_TYPE_EMPTY)
-        FOR tmpI = x - 1 to x + 1
-            FOR tmpJ = y - 1 to y + 1
-                IF(tmpI <> x OR tmpJ <> y)
-                    boardType = board(tmpI, tmpJ)
-                    IF(boardType = BOARD_TYPE_SOLID OR boardType = BOARD_TYPE_SNAKE) RETURN TRUE
-                END IF
-            NEXT tmpJ
-        NEXT tmpI
-    END IF
-    RETURN FALSE
-END FUNCTION
-
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
     FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
