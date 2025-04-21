@@ -107,7 +107,7 @@ END SUB
 'Waits for [targetFadeStepframes] frames and then lowers attributes, 8 steps
 SUB stateFadeToBlack()
     fadeStepframes = fadeStepframes - 1
-    if fadeStepframes = 0 THEN
+    IF fadeStepframes = 0 THEN
         fadeAttributesToBlack()
         fadeStepframes = targetFadeStepframes
         remainingFadeSteps = remainingFadeSteps - 1

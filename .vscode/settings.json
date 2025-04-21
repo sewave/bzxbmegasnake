@@ -2,5 +2,7 @@
   "files.defaultLanguage": "borielbasic",
   "files.associations": {
     "*.zxbas": "borielbasic"
-  }
+  },
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 120,
 }

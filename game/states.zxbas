@@ -275,14 +275,50 @@ SUB stateStartEndLevel()
         getPaddedNumber(score, END_LEVEL_TOTAL_LENGTH, END_LEVEL_TOTAL_PAD)
     checkMaxScore()
 
-    'Increase level and restore initial level vars
-    level = level + 1
-    reloadTime = TRUE
-    noDeathInLevel = TRUE
-    snakeLength = INITIAL_SNAKE_LENGTH
-    growth = START_GROWTH
-    initLevelFruits()
-    setStateWaitAnyKey(STATE_RESTART_LEVEL)
+    IF level >= LAST_LEVEL_INDEX THEN
+        setStateWaitFrames(TO_END_FRAMES, STATE_START_END_GAME)
+    ELSE
+        'Increase level and restore initial level vars
+        level = level + 1
+        reloadTime = TRUE
+        noDeathInLevel = TRUE
+        snakeLength = INITIAL_SNAKE_LENGTH
+        growth = START_GROWTH
+        initLevelFruits()
+        setStateWaitAnyKey(STATE_RESTART_LEVEL)
+    END IF    
+END SUB
+
+'Starts the end game sequence
+SUB stateStartEndGame()
+    drawWindowFilled(END_GAME_WINDOW_X, END_GAME_WINDOW_Y, END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, _
+        END_GAME_WINDOW_BORDER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES, outWindowsCharacters)
+    PAPER END_GAME_CONGRATULATIONS_PAPER: INK END_GAME_CONGRATULATIONS_INK
+    PRINT AT END_GAME_CONGRATULATIONS_Y, centerScreenX(END_GAME_COMPLETED_STRING); END_GAME_COMPLETED_STRING;
+
+    PAPER TRANSPARENT: INK TRANSPARENT: BRIGHT FALSE
+
+    endGameCounter = END_GAME_MESSAGE_WAIT
+    endGameMessageNumber = 0
+    setGameState(STATE_LOOP_END_GAME)
+END SUB
+
+'Loops the end game sequence
+SUB stateLoopEndGame()
+    IF endGameMessageNumber <= LAST_END_GAME_MESSAGE THEN
+        IF endGameCounter > 0 THEN 
+            endGameCounter = endGameCounter - 1
+        ELSE
+            PRINT AT END_GAME_MESSAGE_STRINGS_BASE_Y + endGameMessageNumber, END_GAME_MESSAGE_STRINGS_X;_
+                END_GAME_MESSAGE_STRINGS(endGameMessageNumber);
+            endGameCounter = END_GAME_MESSAGE_WAIT
+            endGameMessageNumber = endGameMessageNumber + 1
+        END IF
+    END IF
+
+    IF endGameMessageNumber > LAST_END_GAME_MESSAGE AND (getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE) THEN
+        setStateFadeToBlack(END_FADE_FRAMES, STATE_START_TITLE)
+    END IF
 END SUB
 
 'Slots 5-7 are reserved for future use
@@ -309,5 +345,7 @@ DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateStartLoseLive, _
     @stateRestartLevel, _
     @stateStartEndLevel, _
+    @stateStartEndGame, _
+    @stateLoopEndGame, _
     @stateStartMenu _
 }
