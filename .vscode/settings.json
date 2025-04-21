@@ -1,6 +1,6 @@
 {
-  "files.defaultLanguage": "zxbasic",
+  "files.defaultLanguage": "borielbasic",
   "files.associations": {
-    ".zxbas": "zxbasic"
+    "*.zxbas": "borielbasic"
   }
 }
