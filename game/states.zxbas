@@ -305,7 +305,7 @@ SUB stateStartEndGame()
 
     PAPER TRANSPARENT: INK TRANSPARENT: BRIGHT FALSE
 
-    endGameCounter = END_GAME_MESSAGE_WAIT
+    endGameCounter = 0
     endGameMessageNumber = 0
     setGameState(STATE_LOOP_END_GAME)
 END SUB
@@ -313,12 +313,15 @@ END SUB
 'Loops the end game sequence
 SUB stateLoopEndGame()
     IF endGameMessageNumber <= LAST_END_GAME_MESSAGE THEN
-        IF endGameCounter > 0 THEN 
-            endGameCounter = endGameCounter - 1
+        IF endGameCounter < END_GAME_MESSAGE_WAIT THEN
+            DIM messageIndex AS UBYTE = endGameCounter >> 1
+            IF messageIndex < END_GAME_MESSAGE_LAST_INDEX THEN
+                PRINT AT END_GAME_MESSAGE_STRINGS_BASE_Y + endGameMessageNumber, END_GAME_MESSAGE_STRINGS_X + messageIndex;_
+                    END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1);
+            END IF
+            endGameCounter = endGameCounter + 1
         ELSE
-            PRINT AT END_GAME_MESSAGE_STRINGS_BASE_Y + endGameMessageNumber, END_GAME_MESSAGE_STRINGS_X;_
-                END_GAME_MESSAGE_STRINGS(endGameMessageNumber);
-            endGameCounter = END_GAME_MESSAGE_WAIT
+            endGameCounter = 0
             endGameMessageNumber = endGameMessageNumber + 1
         END IF
     END IF
