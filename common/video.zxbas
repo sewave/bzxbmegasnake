@@ -54,6 +54,10 @@
 'Common constants
 #define SPACE_STRING " "
 
+#define STRING_DATA_OFFSET 2
+#define ROW_DEC %0000000000100000
+#define CHAR_SHIFT_BITS 3
+
 'Spectrum frame counter bytes
 #define FRAME_LOW_BYTE 23672
 #define FRAME_MED_BYTE 23673
@@ -64,11 +68,22 @@ DIM scrollerRemainingFrames AS UBYTE
 DIM scrollerX, scrollerY AS UBYTE
 DIM scrollerTargetWidth AS UBYTE
 DIM scrollerPointer AS UINTEGER
+DIM scrollerString AS STRING
+DIM scrollerStringLength AS UINTEGER
+DIM scrollerTiles AS UINTEGER
 
 DIM currentCharAddr AS UINTEGER
 DIM currentCharAttrAddr AS UINTEGER
 DIM currentAttributes AS UBYTE
 DIM tmpAddr AS UINTEGER
+
+'Tall characters vars
+DIM tmpCharByte AS UBYTE
+DIM tmpStrDataAddr AS UINTEGER
+DIM tmpCharsAddr AS UINTEGER
+DIM tmpStrLen AS UBYTE
+DIM putHalfCharFunction AS UINTEGER = @putHalfCharTall
+DIM upperAttributes, lowerAttributes AS UBYTE
 
 'Fade global variables, to speed up processing
 DIM tmpAttribute AS UBYTE
@@ -112,6 +127,18 @@ END SUB
 SUB nextCharRow()
     currentCharAddr = (currentCharAddr + ROW_INC) bAND SCAN_LINE_CLEAR
     currentCharAttrAddr = (currentCharAttrAddr + ATTR_ROW_INC)
+END SUB
+
+'Updates char addresses to prev column
+SUB prevCharColumn()
+    currentCharAddr = currentCharAddr - 1
+    currentCharAttrAddr = currentCharAttrAddr - 1
+END SUB
+
+'Updates char addresses to prev row
+SUB prevCharRow()
+    currentCharAddr = (currentCharAddr - ROW_DEC) bAND SCAN_LINE_CLEAR
+    currentCharAttrAddr = currentCharAttrAddr - ATTR_ROW_INC
 END SUB
 
 'Sets the attributes for the current char
@@ -270,13 +297,16 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
 END SUB
 
 'Initializes the text scroller
-SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE)
+SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, BYREF scroller AS STRING, tiles as UINTEGER)
     scrollerTargetFrames = frames
     scrollerRemainingFrames = SCROLLER_REMAINIG_FRAMES_START
     scrollerX = x
     scrollerY = y
     scrollerTargetWidth = width - 1
     scrollerPointer = SCROLLER_POINTER_START
+    scrollerTiles = tiles
+    scrollerString = scroller
+    scrollerStringLength = LEN(scrollerString)
 END SUB
 
 'You must set ink, paper, bright, flash before calling
@@ -285,12 +315,27 @@ END SUB
 'String must end by an empty zone of at least width if you
 'want the string to dissapear completely
 'Call it on each frame
-SUB frameTextScroller(BYREF scrollerText AS STRING)
+SUB frameTextScroller()
     scrollerRemainingFrames = scrollerRemainingFrames - 1
     IF scrollerRemainingFrames = SCROLLER_FRAMES_DONE THEN
         scrollerRemainingFrames = scrollerTargetFrames
-        PRINT AT scrollerY, scrollerX; scrollerText(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
-        IF scrollerPointer + scrollerTargetWidth >= LEN(scrollerText) THEN
+        PRINT AT scrollerY, scrollerX; scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
+        IF scrollerPointer + scrollerTargetWidth >= scrollerStringLength THEN
+            scrollerPointer = SCROLLER_POINTER_START
+        ELSE
+            scrollerPointer = scrollerPointer + 1
+        END IF
+    END IF
+END SUB
+
+'Prints a tall scroller using [tiles] as font
+SUB frameTextScrollerTall()
+    scrollerRemainingFrames = scrollerRemainingFrames - 1
+    IF scrollerRemainingFrames = SCROLLER_FRAMES_DONE THEN
+        scrollerRemainingFrames = scrollerTargetFrames
+        setCharPosition(scrollerX, scrollerY)
+        printTall(scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth), scrollerTiles)
+        IF scrollerPointer + scrollerTargetWidth >= scrollerStringLength THEN
             scrollerPointer = SCROLLER_POINTER_START
         ELSE
             scrollerPointer = scrollerPointer + 1
@@ -337,6 +382,7 @@ SUB fadeAttributesToBlack()
     NEXT attrIndex
 END SUB
 
+'Prints a padded number of thousands length
 SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
     IF number >= THOUSAND THEN
         PRINT AT y, x; number;
@@ -349,6 +395,7 @@ SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYR
     END IF
 END SUB
 
+'Prints a padded number of hundreds length
 SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
     IF number >= HUNDRED THEN
         PRINT AT y, x; number;
@@ -359,6 +406,7 @@ SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYRE
     END IF
 END SUB
 
+'Prints a padded number of byte length
 SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
     IF number >= HUNDRED THEN
         PRINT AT y, x; number;
@@ -369,10 +417,90 @@ SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF paddi
     END IF
 END SUB
 
+'Prints a padded number of tens length
 SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
     IF number >= TEN THEN
         PRINT AT y, x; number;
     ELSE
         PRINT AT y, x; padding; number;
     END IF
+END SUB
+
+'Tall characters functions
+
+'Sets the attributes of the tall character
+#define setTallAttributes(upAttr, lowAttr) upperAttributes = upAttr: lowerAttributes = lowAttr 
+
+'Sets the char addres to print
+#define setCharAddress(charAddress) tmpAddr = charAddress
+
+'Sets the put half char to a custom function
+#define setPutHalfCharFunction(funcAddr) putHalfCharFunction = funcAddr
+
+'Sets the print tall routine to doubled
+#define setTallCharactersDoubledMode() putHalfCharFunction = @putHalfCharTall
+
+'Sets the print tall routine to interleaved
+#define setTallCharactersInterleavedMode() putHalfCharFunction = @putHalfCharTallInterleaved
+
+'Puts the tall char with the current half tall char function
+SUB putCharTall()
+    setAttributes(upperAttributes)
+    executeSub(putHalfCharFunction)
+    nextCharRow()
+    setAttributes(lowerAttributes)
+    executeSub(putHalfCharFunction)
+    prevCharRow()
+    nextCharColumn()
+END SUB
+
+'Put half a char doubling lines
+SUB putHalfCharTall()
+    tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr, tmpCharByte)
+    POKE(currentCharAddr + SCAN_LINE_INC, tmpCharByte)
+    tmpAddr = tmpAddr + 1
+    tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, tmpCharByte)
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, tmpCharByte)
+    tmpAddr = tmpAddr + 1
+    tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, tmpCharByte)
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, tmpCharByte)
+    tmpAddr = tmpAddr + 1
+    tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, tmpCharByte)
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, tmpCharByte)
+    tmpAddr = tmpAddr + 1
+    setCharAttributes()
+END SUB
+
+'Put half a char with empty lines spacing
+SUB putHalfCharTallInterleaved()
+    POKE(currentCharAddr, PEEK(tmpAddr))
+    POKE(currentCharAddr + SCAN_LINE_INC, 0)
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, 0)
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
+    tmpAddr = tmpAddr + 1
+    setCharAttributes()
+END SUB
+
+'Prints a [length] of spring data characters with [tiles]
+SUB printTall(printString AS String, tiles as UINTEGER)
+    DIM i AS UBYTE
+    tmpStrLen = LEN(printString) - 1
+    tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
+    tmpCharsAddr = tiles - FONT_OFFSET
+    
+    FOR i = 0 TO tmpStrLen
+        setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, PEEK(tmpStrDataAddr + i))) << CHAR_SHIFT_BITS ))
+        putCharTall()
+    NEXT i
 END SUB

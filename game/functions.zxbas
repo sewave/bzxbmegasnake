@@ -312,8 +312,9 @@ END FUNCTION
 
 'Prints the scrolling text
 SUB printTitleScroller()
-    INK TITLE_SCROLLER_INK: PAPER TITLE_SCROLLER_PAPER
-    frameTextScroller(TITLE_TEXT_SCROLLER)
+    setTallAttributes(createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK),_
+        createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK))
+    frameTextScrollerTall()
 END SUB
 
 'Clears the central menu
