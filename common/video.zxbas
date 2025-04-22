@@ -438,10 +438,14 @@ END SUB
 #define setPutHalfCharFunction(funcAddr) putHalfCharFunction = funcAddr
 
 'Sets the print tall routine to doubled
-#define setTallCharactersDoubledMode() putHalfCharFunction = @putHalfCharTall
+SUB setTallCharactersDoubledMode()
+    putHalfCharFunction = @putHalfCharTall
+END SUB
 
 'Sets the print tall routine to interleaved
-#define setTallCharactersInterleavedMode() putHalfCharFunction = @putHalfCharTallInterleaved
+SUB setTallCharactersInterleavedMode()
+    putHalfCharFunction = @putHalfCharTallInterleaved
+END SUB
 
 'Puts the tall char with the current half tall char function
 SUB putCharTall()

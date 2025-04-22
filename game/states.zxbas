@@ -294,19 +294,23 @@ SUB stateStartEndGame()
     drawWindowFilled(END_GAME_WINDOW_X, END_GAME_WINDOW_Y, END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, _
         END_GAME_WINDOW_BORDER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES, outWindowsCharacters)
     
-    PRINT AT END_GAME_CONGRATULATIONS_Y, centerScreenX(END_GAME_COMPLETED_STRING);_
-        PAPER END_GAME_CONGRATULATIONS_PAPER; INK END_GAME_CONGRATULATIONS_INK; END_GAME_COMPLETED_STRING;
+    setTallCharactersDoubledMode()
+    setCharPosition(centerScreenX(END_GAME_COMPLETED_STRING), END_GAME_CONGRATULATIONS_Y)
+    setTallAttributes(END_GAME_CONGRATULATIONS_UP_ATTR, END_GAME_CONGRATULATIONS_DOWN_ATTR)
+    printTall(END_GAME_COMPLETED_STRING, @font)
 
-    PRINT AT END_GAME_SCORE_Y, centerScreenX(END_GAME_SCORE_STRING);_
-        PAPER END_GAME_SCORE_PAPER; INK END_GAME_SCORE_INK; END_GAME_SCORE_STRING;
+    setCharPosition(centerScreenX(END_GAME_SCORE_STRING), END_GAME_SCORE_Y)
+    setTallAttributes(END_GAME_SCORE_UP_ATTR, END_GAME_SCORE_DOWN_ATTR)
+    printTall(END_GAME_SCORE_STRING, @font)
 
     PRINT AT END_GAME_SCORE_NUM_Y, END_GAME_SCORE_NUM_X;_
         PAPER END_GAME_SCORE_NUM_PAPER; INK END_GAME_SCORE_NUM_INK; score;
 
-    PAPER TRANSPARENT: INK TRANSPARENT: BRIGHT FALSE
-
     endGameCounter = 0
     endGameMessageNumber = 0
+
+    setTallCharactersInterleavedMode()
+    setTallAttributes(END_GAME_WINDOW_FILLER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES)
     setGameState(STATE_LOOP_END_GAME)
 END SUB
 
@@ -316,13 +320,20 @@ SUB stateLoopEndGame()
         IF endGameCounter < END_GAME_MESSAGE_WAIT THEN
             DIM messageIndex AS UBYTE = endGameCounter >> 1
             IF messageIndex < END_GAME_MESSAGE_LAST_INDEX THEN
-                PRINT AT END_GAME_MESSAGE_STRINGS_BASE_Y + endGameMessageNumber, END_GAME_MESSAGE_STRINGS_X + messageIndex;_
-                    END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1);
+                setCharPosition(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
+                    END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1))
+                printTall(END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1), @font)
             END IF
             endGameCounter = endGameCounter + 1
         ELSE
             endGameCounter = 0
             endGameMessageNumber = endGameMessageNumber + 1
+            IF endGameMessageNumber > LAST_END_GAME_MESSAGE THEN
+                setTallCharactersDoubledMode()
+                setCharPosition(END_GAME_TITLE_STRING_X, END_GAME_TITLE_STRING_Y)
+                setTallAttributes(END_GAME_TITLE_UP_ATTR, END_GAME_TITLE_DOWN_ATTR)
+                printTall(END_GAME_RETURN_STRING, @font)
+            END IF
         END IF
     END IF
 
