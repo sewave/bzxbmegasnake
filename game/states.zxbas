@@ -217,11 +217,17 @@ SUB stateStartMenu()
     clearCentralMenu()
     printControls()
     
-    'Print max score
-    INK INTRO_CREDITS_COLOR
-    PRINT AT INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_X; INTRO_MAX_SCORE_STRING;_
-        FLASH TRUE; INK INTRO_MAX_SCORE_NUM_INK;_
-            PAPER INTRO_MAX_SCORE_NUM_PAPER; maxScore;
+    'Print max score string
+    setTallCharactersInterleavedMode()
+    setCharPosition(INTRO_MAX_SCORE_X, INTRO_MAX_SCORE_Y)
+    setTallAttributes(INTRO_MAX_SCORE_UP_ATTR, INTRO_MAX_SCORE_DOWN_ATTR)
+    printTall(INTRO_MAX_SCORE_STRING, @font)
+
+    'Print max score number
+    setTallCharactersDoubledMode()
+    setTallAttributes(INTRO_MAX_SCORE_NUM_UP_ATTR, INTRO_MAX_SCORE_NUM_DOWN_ATTR)
+    setCharPosition(INTRO_MAX_SCORE_X + LEN(INTRO_MAX_SCORE_STRING), INTRO_MAX_SCORE_Y)
+    printUIntegerTall(maxScore, @font)
 
     setStateWaitNoKey(STATE_WAIT_MENU) 
 END SUB

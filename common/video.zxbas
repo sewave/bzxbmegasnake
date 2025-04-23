@@ -63,6 +63,12 @@
 #define FRAME_MED_BYTE 23673
 #define FRAME_HI_BYTE 23674
 
+#define ASCII_ZERO_NUMBER 0x30
+
+DIM tmpRemainder AS UINTEGER
+DIM tmpRemainderByte AS UBYTE
+DIM tmpDigit AS UBYTE
+
 DIM scrollerTargetFrames AS UBYTE
 DIM scrollerRemainingFrames AS UBYTE
 DIM scrollerX, scrollerY AS UBYTE
@@ -497,7 +503,7 @@ SUB putHalfCharTallInterleaved()
 END SUB
 
 'Prints a [length] of spring data characters with [tiles]
-SUB printTall(printString AS String, tiles as UINTEGER)
+SUB printTall(printString AS STRING, tiles AS UINTEGER)
     DIM i AS UBYTE
     tmpStrLen = LEN(printString) - 1
     tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
@@ -507,4 +513,42 @@ SUB printTall(printString AS String, tiles as UINTEGER)
         setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, PEEK(tmpStrDataAddr + i))) << CHAR_SHIFT_BITS ))
         putCharTall()
     NEXT i
+END SUB
+
+'Prints a [UINTEGER] with [tiles]
+SUB printUIntegerTall(number AS UINTEGER, tiles AS UINTEGER)
+    tmpRemainder = number
+    tmpCharsAddr = tiles - FONT_OFFSET
+    
+    'Unrolled loop
+    tmpDigit = tmpRemainder / MYRIAD : tmpRemainder = tmpRemainder MOD MYRIAD
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    tmpDigit = tmpRemainder / THOUSAND : tmpRemainder = tmpRemainder MOD THOUSAND
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+END SUB
+
+'Prints a [UBYTE] with [tiles]
+SUB printUByteTall(number AS UBYTE, tiles AS UINTEGER)
+    tmpRemainderByte = number
+    tmpCharsAddr = tiles - FONT_OFFSET
+    
+    'Unrolled loop
+    tmpDigit = tmpRemainderByte / HUNDRED : tmpRemainderByte = tmpRemainderByte MOD HUNDRED
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    tmpDigit = tmpRemainderByte / TEN : tmpRemainderByte = tmpRemainderByte MOD TEN
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    putCharTall()
+    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
+    putCharTall()
 END SUB
