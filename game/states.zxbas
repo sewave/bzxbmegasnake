@@ -309,8 +309,9 @@ SUB stateStartEndGame()
     setTallAttributes(END_GAME_SCORE_UP_ATTR, END_GAME_SCORE_DOWN_ATTR)
     printTall(END_GAME_SCORE_STRING, @font)
 
-    PRINT AT END_GAME_SCORE_NUM_Y, END_GAME_SCORE_NUM_X;_
-        PAPER END_GAME_SCORE_NUM_PAPER; INK END_GAME_SCORE_NUM_INK; score;
+    setTallAttributes(END_GAME_SCORE_NUM_UP_ATTR, END_GAME_SCORE_NUM_DOWN_ATTR)
+    setCharPosition(END_GAME_SCORE_NUM_X, END_GAME_SCORE_NUM_Y)
+    printUIntegerTall(score, @font)
 
     endGameCounter = 0
     endGameMessageNumber = 0
