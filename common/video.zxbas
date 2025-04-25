@@ -65,6 +65,18 @@
 
 #define ASCII_ZERO_NUMBER 0x30
 
+#define PRINT_MODE_NORMAL      %00000000
+#define PRINT_MODE_TALL        %00000010
+#define PRINT_MODE_INTERLEAVED %00000100
+#define PRINT_MODE_VWF         %00001000
+
+#define VWF_NULL_TABLE 0
+#define VWF_OFFSET 32
+
+DIM currentFontAddress AS UINTEGER
+DIM currentVWFTableAddress AS UINTEGER
+DIM putCharFunction AS UINTEGER
+
 DIM tmpRemainder AS UINTEGER
 DIM tmpRemainderByte AS UBYTE
 DIM tmpDigit AS UBYTE
@@ -76,7 +88,6 @@ DIM scrollerTargetWidth AS UBYTE
 DIM scrollerPointer AS UINTEGER
 DIM scrollerString AS STRING
 DIM scrollerStringLength AS UINTEGER
-DIM scrollerTiles AS UINTEGER
 
 DIM currentCharAddr AS UINTEGER
 DIM currentCharAttrAddr AS UINTEGER
@@ -147,6 +158,26 @@ SUB prevCharRow()
     currentCharAttrAddr = currentCharAttrAddr - ATTR_ROW_INC
 END SUB
 
+#define callPutChar() executeSub(putCharFunction)
+
+'Setups the printing routine
+SUB setupPrint(printAttributes AS UBYTE)
+    IF printAttributes bAND PRINT_MODE_TALL THEN
+        putCharFunction = @putCharTall
+        IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
+            putHalfCharFunction = @putHalfCharTallInterleaved
+        ELSE
+            putHalfCharFunction = @putHalfCharTall
+        END IF
+    ELSE
+        IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
+            putCharFunction = @putTmpCharInterleaved
+        ELSE
+            putCharFunction = @putTmpChar
+        END IF    
+    END IF
+END SUB
+
 'Sets the attributes for the current char
 #define setCharAttributes() POKE(currentCharAttrAddr, currentAttributes)
 
@@ -171,6 +202,15 @@ END SUB
 'Puts chars at (x, y) incrementing row
 #define putRowCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putRowChars(numChars, charAddress)
 
+'Prints a string starting at (x, y)
+#define printStringAt(x, y, strToPrint) setCharPosition(x, y): printString(strToPrint)
+
+'Prints a uinteger starting at (x, y)
+#define printUIntegerAt(x, y, uintegerToPrint) setCharPosition(x, y): printUInteger(uintegerToPrint)
+
+'Prints a ubyte starting at (x, y)
+#define printUByteAt(x, y, uintegerToPrint) setCharPosition(x, y): printUByte(uintegerToPrint)
+
 'Puts the cursor pixel pointer at the desired position
 SUB setCharPosition(x as UBYTE, y as UBYTE)
     DIM lowByte AS UBYTE = x | (y << 5)
@@ -190,6 +230,42 @@ SUB clearChar()
     POKE(currentCharAddr + 6 * SCAN_LINE_INC, 0)
     POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
     setCharAttributes()
+END SUB
+
+'Put a char
+SUB putTmpChar()
+    POKE(currentCharAddr, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    setCharAttributes()
+    nextCharColumn()
+END SUB
+
+'Put a char interleaved
+SUB putTmpCharInterleaved()
+    POKE(currentCharAddr, PEEK(tmpAddr))
+    POKE(currentCharAddr + SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr + 2))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr + 4))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr + 6))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
+    setCharAttributes()
+    nextCharColumn()
 END SUB
 
 'Put a char
@@ -303,19 +379,18 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
 END SUB
 
 'Initializes the text scroller
-SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, BYREF scroller AS STRING, tiles as UINTEGER)
+SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, BYREF scroller AS STRING)
     scrollerTargetFrames = frames
     scrollerRemainingFrames = SCROLLER_REMAINIG_FRAMES_START
     scrollerX = x
     scrollerY = y
     scrollerTargetWidth = width - 1
     scrollerPointer = SCROLLER_POINTER_START
-    scrollerTiles = tiles
     scrollerString = scroller
     scrollerStringLength = LEN(scrollerString)
 END SUB
 
-'You must set ink, paper, bright, flash before calling
+'You must set attributes and setup print before calling
 'String must start by an empty zone of at least width
 'if you want the characters to enter from the right
 'String must end by an empty zone of at least width if you
@@ -325,22 +400,7 @@ SUB frameTextScroller()
     scrollerRemainingFrames = scrollerRemainingFrames - 1
     IF scrollerRemainingFrames = SCROLLER_FRAMES_DONE THEN
         scrollerRemainingFrames = scrollerTargetFrames
-        PRINT AT scrollerY, scrollerX; scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth);
-        IF scrollerPointer + scrollerTargetWidth >= scrollerStringLength THEN
-            scrollerPointer = SCROLLER_POINTER_START
-        ELSE
-            scrollerPointer = scrollerPointer + 1
-        END IF
-    END IF
-END SUB
-
-'Prints a tall scroller using [tiles] as font
-SUB frameTextScrollerTall()
-    scrollerRemainingFrames = scrollerRemainingFrames - 1
-    IF scrollerRemainingFrames = SCROLLER_FRAMES_DONE THEN
-        scrollerRemainingFrames = scrollerTargetFrames
-        setCharPosition(scrollerX, scrollerY)
-        printTall(scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth), scrollerTiles)
+        printStringAt(scrollerX, scrollerY, scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth))
         IF scrollerPointer + scrollerTargetWidth >= scrollerStringLength THEN
             scrollerPointer = SCROLLER_POINTER_START
         ELSE
@@ -453,6 +513,12 @@ SUB setTallCharactersInterleavedMode()
     putHalfCharFunction = @putHalfCharTallInterleaved
 END SUB
 
+'Setups the font, [vWFTableAddress] only needed if using vfw, put [VWF_NULL_TABLE] if unused
+SUB setupFont(fontAddress as UINTEGER, vWFTableAddress AS UINTEGER)
+    currentFontAddress = fontAddress - FONT_OFFSET
+    currentVWFTableAddress = vWFTableAddress - VWF_OFFSET
+END SUB
+
 'Puts the tall char with the current half tall char function
 SUB putCharTall()
     setAttributes(upperAttributes)
@@ -502,53 +568,50 @@ SUB putHalfCharTallInterleaved()
     setCharAttributes()
 END SUB
 
-'Prints a [length] of spring data characters with [tiles]
-SUB printTall(printString AS STRING, tiles AS UINTEGER)
+'Prints a string with current font and print setup
+SUB printString(printString AS STRING)
     DIM i AS UBYTE
     tmpStrLen = LEN(printString) - 1
     tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
-    tmpCharsAddr = tiles - FONT_OFFSET
     
     FOR i = 0 TO tmpStrLen
-        setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, PEEK(tmpStrDataAddr + i))) << CHAR_SHIFT_BITS ))
-        putCharTall()
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, PEEK(tmpStrDataAddr + i))) << CHAR_SHIFT_BITS ))
+        callPutChar()
     NEXT i
 END SUB
 
-'Prints a [UINTEGER] with [tiles]
-SUB printUIntegerTall(number AS UINTEGER, tiles AS UINTEGER)
+'Prints a [UINTEGER] with current font and print setup
+SUB printUInteger(number AS UINTEGER)
     tmpRemainder = number
-    tmpCharsAddr = tiles - FONT_OFFSET
     
     'Unrolled loop
     tmpDigit = tmpRemainder / MYRIAD : tmpRemainder = tmpRemainder MOD MYRIAD
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
     tmpDigit = tmpRemainder / THOUSAND : tmpRemainder = tmpRemainder MOD THOUSAND
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
     tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
     tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
+    callPutChar()
 END SUB
 
-'Prints a [UBYTE] with [tiles]
-SUB printUByteTall(number AS UBYTE, tiles AS UINTEGER)
+'Prints a [UBYTE] with current font and print setup
+SUB printUByte(number AS UBYTE)
     tmpRemainderByte = number
-    tmpCharsAddr = tiles - FONT_OFFSET
     
     'Unrolled loop
     tmpDigit = tmpRemainderByte / HUNDRED : tmpRemainderByte = tmpRemainderByte MOD HUNDRED
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
     tmpDigit = tmpRemainderByte / TEN : tmpRemainderByte = tmpRemainderByte MOD TEN
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    putCharTall()
-    setCharAddress(tmpCharsAddr + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
-    putCharTall()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    callPutChar()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
+    callPutChar()
 END SUB

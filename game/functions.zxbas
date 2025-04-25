@@ -314,7 +314,8 @@ END FUNCTION
 SUB printTitleScroller()
     setTallAttributes(createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK),_
         createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK))
-    frameTextScrollerTall()
+    setupPrint(PRINT_MODE_TALL)
+    frameTextScroller()
 END SUB
 
 'Clears the central menu

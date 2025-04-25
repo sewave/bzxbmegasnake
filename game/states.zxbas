@@ -72,7 +72,7 @@ SUB stateStartTitle()
     
     'Scroller
     initTextScroller(TITLE_SCROLLER_X, TITLE_SCROLLER_Y, TITLE_SCROLLER_WIDTH,_
-        TITLE_SCROLLER_FRAMES, TITLE_TEXT_SCROLLER, @font)
+        TITLE_SCROLLER_FRAMES, TITLE_TEXT_SCROLLER)
     drawWindow(TITLE_SCROLLER_WINDOW_X, TITLE_SCROLLER_WINDOW_Y,_
         TITLE_SCROLLER_WINDOW_WIDTH, TITLE_SCROLLER_WINDOW_HEIGHT,_
             TITLE_SCROLLER_WINDOW_ATTRIBUTES, inWindowsCharacters)
@@ -112,6 +112,7 @@ END SUB
 SUB stateInitGame()
     initInput()
     loadFont(@font)
+    setupFont(@font, VWF_NULL_TABLE)
     loadUdgs(@udgs)
     maxScore = INITIAL_MAX_SCORE
     setGameState(STATE_START_TITLE)
@@ -218,16 +219,14 @@ SUB stateStartMenu()
     printControls()
     
     'Print max score string
-    setTallCharactersInterleavedMode()
-    setCharPosition(INTRO_MAX_SCORE_X, INTRO_MAX_SCORE_Y)
+    setupPrint(PRINT_MODE_INTERLEAVED | PRINT_MODE_TALL)
     setTallAttributes(INTRO_MAX_SCORE_UP_ATTR, INTRO_MAX_SCORE_DOWN_ATTR)
-    printTall(INTRO_MAX_SCORE_STRING, @font)
+    printStringAt(INTRO_MAX_SCORE_X, INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_STRING)
 
     'Print max score number
-    setTallCharactersDoubledMode()
+    setupPrint(PRINT_MODE_TALL)
     setTallAttributes(INTRO_MAX_SCORE_NUM_UP_ATTR, INTRO_MAX_SCORE_NUM_DOWN_ATTR)
-    setCharPosition(INTRO_MAX_SCORE_X + LEN(INTRO_MAX_SCORE_STRING), INTRO_MAX_SCORE_Y)
-    printUIntegerTall(maxScore, @font)
+    printUIntegerAt(INTRO_MAX_SCORE_X + LEN(INTRO_MAX_SCORE_STRING), INTRO_MAX_SCORE_Y, maxScore)
 
     setStateWaitNoKey(STATE_WAIT_MENU) 
 END SUB
@@ -300,23 +299,21 @@ SUB stateStartEndGame()
     drawWindowFilled(END_GAME_WINDOW_X, END_GAME_WINDOW_Y, END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, _
         END_GAME_WINDOW_BORDER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES, outWindowsCharacters)
     
-    setTallCharactersDoubledMode()
-    setCharPosition(centerScreenX(END_GAME_COMPLETED_STRING), END_GAME_CONGRATULATIONS_Y)
-    setTallAttributes(END_GAME_CONGRATULATIONS_UP_ATTR, END_GAME_CONGRATULATIONS_DOWN_ATTR)
-    printTall(END_GAME_COMPLETED_STRING, @font)
+    setupPrint(PRINT_MODE_TALL)
 
-    setCharPosition(centerScreenX(END_GAME_SCORE_STRING), END_GAME_SCORE_Y)
+    setTallAttributes(END_GAME_CONGRATULATIONS_UP_ATTR, END_GAME_CONGRATULATIONS_DOWN_ATTR)
+    printStringAt(centerScreenX(END_GAME_COMPLETED_STRING), END_GAME_CONGRATULATIONS_Y, END_GAME_COMPLETED_STRING)
+
     setTallAttributes(END_GAME_SCORE_UP_ATTR, END_GAME_SCORE_DOWN_ATTR)
-    printTall(END_GAME_SCORE_STRING, @font)
+    printStringAt(centerScreenX(END_GAME_SCORE_STRING), END_GAME_SCORE_Y, END_GAME_SCORE_STRING)
 
     setTallAttributes(END_GAME_SCORE_NUM_UP_ATTR, END_GAME_SCORE_NUM_DOWN_ATTR)
-    setCharPosition(END_GAME_SCORE_NUM_X, END_GAME_SCORE_NUM_Y)
-    printUIntegerTall(score, @font)
+    printUIntegerAt(END_GAME_SCORE_NUM_X, END_GAME_SCORE_NUM_Y, score)
 
     endGameCounter = 0
     endGameMessageNumber = 0
 
-    setTallCharactersInterleavedMode()
+    setupPrint(PRINT_MODE_TALL | PRINT_MODE_INTERLEAVED)
     setTallAttributes(END_GAME_WINDOW_FILLER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES)
     setGameState(STATE_LOOP_END_GAME)
 END SUB
@@ -327,19 +324,18 @@ SUB stateLoopEndGame()
         IF endGameCounter < END_GAME_MESSAGE_WAIT THEN
             DIM messageIndex AS UBYTE = endGameCounter >> 1
             IF messageIndex < END_GAME_MESSAGE_LAST_INDEX THEN
-                setCharPosition(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
-                    END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1))
-                printTall(END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1), @font)
+                printStringAt(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
+                    END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1),_
+                        END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1))
             END IF
             endGameCounter = endGameCounter + 1
         ELSE
             endGameCounter = 0
             endGameMessageNumber = endGameMessageNumber + 1
             IF endGameMessageNumber > LAST_END_GAME_MESSAGE THEN
-                setTallCharactersDoubledMode()
-                setCharPosition(END_GAME_TITLE_STRING_X, END_GAME_TITLE_STRING_Y)
+                setupPrint(PRINT_MODE_TALL)
                 setTallAttributes(END_GAME_TITLE_UP_ATTR, END_GAME_TITLE_DOWN_ATTR)
-                printTall(END_GAME_RETURN_STRING, @font)
+                printStringAt(END_GAME_TITLE_STRING_X, END_GAME_TITLE_STRING_Y, END_GAME_RETURN_STRING)
             END IF
         END IF
     END IF
