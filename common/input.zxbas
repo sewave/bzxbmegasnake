@@ -105,6 +105,11 @@
 #define KBD_IDX_SYM 36
 #define KBD_IDX_SPC 35
 
+#define KEMPSTON_MIN_STABLE_FRAMES 50
+
+'Frames with kempston reading 0
+DIM kempstonStableFrames AS UBYTE
+
 'Input vars
 DIM controls(NUM_PLAYERS_MAX_INDEX) AS UBYTE
 DIM controlTypes(NUM_PLAYERS_MAX_INDEX) AS UBYTE
@@ -255,8 +260,8 @@ SUB readPlayerKeyboard(playerIndex AS UBYTE)
     controls(playerIndex) = tmpControl
 END SUB
 
-'Reads the [playerIndex] player Kempston joystick
-SUB readPlayerKempston(playerIndex AS UBYTE)
+'Reads the Kempston joystick
+FUNCTION readKempston() AS UBYTE
     tmpControl = CONTROL_NONE
     tmpInput = IN KEMPSTON_PORT
 
@@ -266,8 +271,8 @@ SUB readPlayerKempston(playerIndex AS UBYTE)
     IF tmpInput bAND KEMPSTON_RIGHT THEN tmpControl = tmpControl + CONTROL_RIGHT
     IF tmpInput bAND KEMPSTON_FIRE THEN tmpControl = tmpControl + CONTROL_FIRE
 
-    controls(playerIndex) = tmpControl
-END SUB
+    RETURN tmpControl
+END FUNCTION
 
 'Updates the controls reading the [keys]
 SUB updateControls()
@@ -276,7 +281,7 @@ SUB updateControls()
     readKeyboard()
     FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
         IF getControlType(i) = CONTROL_TYPE_KEMPSTON THEN
-            readPlayerKempston(i)
+            controls(i) = readKempston()
         ELSE
             readPlayerKeyboard(i)
         END IF        
@@ -291,4 +296,23 @@ FUNCTION anyControlPressed() AS UBYTE
         IF getControls(i) <> CONTROL_NONE THEN RETURN TRUE
     NEXT i
     RETURN FALSE
+END FUNCTION
+
+'Inits the counter to test the kempston
+SUB initKempstonProbe()
+    kempstonStableFrames = 0
+END SUB
+
+'Probes the kempston to check if has no value
+SUB probeKempstonStable()
+    IF readKempston() = CONTROL_NONE THEN
+        kempstonStableFrames = kempstonStableFrames + 1
+    ELSE
+        kempstonStableFrames = 0
+    END IF
+END SUB
+
+'Returns true if kempston port passed the threshold of stable checks
+FUNCTION isKempstonStable() AS UBYTE
+    RETURN kempstonStableFrames >= KEMPSTON_MIN_STABLE_FRAMES
 END FUNCTION

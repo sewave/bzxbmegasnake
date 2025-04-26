@@ -97,7 +97,6 @@ DIM tmpAddr AS UINTEGER
 'Tall characters vars
 DIM tmpCharByte AS UBYTE
 DIM tmpStrDataAddr AS UINTEGER
-DIM tmpCharsAddr AS UINTEGER
 DIM tmpStrLen AS UBYTE
 DIM putHalfCharFunction AS UINTEGER = @putHalfCharTall
 DIM upperAttributes, lowerAttributes AS UBYTE

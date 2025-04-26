@@ -78,13 +78,24 @@ SUB stateStartTitle()
             TITLE_SCROLLER_WINDOW_ATTRIBUTES, inWindowsCharacters)
    
     printTitleScroller()
-    
+    initKempstonProbe()
     setGameState(STATE_START_MENU)
 END SUB
 
 'Waits menu selection to change game state
 SUB stateWaitMenu()
     printTitleScroller()
+    
+    IF isKempstonStable() THEN
+        IF readKempston() = CONTROL_FIRE THEN
+            'Set player to kempston and start game
+            setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
+            setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
+        END IF
+    ELSE
+        probeKempstonStable()
+    END IF
+
     IF getFirstKeyPressed() = SELECT_INPUT_KEY THEN
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
