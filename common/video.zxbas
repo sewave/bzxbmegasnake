@@ -15,6 +15,10 @@
 #define FRAMES_IN_SECOND 50
 #define CHARACTER_BYTES 8
 #define PAPER_SHIFT_BITS 3
+#define SCREEN_COLUMNS 32
+#define SCREEN_ROWS 24
+#define SCREEN_MAX_COLUMN 31
+#define SCREEN_MAX_ROW 23
 
 'UDGs address
 #define UDG_ADDRESS 23675
@@ -72,6 +76,31 @@
 
 #define VWF_NULL_TABLE 0
 #define VWF_OFFSET 32
+
+#define FADE_TO_BLACK_COLOR_STEPS     8
+#define FADE_TO_BLACK_CLOSE_HOR_STEPS 16
+#define FADE_TO_BLACK_OPEN_HOR_STEPS  16
+#define FADE_TO_BLACK_CLOSE_VER_STEPS 12
+#define FADE_TO_BLACK_OPEN_VER_STEPS  12
+#define FADE_TO_BLACK_UP_STEPS        12
+#define FADE_TO_BLACK_DOWN_STEPS      12
+#define FADE_TO_BLACK_LEFT_STEPS      16
+#define FADE_TO_BLACK_RIGHT_STEPS     16
+
+#define FADE_TO_BLACK_COLOR     0
+#define FADE_TO_BLACK_CLOSE_HOR 1
+#define FADE_TO_BLACK_OPEN_HOR  2
+#define FADE_TO_BLACK_CLOSE_VER 3
+#define FADE_TO_BLACK_OPEN_VER  4
+#define FADE_TO_BLACK_UP        5
+#define FADE_TO_BLACK_DOWN      6
+#define FADE_TO_BLACK_LEFT      7
+#define FADE_TO_BLACK_RIGHT     8
+
+DIM remainingFadeSteps AS UBYTE
+DIM fadeToBlackFunction AS UINTEGER
+
+#define callFadeToBlack() executeSub(fadeToBlackFunction)
 
 DIM currentFontAddress AS UINTEGER
 DIM currentVWFTableAddress AS UINTEGER
@@ -425,6 +454,17 @@ SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as
     drawWindow(startX, startY, width, height, attributes, characters)
 END SUB
 
+'Sets the fade to black type
+SUB setFadeToBlackType(fadeType AS UBYTE)
+    IF fadeType = FADE_TO_BLACK_COLOR THEN
+        remainingFadeSteps = FADE_TO_BLACK_COLOR_STEPS
+        fadeToBlackFunction = @fadeAttributesToBlack
+    ELSEIF fadeType = FADE_TO_BLACK_CLOSE_HOR THEN
+        remainingFadeSteps = FADE_TO_BLACK_CLOSE_HOR_STEPS
+        fadeToBlackFunction = @fadeAttributesToBlackCloseHorizontal
+    END IF
+END SUB
+
 'Decreases all attributes, starts by flash and bright, then paper and color
 SUB fadeAttributesToBlack()
     FOR attrIndex = ATTRIBUTES_START_ADDR TO ATTRIBUTES_END_ADDR
@@ -440,6 +480,20 @@ SUB fadeAttributesToBlack()
         END IF
         POKE(attrIndex, tmpAttribute)
     NEXT attrIndex
+END SUB
+
+'Fades to black putting attributes to 0 from borders to center in horizontal
+SUB fadeAttributesToBlackCloseHorizontal()
+    DIM i AS UBYTE
+    DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
+
+    attrIndex = ATTRIBUTES_START_ADDR + (FADE_TO_BLACK_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
+
+    FOR i = 0 TO SCREEN_MAX_ROW
+        POKE(attrIndex, 0)
+        POKE(attrIndex + inc, 0)
+        attrIndex = attrIndex + SCREEN_COLUMNS
+    NEXT i
 END SUB
 
 'Prints a padded number of thousands length
@@ -629,3 +683,4 @@ SUB printUByte(number AS UBYTE)
     setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
     callPutChar()
 END SUB
+

@@ -9,7 +9,7 @@ END SUB
 'Sets to wait for any key and goes to title
 SUB stateWaitKeyGameOver()
     IF getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE THEN
-        setStateFadeToBlack(DIE_FADE_FRAMES, STATE_START_TITLE)
+        setStateFadeToBlack(FADE_TO_BLACK_COLOR, DIE_FADE_FRAMES, STATE_START_TITLE)
     END IF
 END SUB
 
@@ -26,7 +26,7 @@ SUB stateWaitUnpause()
     DIM control AS UBYTE = getControls(PLAYER_1_INDEX)
     IF control bAND CONTROL_FIRE THEN
         IF pauseExits = TRUE THEN
-            setStateFadeToBlack(DIE_FADE_FRAMES, STATE_START_TITLE)
+            setStateFadeToBlack(FADE_TO_BLACK_COLOR, DIE_FADE_FRAMES, STATE_START_TITLE)
         ELSE
             clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
             clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
@@ -90,7 +90,7 @@ SUB stateWaitMenu()
         IF readKempston() = CONTROL_FIRE THEN
             'Set player to kempston and start game
             setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
-            setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
+            setStateFadeToBlack(FADE_TO_BLACK_CLOSE_HOR, GAME_FADE, STATE_START_GAME)
         END IF
     ELSE
         probeKempstonStable()
@@ -100,7 +100,7 @@ SUB stateWaitMenu()
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
         IF getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
-            setStateFadeToBlack(GAME_FADE, STATE_START_GAME)
+            setStateFadeToBlack(FADE_TO_BLACK_CLOSE_HOR, GAME_FADE, STATE_START_GAME)
         END IF
     END IF
 END SUB
@@ -352,7 +352,7 @@ SUB stateLoopEndGame()
     END IF
 
     IF endGameMessageNumber > LAST_END_GAME_MESSAGE AND (getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE) THEN
-        setStateFadeToBlack(END_FADE_FRAMES, STATE_START_TITLE)
+        setStateFadeToBlack(FADE_TO_BLACK_CLOSE_HOR, END_FADE_FRAMES, STATE_START_TITLE)
     END IF
 END SUB
 

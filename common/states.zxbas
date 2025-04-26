@@ -7,7 +7,6 @@
 #define FIRST_UNUSED_STATE  8
 #define FRAMES_TO_WAIT_DEC  1
 #define NO_FRAMES_TO_WAIT   0
-#define FADE_TO_BLACK_STEPS 8
 
 'State vars
 DIM gameState AS UBYTE
@@ -16,7 +15,6 @@ DIM framesToWait AS UBYTE
 DIM keyToWait AS UBYTE
 DIM targetFadeStepframes AS UBYTE
 DIM fadeStepframes AS UBYTE
-DIM remainingFadeSteps AS UBYTE
 
 'Gets the current game state
 FUNCTION getGameState() AS UBYTE
@@ -73,11 +71,11 @@ SUB setStateWaitNoKey(nextGameState AS UBYTE)
 END SUB
 
 'Sets the next state to fade to black, waiting [pTargetFadeStepframes] frames
-'per step and then switches to [nextGameState]
-SUB setStateFadeToBlack(pTargetFadeStepframes AS UBYTE, nextGameState AS UBYTE)
+'per step of [fadeType] and then switches to [nextGameState]
+SUB setStateFadeToBlack(fadeType AS UBYTE, pTargetFadeStepframes AS UBYTE, nextGameState AS UBYTE)
     targetFadeStepframes = pTargetFadeStepframes
-    remainingFadeSteps = FADE_TO_BLACK_STEPS
     fadeStepframes = targetFadeStepframes
+    setFadeToBlackType(fadeType)
     setGameStateAndNext(STATE_FADE_TO_BLACK, nextGameState)
 END SUB
 
@@ -108,9 +106,9 @@ END SUB
 SUB stateFadeToBlack()
     fadeStepframes = fadeStepframes - 1
     IF fadeStepframes = 0 THEN
-        fadeAttributesToBlack()
-        fadeStepframes = targetFadeStepframes
         remainingFadeSteps = remainingFadeSteps - 1
-        IF remainingFadeSteps = 0 THEN moveNextGameStateToGameState()
+        callFadeToBlack()
+        fadeStepframes = targetFadeStepframes
+        IF remainingFadeSteps = 0 THEN setStateWaitFrames(fadeStepframes, getNextGameState())
     END IF
 END SUB
