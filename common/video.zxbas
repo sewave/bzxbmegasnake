@@ -134,6 +134,9 @@ END FUNCTION
 'Creates a new attributes byte
 #define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << PAPER_SHIFT_BITS) | ink)
 
+'Sets the char addres to print
+#define setCharAddress(charAddress) tmpAddr = charAddress
+
 'Updates char addresses to next column
 SUB nextCharColumn()
     currentCharAddr = currentCharAddr + 1
@@ -235,21 +238,13 @@ END SUB
 'Put a char
 SUB putTmpChar()
     POKE(currentCharAddr, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr + 1))
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr + 2))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr + 3))
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr + 4))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr + 5))
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr + 6))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr + 7))
     setCharAttributes()
     nextCharColumn()
 END SUB
@@ -449,56 +444,55 @@ SUB fadeAttributesToBlack()
 END SUB
 
 'Prints a padded number of thousands length
-SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
-    IF number >= THOUSAND THEN
-        PRINT AT y, x; number;
-    ELSEIF number >= HUNDRED THEN
-        PRINT AT y, x; padding; number;
-    ELSEIF number >= TEN THEN
-        PRINT AT y, x; padding; padding; number;
-    ELSE
-        PRINT AT y, x; padding; padding; padding; number;
+SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, padding AS UINTEGER)
+    setCharPosition(x, y)
+    IF number < THOUSAND THEN
+        setCharAddress(padding)
+        callPutChar()
+        IF number < HUNDRED THEN
+            callPutChar()
+            IF number < TEN THEN callPutChar()
+        END IF
     END IF
+    printUInteger(number)
 END SUB
 
 'Prints a padded number of hundreds length
-SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, BYREF padding AS STRING)
-    IF number >= HUNDRED THEN
-        PRINT AT y, x; number;
-    ELSEIF number >= TEN THEN
-        PRINT AT y, x; padding; number;
-    ELSE
-        PRINT AT y, x; padding; padding; number;
+SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, padding AS UINTEGER)
+    setCharPosition(x, y)
+    IF number < HUNDRED THEN
+        setCharAddress(padding)
+        callPutChar()
+        IF number < TEN THEN callPutChar()
     END IF
+    printUInteger(number)
 END SUB
 
 'Prints a padded number of byte length
-SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
-    IF number >= HUNDRED THEN
-        PRINT AT y, x; number;
-    ELSEIF number >= TEN THEN
-        PRINT AT y, x; padding; number;
-    ELSE
-        PRINT AT y, x; padding; padding; number;
+SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, padding AS UINTEGER)
+    setCharPosition(x, y)
+    IF number < HUNDRED THEN
+        setCharAddress(padding)
+        callPutChar()
+        IF number < TEN THEN callPutChar()
     END IF
+    printUByte(number)
 END SUB
 
 'Prints a padded number of tens length
-SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, BYREF padding AS STRING)
-    IF number >= TEN THEN
-        PRINT AT y, x; number;
-    ELSE
-        PRINT AT y, x; padding; number;
+SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, padding AS UINTEGER)
+    setCharPosition(x, y)
+    IF number < TEN THEN
+        setCharAddress(padding)
+        callPutChar()
     END IF
+    printUByte(number)
 END SUB
 
 'Tall characters functions
 
 'Sets the attributes of the tall character
 #define setTallAttributes(upAttr, lowAttr) upperAttributes = upAttr: lowerAttributes = lowAttr 
-
-'Sets the char addres to print
-#define setCharAddress(charAddress) tmpAddr = charAddress
 
 'Sets the put half char to a custom function
 #define setPutHalfCharFunction(funcAddr) putHalfCharFunction = funcAddr
@@ -528,6 +522,7 @@ SUB putCharTall()
     executeSub(putHalfCharFunction)
     prevCharRow()
     nextCharColumn()
+    tmpAddr = tmpAddr - CHARACTER_BYTES
 END SUB
 
 'Put half a char doubling lines
@@ -582,36 +577,56 @@ END SUB
 
 'Prints a [UINTEGER] with current font and print setup
 SUB printUInteger(number AS UINTEGER)
+    DIM numberPrinted AS UBYTE = FALSE
     tmpRemainder = number
     
     'Unrolled loop
     tmpDigit = tmpRemainder / MYRIAD : tmpRemainder = tmpRemainder MOD MYRIAD
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF    
     tmpDigit = tmpRemainder / THOUSAND : tmpRemainder = tmpRemainder MOD THOUSAND
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF
     tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF
     tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF
     setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
     callPutChar()
 END SUB
 
 'Prints a [UBYTE] with current font and print setup
 SUB printUByte(number AS UBYTE)
+    DIM numberPrinted AS UBYTE = FALSE
     tmpRemainderByte = number
     
     'Unrolled loop
     tmpDigit = tmpRemainderByte / HUNDRED : tmpRemainderByte = tmpRemainderByte MOD HUNDRED
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF
     tmpDigit = tmpRemainderByte / TEN : tmpRemainderByte = tmpRemainderByte MOD TEN
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
-    callPutChar()
+    IF numberPrinted bOR tmpDigit > 0 THEN
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+        callPutChar()
+        numberPrinted = TRUE
+    END IF
     setCharAddress(currentFontAddress + ((CAST(UINTEGER, ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
     callPutChar()
 END SUB

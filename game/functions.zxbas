@@ -49,31 +49,36 @@ END SUB
 
 'Draws the lives numbers
 SUB drawLives()
-    INK GUI_COLOR
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(STATUS_NUMBER_ATTRIBUTES)
     printPaddedNumberTensAt(LIVES_NUM_X, LIVES_NUM_Y, lives, STATUS_NUM_PAD)
 END SUB
 
 'Draws the fruits numbers
 SUB drawFruits()
-    INK GUI_COLOR
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(STATUS_NUMBER_ATTRIBUTES)
     printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
 END SUB
 
 'Draws the Time
 SUB drawTime()
-    INK GUI_COLOR
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(STATUS_NUMBER_ATTRIBUTES)
     printPaddedNumberByteAt(TIME_BAR_X, TIME_BAR_Y, remainingTime, STATUS_NUM_PAD)
 END SUB
 
 'Draw level value
 SUB drawLevelValue()
-    INK GUI_COLOR
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(STATUS_NUMBER_ATTRIBUTES)
     printPaddedNumberTensAt(LEVEL_NUM_X, LEVEL_NUM_Y, level + 1, STATUS_NUM_PAD)
 END SUB
 
 'Draws the score and max score numbers
 SUB drawScores()
-    INK GUI_COLOR
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(STATUS_NUMBER_ATTRIBUTES)
     printPaddedNumberThousandsAt(SCORE_NUM_X, SCORE_NUM_Y, score, STATUS_NUM_PAD)
     printPaddedNumberThousandsAt(BEST_NUM_X, BEST_NUM_Y, maxScore, STATUS_NUM_PAD)
 END SUB
@@ -312,9 +317,9 @@ END FUNCTION
 
 'Prints the scrolling text
 SUB printTitleScroller()
+    setupPrint(PRINT_MODE_TALL)
     setTallAttributes(createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK),_
         createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK))
-    setupPrint(PRINT_MODE_TALL)
     frameTextScroller()
 END SUB
 
