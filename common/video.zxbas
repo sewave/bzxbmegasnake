@@ -591,9 +591,20 @@ SUB fadeAttributesToBlackOpenHorizontal()
     NEXT i
 END SUB
 
+'Prints a padded number of thousands length at position
+#define printPaddedNumberThousandsAt(x, y, number, padding) setCharPosition(x, y) : printPaddedNumberThousands(number, padding)
+
+'Prints a padded number of hundreds length at position
+#define printPaddedNumberHundredsAt(x, y, number, padding) setCharPosition(x, y) : printPaddedNumberHundreds(number, padding)
+
+'Prints a padded number of byte length at position
+#define printPaddedNumberByteAt(x, y, number, padding) setCharPosition(x, y) : printPaddedNumberByte(number, padding)
+
+'Prints a padded number of tens length at position
+#define printPaddedNumberTensAt(x, y, number, padding) setCharPosition(x, y) : printPaddedNumberTens(number, padding)
+
 'Prints a padded number of thousands length
-SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, padding AS UINTEGER)
-    setCharPosition(x, y)
+SUB printPaddedNumberThousands(number AS UINTEGER, padding AS UINTEGER)
     IF number < THOUSAND THEN
         setCharAddress(padding)
         callPutChar()
@@ -606,8 +617,7 @@ SUB printPaddedNumberThousandsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, pad
 END SUB
 
 'Prints a padded number of hundreds length
-SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, padding AS UINTEGER)
-    setCharPosition(x, y)
+SUB printPaddedNumberHundreds(number AS UINTEGER, padding AS UINTEGER)
     IF number < HUNDRED THEN
         setCharAddress(padding)
         callPutChar()
@@ -617,8 +627,7 @@ SUB printPaddedNumberHundredsAt(x AS UBYTE, y AS UBYTE, number AS UINTEGER, padd
 END SUB
 
 'Prints a padded number of byte length
-SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, padding AS UINTEGER)
-    setCharPosition(x, y)
+SUB printPaddedNumberByte(number AS UBYTE, padding AS UINTEGER)
     IF number < HUNDRED THEN
         setCharAddress(padding)
         callPutChar()
@@ -628,8 +637,7 @@ SUB printPaddedNumberByteAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, padding AS 
 END SUB
 
 'Prints a padded number of tens length
-SUB printPaddedNumberTensAt(x AS UBYTE, y AS UBYTE, number AS UBYTE, padding AS UINTEGER)
-    setCharPosition(x, y)
+SUB printPaddedNumberTens(number AS UBYTE, padding AS UINTEGER)
     IF number < TEN THEN
         setCharAddress(padding)
         callPutChar()

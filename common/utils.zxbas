@@ -1,11 +1,2 @@
-'Returns a string with the [number] padded on the left with [padding] until [length]
-FUNCTION getPaddedNumber(number AS UINTEGER, length AS UBYTE, padding AS STRING) AS STRING
-    DIM paddedNumber AS STRING = STR(number)
-    WHILE LEN(paddedNumber) < length
-        paddedNumber = padding + paddedNumber
-    END WHILE
-    RETURN paddedNumber
-END FUNCTION
-
 'Trick to execute subroutine at [subAddress], address 0 is rom so not writable
 #define executeSub(subAddress) POKE 0, USR subAddress

@@ -288,7 +288,7 @@ SUB stateStartEndLevel()
     setAttributes(END_LEVEL_TEXT_ATTRIBUTES)
 
     printStringAt(END_LEVEL_FINISHED_X, END_LEVEL_FINISHED_Y, END_LEVEL_FINISHED_STRING)
-    printString(getPaddedNumber(level + 1, END_LEVEL_NUMBER_LENGTH, END_LEVEL_NUMBER_PAD))
+    printPaddedNumberTens(level + 1, END_LEVEL_NUMBER_PAD)
     printString(END_LEVEL_FINISHED_STRING_2)
     
     IF noDeathInLevel THEN
@@ -296,15 +296,15 @@ SUB stateStartEndLevel()
         score = score + NO_DEATH_BONUS
     END IF
     printStringAt(END_LEVEL_SCORE_X, END_LEVEL_SCORE_Y, END_LEVEL_SCORE_STRING)
-    printString(getPaddedNumber(oldScore, END_LEVEL_SCORE_LENGTH, END_LEVEL_SCORE_PAD))
+    printPaddedNumberThousands(oldScore, END_LEVEL_NUMBER_PAD)
 
     printStringAt(END_LEVEL_TIME_X, END_LEVEL_TIME_Y, END_LEVEL_TIME_STRING)
-    printString(getPaddedNumber(remainingTime, END_LEVEL_TIME_LENGTH, END_LEVEL_TIME_PAD))
+    printPaddedNumberByte(remainingTime, END_LEVEL_NUMBER_PAD)
     printString(END_LEVEL_TIME_STRING_2)
-    printString(getPaddedNumber(timeBonus, END_LEVEL_TIME_BONUS_LENGTH, END_LEVEL_TIME_BONUS_PAD))
+    printPaddedNumberThousands(timeBonus, END_LEVEL_NUMBER_PAD)
 
     printStringAt(END_LEVEL_TOTAL_X, END_LEVEL_TOTAL_Y, END_LEVEL_TOTAL_STRING)
-    printString(getPaddedNumber(score, END_LEVEL_TOTAL_LENGTH, END_LEVEL_TOTAL_PAD))
+    printPaddedNumberThousands(score, END_LEVEL_NUMBER_PAD)
     checkMaxScore()
 
     IF level >= LAST_LEVEL_INDEX THEN
