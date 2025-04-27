@@ -14,6 +14,7 @@
 'Video
 #define FRAMES_IN_SECOND 50
 #define CHARACTER_BYTES 8
+#define UBYTE_BITS 8
 #define PAPER_SHIFT_BITS 3
 #define SCREEN_COLUMNS 32
 #define SCREEN_ROWS 24
@@ -101,6 +102,14 @@ DIM remainingFadeSteps AS UBYTE
 DIM fadeToBlackFunction AS UINTEGER
 
 #define callFadeToBlack() executeSub(fadeToBlackFunction)
+
+#define uIntegerOrEquals(addr, value) POKE(UINTEGER, addr, PEEK(UINTEGER, addr) | value)
+#define uByteShiftUInteger(addr, bits) ((CAST(UINTEGER, PEEK(addr)) << UBYTE_BITS) >> bits)
+#define uIntegerSwitchAndClear(addr) POKE(addr + 1, PEEK(addr)) : POKE(addr, 0)
+
+DIM tmpVwfOffset AS UBYTE
+DIM currentCharNum AS UBYTE
+DIM tmpVwf(15) AS UINTEGER
 
 DIM currentFontAddress AS UINTEGER
 DIM currentVWFTableAddress AS UINTEGER
@@ -204,7 +213,11 @@ SUB setupPrint(printAttributes AS UBYTE)
         IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
             putCharFunction = @putTmpCharInterleaved
         ELSE
-            putCharFunction = @putTmpChar
+            IF printAttributes bAND PRINT_MODE_VWF THEN
+                putCharFunction = @putVfwTmpChar
+            ELSE
+                putCharFunction = @putTmpChar
+            END IF
         END IF    
     END IF
 END SUB
@@ -260,6 +273,68 @@ SUB clearChar()
     POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
     POKE(currentCharAddr + 6 * SCAN_LINE_INC, 0)
     POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
+    setCharAttributes()
+END SUB
+
+'Resets the vfw system
+SUB resetVfw()
+    tmpVwfOffset = 0
+    POKE(UINTEGER, @tmpVwf, 0)
+    POKE(UINTEGER, @tmpVwf + 2, 0)
+    POKE(UINTEGER, @tmpVwf + 4, 0)
+    POKE(UINTEGER, @tmpVwf + 6, 0)
+    POKE(UINTEGER, @tmpVwf + 8, 0)
+    POKE(UINTEGER, @tmpVwf + 10, 0)
+    POKE(UINTEGER, @tmpVwf + 12, 0)
+    POKE(UINTEGER, @tmpVwf + 14, 0)
+END SUB
+
+'Put a vwf char
+SUB putVfwTmpChar()
+    'Join current char with tmpVwf
+    uIntegerOrEquals(@tmpVwf, uByteShiftUInteger(tmpAddr, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 2, uByteShiftUInteger(tmpAddr + 1, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 4, uByteShiftUInteger(tmpAddr + 2, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 6, uByteShiftUInteger(tmpAddr + 3, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 8, uByteShiftUInteger(tmpAddr + 4, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 10, uByteShiftUInteger(tmpAddr + 5, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 12, uByteShiftUInteger(tmpAddr + 6, tmpVwfOffset))
+    uIntegerOrEquals(@tmpVwf + 14, uByteShiftUInteger(tmpAddr + 7, tmpVwfOffset))
+
+    'Commit current char
+    commitVwfChar()
+
+    'Move offset adding width
+    tmpVwfOffset = tmpVwfOffset + PEEK(currentVWFTableAddress + currentCharNum)
+
+    'Commit second char if 
+    IF tmpVwfOffset >= UBYTE_BITS THEN
+        tmpVwfOffset = tmpVwfOffset - UBYTE_BITS
+        'Clean and switch bytes
+        uIntegerSwitchAndClear(@tmpVwf)
+        uIntegerSwitchAndClear(@tmpVwf + 2)
+        uIntegerSwitchAndClear(@tmpVwf + 4)
+        uIntegerSwitchAndClear(@tmpVwf + 6)
+        uIntegerSwitchAndClear(@tmpVwf + 8)
+        uIntegerSwitchAndClear(@tmpVwf + 10)
+        uIntegerSwitchAndClear(@tmpVwf + 12)
+        uIntegerSwitchAndClear(@tmpVwf + 14)
+        nextCharColumn()
+        commitVwfChar()
+    END IF
+
+END SUB
+
+'Prints current vwf char to screen
+SUB commitVwfChar()
+    POKE(currentCharAddr, PEEK(@tmpVwf + 1))
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(@tmpVwf + 3))
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(@tmpVwf + 5))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(@tmpVwf + 7))
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(@tmpVwf + 9))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(@tmpVwf + 11))
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(@tmpVwf + 13))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(@tmpVwf + 15))
     setCharAttributes()
 END SUB
 
@@ -462,6 +537,9 @@ SUB setFadeToBlackType(fadeType AS UBYTE)
     ELSEIF fadeType = FADE_TO_BLACK_CLOSE_HOR THEN
         remainingFadeSteps = FADE_TO_BLACK_CLOSE_HOR_STEPS
         fadeToBlackFunction = @fadeAttributesToBlackCloseHorizontal
+    ELSEIF fadeType = FADE_TO_BLACK_OPEN_HOR THEN
+        remainingFadeSteps = FADE_TO_BLACK_OPEN_HOR_STEPS
+        fadeToBlackFunction = @fadeAttributesToBlackOpenHorizontal
     END IF
 END SUB
 
@@ -488,6 +566,20 @@ SUB fadeAttributesToBlackCloseHorizontal()
     DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
 
     attrIndex = ATTRIBUTES_START_ADDR + (FADE_TO_BLACK_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
+
+    FOR i = 0 TO SCREEN_MAX_ROW
+        POKE(attrIndex, 0)
+        POKE(attrIndex + inc, 0)
+        attrIndex = attrIndex + SCREEN_COLUMNS
+    NEXT i
+END SUB
+
+'Fades to black putting attributes to 0 from center to borders in horizontal
+SUB fadeAttributesToBlackOpenHorizontal()
+    DIM i AS UBYTE
+    DIM inc AS UBYTE = ((FADE_TO_BLACK_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
+
+    attrIndex = ATTRIBUTES_START_ADDR + remainingFadeSteps
 
     FOR i = 0 TO SCREEN_MAX_ROW
         POKE(attrIndex, 0)
@@ -623,7 +715,8 @@ SUB printString(printString AS STRING)
     tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
     
     FOR i = 0 TO tmpStrLen
-        setCharAddress(currentFontAddress + ((CAST(UINTEGER, PEEK(tmpStrDataAddr + i))) << CHAR_SHIFT_BITS ))
+        currentCharNum = PEEK(tmpStrDataAddr + i)
+        setCharAddress(currentFontAddress + ((CAST(UINTEGER, currentCharNum)) << CHAR_SHIFT_BITS ))
         callPutChar()
     NEXT i
 END SUB
