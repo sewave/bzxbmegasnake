@@ -3,39 +3,43 @@ SUB checkMaxScore()
     IF score > maxScore THEN maxScore = score
 END SUB
 
-'Draws the level text
-SUB drawLevelText()
-    PRINT AT LEVEL_STRING_Y, LEVEL_STRING_X; INK GUI_COLOR; LEVEL_STRING;
-END SUB
-
 'Draws the status texts
 SUB drawStatusTexts()
+    setupPrint(PRINT_MODE_VWF)
+    setupFont(@vwfont, @vwfontWidths)
+    setAttributes(STATUS_TEXT_ATTRIBUTES)
     drawLevelText()
     drawScoreTexts()
     drawFruitsText()
     drawLivesText() 
     drawTimeText()
+    setupFont(@font, VWF_NULL_TABLE)
+END SUB
+
+'Draws the level text
+SUB drawLevelText()
+    printVwfStringAt(LEVEL_STRING_X, LEVEL_STRING_Y, LEVEL_STRING)
 END SUB
 
 'Draws the time text
 SUB drawTimeText()
-    PRINT AT TIME_STRING_Y, TIME_STRING_X; INK FONT_COLOR; TIME_STRING;
+    printVwfStringAt(TIME_STRING_X, TIME_STRING_Y, TIME_STRING)
 END SUB
 
 'Draws the score and best texts
 SUB drawScoreTexts()
-    PRINT AT SCORE_STRING_Y, SCORE_STRING_X; INK FONT_COLOR; SCORE_STRING;
-    PRINT AT BEST_STRING_Y, BEST_STRING_X; INK FONT_COLOR; BEST_STRING;
+    printVwfStringAt(SCORE_STRING_X, SCORE_STRING_Y, SCORE_STRING)
+    printVwfStringAt(BEST_STRING_X, BEST_STRING_Y, BEST_STRING)
 END SUB
 
 'Draws the lives number
 SUB drawLivesText()
-   PRINT AT LIVES_STRING_Y, LIVES_STRING_X; INK GUI_COLOR; LIVES_STRING;
+    printVwfStringAt(LIVES_STRING_X, LIVES_STRING_Y, LIVES_STRING)
 END SUB
 
 'Draws the fruits number
 SUB drawFruitsText()
-   PRINT AT FRUITS_STRING_Y, FRUITS_STRING_X; INK GUI_COLOR; FRUITS_STRING;
+    printVwfStringAt(FRUITS_STRING_X, FRUITS_STRING_Y, FRUITS_STRING)
 END SUB
 
 'Draws the status numbers

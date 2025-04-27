@@ -249,6 +249,9 @@ END SUB
 'Prints a string starting at (x, y)
 #define printStringAt(x, y, strToPrint) setCharPosition(x, y): printString(strToPrint)
 
+'Prints a string starting at (x, y)
+#define printVwfStringAt(x, y, strToPrint) setCharPosition(x, y): resetVwf(): printString(strToPrint)
+
 'Prints a uinteger starting at (x, y)
 #define printUIntegerAt(x, y, uintegerToPrint) setCharPosition(x, y): printUInteger(uintegerToPrint)
 
@@ -276,8 +279,8 @@ SUB clearChar()
     setCharAttributes()
 END SUB
 
-'Resets the vfw system
-SUB resetVfw()
+'Resets the vwf system
+SUB resetVwf()
     tmpVwfOffset = 0
     POKE(UINTEGER, @tmpVwf, 0)
     POKE(UINTEGER, @tmpVwf + 2, 0)
