@@ -1,0 +1,5 @@
+#include "font.fnt.zxbas"
+#include "vwfont.fnt.zxbas"
+#include "vwfontwidths.zxbas"
+#include "sprites.spr.zxbas"
+#include "udgs.udg.zxbas"

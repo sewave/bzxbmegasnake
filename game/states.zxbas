@@ -127,9 +127,7 @@ END SUB
 'Inits the game
 SUB stateInitGame()
     initInput()
-    loadFont(@font)
     setupFont(@font, VWF_NULL_TABLE)
-    loadUdgs(@udgs)
     maxScore = INITIAL_MAX_SCORE
     setGameState(STATE_START_TITLE)
 END SUB

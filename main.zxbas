@@ -8,25 +8,9 @@
 
 'Set up max players to use less memory
 #define NUM_PLAYERS 1
-#include "common\\constants.zxbas"
-#include "common\\utils.zxbas"
-#include "common\\video.zxbas"
-#include "common\\input.zxbas"
-#include "common\\states.zxbas"
-#include "gfx\\font.fnt.zxbas"
-#include "gfx\\vwfont.fnt.zxbas"
-#include "gfx\\vwfontwidths.zxbas"
-#include "gfx\\udgs.udg.zxbas"
-#include "gfx\\sprites.spr.zxbas"
-#include "game\\constants.zxbas"
-#include "game\\localize.zxbas"
-#include "game\\data.zxbas"
-#include "game\\sounds.zxbas"
-#include "game\\vars.zxbas"
-#include "game\\board.zxbas"
-#include "game\\functions.zxbas"
-#include "game\\enemies.zxbas"
-#include "game\\states.zxbas"
+#include "common\\common.zxbas"
+#include "gfx\\gfx.zxbas"
+#include "game\\game.zxbas"
 
 setGameState(STATE_INIT_GAME)
 'Main loop
