@@ -199,14 +199,24 @@ SUB printUInteger(number AS UINTEGER)
     _printCurrentNumber()
     tmpDigit = tmpRemainder / THOUSAND : tmpRemainder = tmpRemainder MOD THOUSAND
     _printCurrentNumber()
-    _printHundredsTensUnits()
+    tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
+    _printCurrentNumber()
+    tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
+    _printCurrentNumber()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
+    _callPutChar()
 END SUB
 
 'Prints a [UBYTE] with current font and print setup
 SUB printUByte(number AS UBYTE)
     numberPrinted = FALSE
     tmpRemainderByte = number
-    _printHundredsTensUnits()
+    tmpDigit = tmpRemainderByte / HUNDRED : tmpRemainderByte = tmpRemainderByte MOD HUNDRED
+    _printCurrentNumber()
+    tmpDigit = tmpRemainderByte / TEN : tmpRemainderByte = tmpRemainderByte MOD TEN
+    _printCurrentNumber()
+    setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
+    _callPutChar()
 END SUB
 
 'Initializes the text scroller
@@ -418,16 +428,6 @@ SUB _printCurrentNumber()
         _callPutChar()
         numberPrinted = TRUE
     END IF  
-END SUB
-
-'Prints the hundreds, tens and units
-SUB _printHundredsTensUnits()
-    tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
-    _printCurrentNumber()
-    tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
-    _printCurrentNumber()
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
-    _callPutChar()
 END SUB
 
 'Puts the tall char with the current half tall char function
