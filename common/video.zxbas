@@ -1,15 +1,5 @@
-'Window system
-#define WINDOW_UP_LEFT_INDEX 0
-#define WINDOW_UP_INDEX 1
-#define WINDOW_UP_RIGHT_INDEX 2
-#define WINDOW_RIGHT_INDEX 3
-#define WINDOW_DOWN_RIGHT_INDEX 4
-#define WINDOW_DOWN_INDEX 5
-#define WINDOW_DOWN_LEFT_INDEX 6
-#define WINDOW_LEFT_INDEX 7
-#define WINDOW_LAST_INDEX WINDOW_LEFT_INDEX
-#define MIN_WINDOW_REPEAT_WIDTH  2
-#define MIN_WINDOW_REPEAT_HEIGHT 2
+'*******************PUBLIC CONSTANTS AREA*******************
+#define CHAR_SHIFT_BITS 3
 
 'Video
 #define FRAMES_IN_SECOND 50
@@ -21,55 +11,13 @@
 #define SCREEN_MAX_COLUMN 31
 #define SCREEN_MAX_ROW 23
 
-'UDGs address
-#define UDG_ADDRESS 23675
-
-'Font address
-#define FONT_ADDRESS 23606
-#define FONT_OFFSET 256
-
-'Wait frames
-#define FRAMES_WAITED_START 0
-
-'Attributes
-#define ATTRIBUTE_PAPER %00111000
-#define ATTRIBUTE_INK   %00000111
-#define ATTRIBUTE_COLOR %00111111
-#define ATTRIBUTES_START_ADDR 5800h
-#define ATTRIBUTES_END_ADDR   5AFFh
-#define ATTRIBUTE_PAPER_UNIT %00001000
-#define ATTRIBUTE_INK_UNIT   %00000001
 #define ATTRIBUTE_FLASH_ON   128
 #define ATTRIBUTE_FLASH_OFF  0
 
-'010TTSSS RRRCCCCC
-#define PIXEL_BASE %0100000000000000
+#define FONT_OFFSET 256
 #define SCAN_LINE_INC 256
-#define ROW_INC %0000011100100000
-#define SCAN_LINE_CLEAR %1111100011111111
-'010110TT RRRCCCCC FBPPPIII
-#define ATTR_BASE %0101100000000000
-#define ATTR_ROW_INC %00100000
 
-'Common constants
-#define STRING_DATA_OFFSET 2
-#define ROW_DEC %0000000000100000
-#define CHAR_SHIFT_BITS 3
-
-'Spectrum frame counter bytes
-#define FRAME_LOW_BYTE 23672
-#define FRAME_MED_BYTE 23673
-#define FRAME_HI_BYTE 23674
-
-#define FADE_TO_COLOR_STEPS     8
-#define FADE_TO_CLOSE_HOR_STEPS 16
-#define FADE_TO_OPEN_HOR_STEPS  16
-#define FADE_TO_CLOSE_VER_STEPS 12
-#define FADE_TO_OPEN_VER_STEPS  12
-#define FADE_TO_UP_STEPS        12
-#define FADE_TO_DOWN_STEPS      12
-#define FADE_TO_LEFT_STEPS      16
-#define FADE_TO_RIGHT_STEPS     16
+#define WINDOW_LAST_INDEX _WINDOW_LEFT_INDEX
 
 #define FADE_TO_COLOR     0
 #define FADE_TO_CLOSE_HOR 1
@@ -80,51 +28,104 @@
 #define FADE_TO_DOWN      6
 #define FADE_TO_LEFT      7
 #define FADE_TO_RIGHT     8
+'*****************PUBLIC CONSTANTS AREA END*****************
 
+'******************PRIVATE CONSTANTS AREA*******************
+'Window system
+#define _WINDOW_UP_LEFT_INDEX 0
+#define _WINDOW_UP_INDEX 1
+#define _WINDOW_UP_RIGHT_INDEX 2
+#define _WINDOW_RIGHT_INDEX 3
+#define _WINDOW_DOWN_RIGHT_INDEX 4
+#define _WINDOW_DOWN_INDEX 5
+#define _WINDOW_DOWN_LEFT_INDEX 6
+#define _WINDOW_LEFT_INDEX 7
+#define _MIN_WINDOW_REPEAT_WIDTH  2
+#define _MIN_WINDOW_REPEAT_HEIGHT 2
+
+'UDGs address
+#define _UDG_ADDRESS 23675
+
+'Font address
+#define _FONT_ADDRESS 23606
+
+'Attributes
+#define _ATTRIBUTE_PAPER %00111000
+#define _ATTRIBUTE_INK   %00000111
+#define _ATTRIBUTE_COLOR %00111111
+#define _ATTRIBUTES_START_ADDR 5800h
+#define _ATTRIBUTES_END_ADDR   5AFFh
+#define _ATTRIBUTE_PAPER_UNIT %00001000
+#define _ATTRIBUTE_INK_UNIT   %00000001
+
+'010TTSSS RRRCCCCC
+#define _PIXEL_BASE %0100000000000000
+#define _ROW_INC %0000011100100000
+#define _SCAN_LINE_CLEAR %1111100011111111
+'010110TT RRRCCCCC FBPPPIII
+#define _ATTR_BASE %0101100000000000
+#define _ATTR_ROW_INC %00100000
+
+'Common constants
+#define _ROW_DEC %0000000000100000
+
+'Spectrum frame counter bytes
+#define _FRAME_LOW_BYTE 23672
+#define _FRAME_HI_BYTE 23674
+
+#define _FADE_TO_COLOR_STEPS     8
+#define _FADE_TO_CLOSE_HOR_STEPS 16
+#define _FADE_TO_OPEN_HOR_STEPS  16
+#define _FADE_TO_CLOSE_VER_STEPS 12
+#define _FADE_TO_OPEN_VER_STEPS  12
+#define _FADE_TO_UP_STEPS        12
+#define _FADE_TO_DOWN_STEPS      12
+#define _FADE_TO_LEFT_STEPS      16
+#define _FADE_TO_RIGHT_STEPS     16
+'****************PRIVATE CONSTANTS AREA END*****************
+
+'***********************VARS AREA***************************
+'Public
 DIM remainingFadeSteps AS UBYTE
-DIM fadeToBlackFunction AS UINTEGER
+DIM currentCharAddr AS UINTEGER
+DIM currentCharAttrAddr AS UINTEGER
+DIM tmpAddr AS UINTEGER
+'System Counter
+DIM byteFrameCounter AS UBYTE AT _FRAME_LOW_BYTE
+DIM integerFrameCounter AS UINTEGER AT _FRAME_LOW_BYTE
+DIM highFrameCounter AS UBYTE AT _FRAME_HI_BYTE
 
-#define callFadeToBlack() executeSub(fadeToBlackFunction)
+'Private
+DIM _fadeToAttributes AS UBYTE
+DIM _fadeToFunction AS UINTEGER
+DIM _prevCharAddr AS UINTEGER
+DIM _prevCharAttrAddr AS UINTEGER
+DIM _currentAttributes AS UBYTE
+DIM _customFullFrameCounter AS ULONG
 
+'To speed up processing
+DIM _tmpAttribute AS UBYTE
+DIM _tmpPaper AS UBYTE
+DIM _tmpInk AS UBYTE
+DIM _attrIndex AS UINTEGER
+'*********************VARS AREA END*************************
+
+'********************PRIVATE DEFINES AREA*******************
 #define uIntegerOrEquals(addr, value) POKE(UINTEGER, addr, PEEK(UINTEGER, addr) | value)
 #define uByteShiftUInteger(addr, bits) ((CAST(UINTEGER, PEEK(addr)) << UBYTE_BITS) >> bits)
 #define uIntegerSwitchAndClear(addr) POKE(addr + 1, PEEK(addr)) : POKE(addr, 0)
+'******************PRIVATE DEFINES AREA END*****************
 
-DIM currentCharAddr AS UINTEGER
-DIM currentCharAttrAddr AS UINTEGER
-DIM prevCharAddr AS UINTEGER
-DIM prevCharAttrAddr AS UINTEGER
-DIM currentAttributes AS UBYTE
-DIM tmpAddr AS UINTEGER
-
-'Fade global variables, to speed up processing
-DIM tmpAttribute AS UBYTE
-DIM tmpPaper AS UBYTE
-DIM tmpInk AS UBYTE
-DIM attrIndex AS UINTEGER
-
-'System variables
-DIM byteFrameCounter AS UBYTE AT FRAME_LOW_BYTE
-DIM integerFrameCounter AS UINTEGER AT FRAME_LOW_BYTE
-DIM highFrameCounter AS UBYTE AT FRAME_HI_BYTE
-
-DIM customFullFrameCounter AS ULONG = 0
-
-'Get the 24 bit frame counter
-FUNCTION getfullFrameCounter() AS ULONG
-    POKE(UINTEGER, @customFullFrameCounter, integerFrameCounter)
-    POKE(UBYTE, @customFullFrameCounter + INTEGER_BYTES, highFrameCounter)
-    RETURN customFullFrameCounter
-END FUNCTION
-
+'***********************PUBLIC AREA*************************
+#define callFadeTo() executeSub(_fadeToFunction)
 'Returns the X position for the string to be centered on the screen
 #define centerScreenX(str) ((32 - LEN(str)) >> 1)
 
 'Loads [udgs] address into system to switch udgs graphics
-#define loadUdgs(udgs) POKE UINTEGER UDG_ADDRESS, udgs
+#define loadUdgs(udgs) POKE UINTEGER _UDG_ADDRESS, udgs
 
 'Loads [font] address into system to switch font graphics
-#define loadFont(font) POKE UINTEGER FONT_ADDRESS, font - FONT_OFFSET
+#define loadFont(font) POKE UINTEGER _FONT_ADDRESS, font - FONT_OFFSET
 
 'Creates a new attributes byte
 #define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << PAPER_SHIFT_BITS) | ink)
@@ -132,35 +133,11 @@ END FUNCTION
 'Sets the char addres to print
 #define setCharAddress(charAddress) tmpAddr = charAddress
 
-'Updates char addresses to next column
-SUB nextCharColumn()
-    currentCharAddr = currentCharAddr + 1
-    currentCharAttrAddr = currentCharAttrAddr + 1
-END SUB
-
-'Updates char addresses to next row
-SUB nextCharRow()
-    currentCharAddr = (currentCharAddr + ROW_INC) bAND SCAN_LINE_CLEAR
-    currentCharAttrAddr = (currentCharAttrAddr + ATTR_ROW_INC)
-END SUB
-
-'Updates char addresses to prev column
-SUB prevCharColumn()
-    currentCharAddr = currentCharAddr - 1
-    currentCharAttrAddr = currentCharAttrAddr - 1
-END SUB
-
-'Updates char addresses to prev row
-SUB prevCharRow()
-    currentCharAddr = (currentCharAddr - ROW_DEC) bAND SCAN_LINE_CLEAR
-    currentCharAttrAddr = currentCharAttrAddr - ATTR_ROW_INC
-END SUB
-
 'Sets the attributes for the current char
-#define setCharAttributes() POKE(currentCharAttrAddr, currentAttributes)
+#define setCharAttributes() POKE(currentCharAttrAddr, _currentAttributes)
 
 'Sets the attributes for the next chars
-#define setAttributes(attributes) currentAttributes = attributes
+#define setAttributes(attributes) _currentAttributes = attributes
 
 'Clears a char at (x, y) with [attributes]
 #define clearCharAt(x, y, attributes) setCharPosition(x, y): setAttributes(attributes): clearChar()
@@ -180,47 +157,50 @@ END SUB
 'Puts chars at (x, y) incrementing row
 #define putRowCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putRowChars(numChars, charAddress)
 
-'Puts the cursor pixel pointer at the desired position
-SUB setCharPosition(x as UBYTE, y as UBYTE)
-    DIM lowByte AS UBYTE = x | (y << 5)
-    DIM third AS UINTEGER = CAST(UINTEGER, y >> PAPER_SHIFT_BITS)
-    currentCharAddr = PIXEL_BASE | (third << 11) | lowByte
-    currentCharAttrAddr = ATTR_BASE | (third << 8) | lowByte
+'Get the 24 bit frame counter
+FUNCTION getfullFrameCounter() AS ULONG
+    POKE(UINTEGER, @_customFullFrameCounter, integerFrameCounter)
+    POKE(UBYTE, @_customFullFrameCounter + INTEGER_BYTES, highFrameCounter)
+    RETURN _customFullFrameCounter
+END FUNCTION
+
+'Updates char addresses to next column
+SUB nextCharColumn()
+    currentCharAddr = currentCharAddr + 1
+    currentCharAttrAddr = currentCharAttrAddr + 1
 END SUB
 
-'Clears the current char position
-SUB clearChar()
-    POKE(currentCharAddr, 0)
-    POKE(currentCharAddr + SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, 0)
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
-    setCharAttributes()
+'Updates char addresses to next row
+SUB nextCharRow()
+    currentCharAddr = (currentCharAddr + _ROW_INC) bAND _SCAN_LINE_CLEAR
+    currentCharAttrAddr = (currentCharAttrAddr + _ATTR_ROW_INC)
 END SUB
 
-'Put a char
-SUB putChar(charAddress AS UINTEGER)
-    tmpAddr = charAddress
-    POKE(currentCharAddr, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr))
-    tmpAddr = tmpAddr + 1
-    setCharAttributes()
+'Updates char addresses to prev column
+SUB prevCharColumn()
+    currentCharAddr = currentCharAddr - 1
+    currentCharAttrAddr = currentCharAttrAddr - 1
+END SUB
+
+'Updates char addresses to prev row
+SUB prevCharRow()
+    currentCharAddr = (currentCharAddr - _ROW_DEC) bAND _SCAN_LINE_CLEAR
+    currentCharAttrAddr = currentCharAttrAddr - _ATTR_ROW_INC
+END SUB
+
+'Sets the fade to a type and attributes
+SUB setFadeToTypeAndAttributes(fadeType AS UBYTE, attributes AS UBYTE)
+    _fadeToAttributes = attributes
+    IF fadeType = FADE_TO_COLOR THEN
+        remainingFadeSteps = _FADE_TO_COLOR_STEPS
+        _fadeToFunction = @_fadeAttributesToColor
+    ELSEIF fadeType = FADE_TO_CLOSE_HOR THEN
+        remainingFadeSteps = _FADE_TO_CLOSE_HOR_STEPS
+        _fadeToFunction = @_fadeAttributesToColorCloseHorizontal
+    ELSEIF fadeType = FADE_TO_OPEN_HOR THEN
+        remainingFadeSteps = _FADE_TO_OPEN_HOR_STEPS
+        _fadeToFunction = @_fadeAttributesToColorOpenHorizontal
+    END IF
 END SUB
 
 'Puts [numChars] characters in line, stops at next char
@@ -296,19 +276,19 @@ SUB drawWindow(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE
     DIM widthInc AS UBYTE = width - 1
     DIM heightInc AS UBYTE = height - 1
     setAttributes(color)
-    IF width > MIN_WINDOW_REPEAT_WIDTH THEN
-        drawHorizontalLine(startX + 1, startY, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_UP_INDEX))
-        drawHorizontalLine(startX + 1, startY + heightInc, width - MIN_WINDOW_REPEAT_WIDTH, characters(WINDOW_DOWN_INDEX))
+    IF width > _MIN_WINDOW_REPEAT_WIDTH THEN
+        drawHorizontalLine(startX + 1, startY, width - _MIN_WINDOW_REPEAT_WIDTH, characters(_WINDOW_UP_INDEX))
+        drawHorizontalLine(startX + 1, startY + heightInc, width - _MIN_WINDOW_REPEAT_WIDTH, characters(_WINDOW_DOWN_INDEX))
     END IF
-    IF height > MIN_WINDOW_REPEAT_HEIGHT THEN
-        drawVerticalLine(startX, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_LEFT_INDEX))
-        drawVerticalLine(startX + widthInc, startY + 1, height - MIN_WINDOW_REPEAT_HEIGHT, characters(WINDOW_RIGHT_INDEX))
+    IF height > _MIN_WINDOW_REPEAT_HEIGHT THEN
+        drawVerticalLine(startX, startY + 1, height - _MIN_WINDOW_REPEAT_HEIGHT, characters(_WINDOW_LEFT_INDEX))
+        drawVerticalLine(startX + widthInc, startY + 1, height - _MIN_WINDOW_REPEAT_HEIGHT, characters(_WINDOW_RIGHT_INDEX))
     END IF
     'CORNERS
-    putNextCharAt(startX, startY, characters(WINDOW_UP_LEFT_INDEX))
-    putNextCharAt(startX + widthInc, startY, characters(WINDOW_UP_RIGHT_INDEX))
-    putNextCharAt(startX, startY + heightInc, characters(WINDOW_DOWN_LEFT_INDEX))
-    putNextCharAt(startX + widthInc, startY + heightInc, characters(WINDOW_DOWN_RIGHT_INDEX))
+    putNextCharAt(startX, startY, characters(_WINDOW_UP_LEFT_INDEX))
+    putNextCharAt(startX + widthInc, startY, characters(_WINDOW_UP_RIGHT_INDEX))
+    putNextCharAt(startX, startY + heightInc, characters(_WINDOW_DOWN_LEFT_INDEX))
+    putNextCharAt(startX + widthInc, startY + heightInc, characters(_WINDOW_DOWN_RIGHT_INDEX))
 END SUB
 
 'Clears a rectangular region
@@ -327,79 +307,112 @@ END SUB
 '7FF3
 '6554
 SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as UBYTE, attributes as UBYTE, fillAttributes AS UBYTE, BYREF characters() as UINTEGER)
-    IF width > MIN_WINDOW_REPEAT_WIDTH AND height > MIN_WINDOW_REPEAT_HEIGHT THEN
+    IF width > _MIN_WINDOW_REPEAT_WIDTH AND height > _MIN_WINDOW_REPEAT_HEIGHT THEN
         clearRectangle(startX + 1, startY + 1, width - 2, height - 2, fillAttributes)
     END IF
     drawWindow(startX, startY, width, height, attributes, characters)
 END SUB
 
-'Sets the fade to a type and attributes
-SUB setFadeToTypeAndAttributes(fadeType AS UBYTE, attributes AS UBYTE)
-    IF fadeType = FADE_TO_COLOR THEN
-        remainingFadeSteps = FADE_TO_COLOR_STEPS
-        fadeToBlackFunction = @fadeAttributesToBlack
-    ELSEIF fadeType = FADE_TO_CLOSE_HOR THEN
-        remainingFadeSteps = FADE_TO_CLOSE_HOR_STEPS
-        fadeToBlackFunction = @fadeAttributesToBlackCloseHorizontal
-    ELSEIF fadeType = FADE_TO_OPEN_HOR THEN
-        remainingFadeSteps = FADE_TO_OPEN_HOR_STEPS
-        fadeToBlackFunction = @fadeAttributesToBlackOpenHorizontal
-    END IF
-END SUB
-
-'Decreases all attributes, starts by flash and bright, then paper and color
-SUB fadeAttributesToBlack()
-    FOR attrIndex = ATTRIBUTES_START_ADDR TO ATTRIBUTES_END_ADDR
-        tmpAttribute = PEEK(attrIndex)
-        IF tmpAttribute > ATTRIBUTE_COLOR THEN
-            tmpAttribute = tmpAttribute bAND ATTRIBUTE_COLOR
-        ELSE
-            tmpPaper = tmpAttribute bAND ATTRIBUTE_PAPER
-            tmpInk = tmpAttribute bAND ATTRIBUTE_INK
-            IF tmpPaper THEN tmpPaper = tmpPaper - ATTRIBUTE_PAPER_UNIT
-            IF tmpInk THEN tmpInk = tmpInk - ATTRIBUTE_INK_UNIT
-            tmpAttribute = tmpPaper | tmpInk
-        END IF
-        POKE(attrIndex, tmpAttribute)
-    NEXT attrIndex
-END SUB
-
-'Fades to black putting attributes to 0 from borders to center in horizontal
-SUB fadeAttributesToBlackCloseHorizontal()
-    DIM i AS UBYTE
-    DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
-
-    attrIndex = ATTRIBUTES_START_ADDR + (FADE_TO_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
-
-    FOR i = 0 TO SCREEN_MAX_ROW
-        POKE(attrIndex, 0)
-        POKE(attrIndex + inc, 0)
-        attrIndex = attrIndex + SCREEN_COLUMNS
-    NEXT i
-END SUB
-
-'Fades to black putting attributes to 0 from center to borders in horizontal
-SUB fadeAttributesToBlackOpenHorizontal()
-    DIM i AS UBYTE
-    DIM inc AS UBYTE = ((FADE_TO_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
-
-    attrIndex = ATTRIBUTES_START_ADDR + remainingFadeSteps
-
-    FOR i = 0 TO SCREEN_MAX_ROW
-        POKE(attrIndex, 0)
-        POKE(attrIndex + inc, 0)
-        attrIndex = attrIndex + SCREEN_COLUMNS
-    NEXT i
-END SUB
-
 'Stores current char screen position addresses
 SUB storeCurrentCharPositionAddresses()
-    prevCharAddr = currentCharAddr
-    prevCharAttrAddr = currentCharAttrAddr
+    _prevCharAddr = currentCharAddr
+    _prevCharAttrAddr = currentCharAttrAddr
 END SUB
 
 'Restores previous char screen position addresses
 SUB restorePreviousCharPositionAddresses()
-    currentCharAddr = prevCharAddr
-    currentCharAttrAddr = prevCharAttrAddr
+    currentCharAddr = _prevCharAddr
+    currentCharAttrAddr = _prevCharAttrAddr
 END SUB
+
+'Puts the cursor pixel pointer at the desired position
+SUB setCharPosition(x as UBYTE, y as UBYTE)
+    DIM lowByte AS UBYTE = x | (y << 5)
+    DIM third AS UINTEGER = CAST(UINTEGER, y >> PAPER_SHIFT_BITS)
+    currentCharAddr = _PIXEL_BASE | (third << 11) | lowByte
+    currentCharAttrAddr = _ATTR_BASE | (third << 8) | lowByte
+END SUB
+
+'Clears the current char position
+SUB clearChar()
+    POKE(currentCharAddr, 0)
+    POKE(currentCharAddr + SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, 0)
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, 0)
+    setCharAttributes()
+END SUB
+
+'Put a char
+SUB putChar(charAddress AS UINTEGER)
+    tmpAddr = charAddress
+    POKE(currentCharAddr, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(tmpAddr))
+    tmpAddr = tmpAddr + 1
+    setCharAttributes()
+END SUB
+'*********************PUBLIC AREA END***********************
+
+'***********************PRIVATE AREA************************
+
+'Decreases all attributes, starts by flash and bright, then paper and color
+SUB _fadeAttributesToColor()
+    FOR _attrIndex = _ATTRIBUTES_START_ADDR TO _ATTRIBUTES_END_ADDR
+        _tmpAttribute = PEEK(_attrIndex)
+        IF _tmpAttribute > _ATTRIBUTE_COLOR THEN
+            _tmpAttribute = _tmpAttribute bAND _ATTRIBUTE_COLOR
+        ELSE
+            _tmpPaper = _tmpAttribute bAND _ATTRIBUTE_PAPER
+            _tmpInk = _tmpAttribute bAND _ATTRIBUTE_INK
+            IF _tmpPaper THEN _tmpPaper = _tmpPaper - _ATTRIBUTE_PAPER_UNIT
+            IF _tmpInk THEN _tmpInk = _tmpInk - _ATTRIBUTE_INK_UNIT
+            _tmpAttribute = _tmpPaper | _tmpInk
+        END IF
+        POKE(_attrIndex, _tmpAttribute)
+    NEXT _attrIndex
+END SUB
+
+'Fades to color putting attributes to 0 from borders to center in horizontal
+SUB _fadeAttributesToColorCloseHorizontal()
+    DIM i AS UBYTE
+    DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
+
+    _attrIndex = _ATTRIBUTES_START_ADDR + (_FADE_TO_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
+
+    FOR i = 0 TO SCREEN_MAX_ROW
+        POKE(_attrIndex, _fadeToAttributes)
+        POKE(_attrIndex + inc, _fadeToAttributes)
+        _attrIndex = _attrIndex + SCREEN_COLUMNS
+    NEXT i
+END SUB
+
+'Fades to color putting attributes to 0 from center to borders in horizontal
+SUB _fadeAttributesToColorOpenHorizontal()
+    DIM i AS UBYTE
+    DIM inc AS UBYTE = ((_FADE_TO_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
+
+    _attrIndex = _ATTRIBUTES_START_ADDR + remainingFadeSteps
+
+    FOR i = 0 TO SCREEN_MAX_ROW
+        POKE(_attrIndex, _fadeToAttributes)
+        POKE(_attrIndex + inc, _fadeToAttributes)
+        _attrIndex = _attrIndex + SCREEN_COLUMNS
+    NEXT i
+END SUB
+'*********************PRIVATE AREA END**********************

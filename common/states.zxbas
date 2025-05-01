@@ -110,7 +110,7 @@ SUB stateFadeTo()
     _fadeStepframes = _fadeStepframes - 1
     IF _fadeStepframes = 0 THEN
         remainingFadeSteps = remainingFadeSteps - 1
-        callFadeToBlack()
+        callFadeTo()
         _fadeStepframes = _targetFadeStepframes
         IF remainingFadeSteps = 0 THEN setStateWaitFrames(_fadeStepframes, _getNextGameState())
     END IF

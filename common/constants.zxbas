@@ -20,3 +20,5 @@
 #define THOUSAND 1000
 #define HUNDRED  100
 #define TEN      10
+
+#define STRING_DATA_OFFSET 2
