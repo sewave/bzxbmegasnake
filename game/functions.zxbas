@@ -331,8 +331,7 @@ END FUNCTION
 'Prints the scrolling text
 SUB printTitleScroller()
     setupPrint(PRINT_MODE_TALL)
-    setTallAttributes(createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK),_
-        createAttributes(FALSE, FALSE, TITLE_SCROLLER_PAPER, TITLE_SCROLLER_INK))
+    setTallAttributes(TITLE_SCROLLER_UPPER_ATTRIBUTES, TITLE_SCROLLER_LOWER_ATTRIBUTES)
     frameTextScroller()
 END SUB
 

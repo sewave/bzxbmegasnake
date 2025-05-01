@@ -53,6 +53,7 @@
 #define _ATTRIBUTE_PAPER %00111000
 #define _ATTRIBUTE_INK   %00000111
 #define _ATTRIBUTE_COLOR %00111111
+#define _ATTRIBUTE_FLASH_BRIGHT %11000000
 #define _ATTRIBUTES_START_ADDR 5800h
 #define _ATTRIBUTES_END_ADDR   5AFFh
 #define _ATTRIBUTE_PAPER_UNIT %00001000
@@ -73,7 +74,7 @@
 #define _FRAME_LOW_BYTE 23672
 #define _FRAME_HI_BYTE 23674
 
-#define _FADE_TO_COLOR_STEPS     8
+#define _FADE_TO_COLOR_STEPS     10
 #define _FADE_TO_CLOSE_HOR_STEPS 16
 #define _FADE_TO_OPEN_HOR_STEPS  16
 #define _FADE_TO_CLOSE_VER_STEPS 12
@@ -97,6 +98,9 @@ DIM highFrameCounter AS UBYTE AT _FRAME_HI_BYTE
 
 'Private
 DIM _fadeToAttributes AS UBYTE
+DIM _fadeToAttributesPaper AS UBYTE
+DIM _fadeToAttributesInk AS UBYTE
+DIM _fadeToAttributesFlashBright AS UBYTE
 DIM _fadeToFunction AS UINTEGER
 DIM _prevCharAddr AS UINTEGER
 DIM _prevCharAttrAddr AS UINTEGER
@@ -191,6 +195,10 @@ END SUB
 'Sets the fade to a type and attributes
 SUB setFadeToTypeAndAttributes(fadeType AS UBYTE, attributes AS UBYTE)
     _fadeToAttributes = attributes
+    _fadeToAttributesPaper = _fadeToAttributes & _ATTRIBUTE_PAPER
+    _fadeToAttributesInk = _fadeToAttributes & _ATTRIBUTE_INK
+    _fadeToAttributesFlashBright = _fadeToAttributes & _ATTRIBUTE_FLASH_BRIGHT
+
     IF fadeType = FADE_TO_COLOR THEN
         remainingFadeSteps = _FADE_TO_COLOR_STEPS
         _fadeToFunction = @_fadeAttributesToColor
@@ -371,18 +379,20 @@ END SUB
 
 '***********************PRIVATE AREA************************
 
-'Decreases all attributes, starts by flash and bright, then paper and color
+'Changes all attributes, starts by flash and bright, then paper and color
 SUB _fadeAttributesToColor()
     FOR _attrIndex = _ATTRIBUTES_START_ADDR TO _ATTRIBUTES_END_ADDR
         _tmpAttribute = PEEK(_attrIndex)
-        IF _tmpAttribute > _ATTRIBUTE_COLOR THEN
-            _tmpAttribute = _tmpAttribute bAND _ATTRIBUTE_COLOR
+        IF (_tmpAttribute & _ATTRIBUTE_FLASH_BRIGHT) <> _fadeToAttributesFlashBright THEN
+            _tmpAttribute = (_tmpAttribute & _ATTRIBUTE_COLOR) | _fadeToAttributesFlashBright
         ELSE
-            _tmpPaper = _tmpAttribute bAND _ATTRIBUTE_PAPER
-            _tmpInk = _tmpAttribute bAND _ATTRIBUTE_INK
-            IF _tmpPaper THEN _tmpPaper = _tmpPaper - _ATTRIBUTE_PAPER_UNIT
-            IF _tmpInk THEN _tmpInk = _tmpInk - _ATTRIBUTE_INK_UNIT
-            _tmpAttribute = _tmpPaper | _tmpInk
+            _tmpPaper = _tmpAttribute & _ATTRIBUTE_PAPER
+            _tmpInk = _tmpAttribute & _ATTRIBUTE_INK
+            IF _tmpPaper > _fadeToAttributesPaper THEN _tmpPaper = _tmpPaper - _ATTRIBUTE_PAPER_UNIT
+            IF _tmpPaper < _fadeToAttributesPaper THEN _tmpPaper = _tmpPaper + _ATTRIBUTE_PAPER_UNIT
+            IF _tmpInk > _fadeToAttributesInk THEN _tmpInk = _tmpInk - _ATTRIBUTE_INK_UNIT
+            IF _tmpInk < _fadeToAttributesInk THEN _tmpInk = _tmpInk + _ATTRIBUTE_INK_UNIT
+            _tmpAttribute = _tmpPaper | _tmpInk | _fadeToAttributesFlashBright
         END IF
         POKE(_attrIndex, _tmpAttribute)
     NEXT _attrIndex
