@@ -351,7 +351,7 @@ SUB stateLoopEndGame()
             IF messageIndex < END_GAME_MESSAGE_LAST_INDEX THEN
                 printStringAt(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
                     END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1),_
-                        END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex + 1))
+                        END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex))
             END IF
             endGameCounter = endGameCounter + 1
         ELSE

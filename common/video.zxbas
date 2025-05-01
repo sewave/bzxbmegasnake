@@ -96,6 +96,8 @@ DIM tmpDigit AS UBYTE
 
 DIM currentCharAddr AS UINTEGER
 DIM currentCharAttrAddr AS UINTEGER
+DIM prevCharAddr AS UINTEGER
+DIM prevCharAttrAddr AS UINTEGER
 DIM currentAttributes AS UBYTE
 DIM tmpAddr AS UINTEGER
 
@@ -392,4 +394,16 @@ SUB fadeAttributesToBlackOpenHorizontal()
         POKE(attrIndex + inc, 0)
         attrIndex = attrIndex + SCREEN_COLUMNS
     NEXT i
+END SUB
+
+'Stores current char screen position addresses
+SUB storeCurrentCharPositionAddresses()
+    prevCharAddr = currentCharAddr
+    prevCharAttrAddr = currentCharAttrAddr
+END SUB
+
+'Restores previous char screen position addresses
+SUB restorePreviousCharPositionAddresses()
+    currentCharAddr = prevCharAddr
+    currentCharAttrAddr = prevCharAttrAddr
 END SUB
