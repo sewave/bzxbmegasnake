@@ -90,10 +90,6 @@ DIM fadeToBlackFunction AS UINTEGER
 #define uByteShiftUInteger(addr, bits) ((CAST(UINTEGER, PEEK(addr)) << UBYTE_BITS) >> bits)
 #define uIntegerSwitchAndClear(addr) POKE(addr + 1, PEEK(addr)) : POKE(addr, 0)
 
-DIM tmpRemainder AS UINTEGER
-DIM tmpRemainderByte AS UBYTE
-DIM tmpDigit AS UBYTE
-
 DIM currentCharAddr AS UINTEGER
 DIM currentCharAttrAddr AS UINTEGER
 DIM prevCharAddr AS UINTEGER

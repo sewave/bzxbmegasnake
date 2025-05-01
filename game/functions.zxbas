@@ -322,7 +322,7 @@ FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
     IF keyCode = NO_KEYBOARD_KEY_PRESSED THEN RETURN FALSE
     IF redefinedKeys THEN
         FOR i = 0 TO redefinedKeys - 1
-            IF keys(playerIndex, i) = keyCode THEN return FALSE
+            IF getPlayerKey(playerIndex, i) = keyCode THEN return FALSE
         NEXT i
     END IF
     RETURN TRUE

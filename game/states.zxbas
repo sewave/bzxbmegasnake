@@ -225,8 +225,8 @@ SUB stateWaitSelectKeys()
         setupPrint(PRINT_MODE_NORMAL)
         setAttributes(SELECT_KEYS_ATTRIBUTES)
         printStringAt(SELECTED_KEY_TITLE_X, SELECT_KEYS_ENTRY_Y_1 + redefinedKeys,_
-            CHR(keyboardValues(keyCode)))
-        keys(PLAYER_1_INDEX, redefinedKeys) = keyCode
+            CHR(getKeyIndexAscii(keyCode)))
+        setPlayerKey(PLAYER_1_INDEX, redefinedKeys, keyCode)
         redefinedKeys = redefinedKeys + 1
         setStateWaitNoKey(getGameState())
     END IF
@@ -348,7 +348,7 @@ SUB stateLoopEndGame()
     IF endGameMessageNumber <= LAST_END_GAME_MESSAGE THEN
         IF endGameCounter < END_GAME_MESSAGE_WAIT THEN
             DIM messageIndex AS UBYTE = endGameCounter >> 1
-            IF messageIndex < END_GAME_MESSAGE_LAST_INDEX THEN
+            IF messageIndex <= END_GAME_MESSAGE_LAST_INDEX THEN
                 printStringAt(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
                     END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1),_
                         END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex))

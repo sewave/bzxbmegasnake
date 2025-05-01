@@ -2,9 +2,9 @@
 #define NEW_LINE_CHAR 0x9D
 #define VWF_NULL_TABLE 0
 #define PRINT_MODE_NORMAL      %00000000
-#define PRINT_MODE_TALL        %00000010
-#define PRINT_MODE_INTERLEAVED %00000100
-#define PRINT_MODE_VWF         %00001000
+#define PRINT_MODE_TALL        %00000001
+#define PRINT_MODE_INTERLEAVED %00000010
+#define PRINT_MODE_VWF         %00000100
 '*****************PUBLIC CONSTANTS AREA END*****************
 
 '******************PRIVATE CONSTANTS AREA*******************
@@ -19,35 +19,38 @@
 '****************PRIVATE CONSTANTS AREA END*****************
 
 '***********************VARS AREA***************************
-DIM scrollerTargetFrames AS UBYTE
-DIM scrollerRemainingFrames AS UBYTE
-DIM scrollerX, scrollerY AS UBYTE
-DIM scrollerTargetWidth AS UBYTE
-DIM scrollerPointer AS UINTEGER
-DIM scrollerString AS STRING
-DIM scrollerStringLength AS UINTEGER
+DIM _scrollerTargetFrames AS UBYTE
+DIM _scrollerRemainingFrames AS UBYTE
+DIM _scrollerX, _scrollerY AS UBYTE
+DIM _scrollerTargetWidth AS UBYTE
+DIM _scrollerPointer AS UINTEGER
+DIM _scrollerString AS STRING
+DIM _scrollerStringLength AS UINTEGER
 
-DIM tmpVwfOffset AS UBYTE
-DIM currentCharNum AS UBYTE
-DIM tmpVwf(_VWF_LAST_BYTE) AS UINTEGER
+DIM _tmpVwfOffset AS UBYTE
+DIM _currentCharNum AS UBYTE
+DIM _tmpVwf(_VWF_LAST_BYTE) AS UINTEGER
 
-DIM currentFontAddress AS UINTEGER
-DIM currentVWFTableAddress AS UINTEGER
+DIM _currentFontAddress AS UINTEGER
+DIM _currentVWFTableAddress AS UINTEGER
 
 'Tall characters vars
-DIM tmpCharByte AS UBYTE
-DIM tmpStrDataAddr AS UINTEGER
-DIM tmpStrLen AS UBYTE
-DIM putHalfCharFunction AS UINTEGER
-DIM upperAttributes, lowerAttributes AS UBYTE
+DIM _tmpCharByte AS UBYTE
+DIM _tmpStrDataAddr AS UINTEGER
+DIM _tmpStrLen AS UBYTE
+DIM _putHalfCharFunction AS UINTEGER
+DIM _upperAttributes, _lowerAttributes AS UBYTE
 
-DIM putCharFunction AS UINTEGER
-DIM printAttributes AS UBYTE
-DIM numberPrinted AS UBYTE
+DIM _putCharFunction AS UINTEGER
+DIM _printAttributes AS UBYTE
+DIM _numberPrinted AS UBYTE
+DIM _tmpRemainder AS UINTEGER
+DIM _tmpRemainderByte AS UBYTE
+DIM _tmpDigit AS UBYTE
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
-#define _callPutChar() executeSub(putCharFunction)
+#define _callPutChar() executeSub(_putCharFunction)
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
@@ -76,35 +79,35 @@ DIM numberPrinted AS UBYTE
 #define printPaddedNumberTensAt(x, y, number, padding) setCharPosition(x, y) : printPaddedNumberTens(number, padding)
 
 'Sets the attributes of the tall character
-#define setTallAttributes(upAttr, lowAttr) upperAttributes = upAttr: lowerAttributes = lowAttr
+#define setTallAttributes(upAttr, lowAttr) _upperAttributes = upAttr: _lowerAttributes = lowAttr
 
 'Setups the printing routine
-SUB setupPrint(pPrintAttributes AS UBYTE)
-    printAttributes = pPrintAttributes
-    IF printAttributes bAND PRINT_MODE_TALL THEN
-        IF printAttributes bAND PRINT_MODE_VWF THEN
-            putCharFunction = @_putVwfCharTall
-            IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
-                putHalfCharFunction = @_putHalfTallCharInterleaved
+SUB setupPrint(p_printAttributes AS UBYTE)
+    _printAttributes = p_printAttributes
+    IF _printAttributes bAND PRINT_MODE_TALL THEN
+        IF _printAttributes bAND PRINT_MODE_VWF THEN
+            _putCharFunction = @_putVwfCharTall
+            IF _printAttributes bAND PRINT_MODE_INTERLEAVED THEN
+                _putHalfCharFunction = @_putHalfTallCharInterleaved
             ELSE
-                putHalfCharFunction = @_putHalfTallChar
+                _putHalfCharFunction = @_putHalfTallChar
             END IF
         ELSE
-            putCharFunction = @_putCharTall
-            IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
-                putHalfCharFunction = @_putHalfCharTallInterleaved
+            _putCharFunction = @_putCharTall
+            IF _printAttributes bAND PRINT_MODE_INTERLEAVED THEN
+                _putHalfCharFunction = @_putHalfCharTallInterleaved
             ELSE
-                putHalfCharFunction = @_putHalfCharTall
+                _putHalfCharFunction = @_putHalfCharTall
             END IF
         END IF        
     ELSE
-        IF printAttributes bAND PRINT_MODE_INTERLEAVED THEN
-            putCharFunction = @_putTmpCharInterleaved
+        IF _printAttributes bAND PRINT_MODE_INTERLEAVED THEN
+            _putCharFunction = @_putTmpCharInterleaved
         ELSE
-            IF printAttributes bAND PRINT_MODE_VWF THEN
-                putCharFunction = @_putVwfTmpChar
+            IF _printAttributes bAND PRINT_MODE_VWF THEN
+                _putCharFunction = @_putVwfTmpChar
             ELSE
-                putCharFunction = @_putTmpChar
+                _putCharFunction = @_putTmpChar
             END IF
         END IF    
     END IF
@@ -112,9 +115,9 @@ END SUB
 
 'Resets the vwf system
 SUB resetVwf()
-    tmpVwfOffset = 0
+    _tmpVwfOffset = 0
     DIM i AS UBYTE
-    FOR i = 0 TO _VWF_LAST_BYTE : tmpVwf(i) = 0 : NEXT i
+    FOR i = 0 TO _VWF_LAST_BYTE : _tmpVwf(i) = 0 : NEXT i
 END SUB
 
 'Prints a padded number of thousands length
@@ -163,27 +166,27 @@ END SUB
 
 'Setups the font, [vWFTableAddress] only needed if using vwf, put [VWF_NULL_TABLE] if unused
 SUB setupFont(fontAddress as UINTEGER, vWFTableAddress AS UINTEGER)
-    currentFontAddress = fontAddress - FONT_OFFSET
-    currentVWFTableAddress = vWFTableAddress - _VWF_OFFSET
+    _currentFontAddress = fontAddress - FONT_OFFSET
+    _currentVWFTableAddress = vWFTableAddress - _VWF_OFFSET
 END SUB
 
 'Prints a string with current font and print setup
 SUB printString(printString AS STRING)
     DIM i AS UBYTE
-    tmpStrLen = LEN(printString) - 1
-    tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
+    _tmpStrLen = LEN(printString) - 1
+    _tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
     storeCurrentCharPositionAddresses()
 
-    FOR i = 0 TO tmpStrLen
-        currentCharNum = PEEK(tmpStrDataAddr + i)
-        IF currentCharNum = NEW_LINE_CHAR THEN
+    FOR i = 0 TO _tmpStrLen
+        _currentCharNum = PEEK(_tmpStrDataAddr + i)
+        IF _currentCharNum = NEW_LINE_CHAR THEN
             restorePreviousCharPositionAddresses()
             nextCharRow()
-            IF printAttributes bAND PRINT_MODE_TALL THEN nextCharRow()
-            IF printAttributes bAND PRINT_MODE_VWF THEN resetVwf()
+            IF _printAttributes bAND PRINT_MODE_TALL THEN nextCharRow()
+            IF _printAttributes bAND PRINT_MODE_VWF THEN resetVwf()
             storeCurrentCharPositionAddresses()
         ELSE
-            setCharAddress(currentFontAddress + ((CAST(UINTEGER, currentCharNum)) << CHAR_SHIFT_BITS ))
+            setCharAddress(_currentFontAddress + ((CAST(UINTEGER, _currentCharNum)) << CHAR_SHIFT_BITS ))
             _callPutChar()
         END IF
     NEXT i
@@ -191,44 +194,44 @@ END SUB
 
 'Prints a [UINTEGER] with current font and print setup
 SUB printUInteger(number AS UINTEGER)
-    numberPrinted = FALSE
-    tmpRemainder = number
+    _numberPrinted = FALSE
+    _tmpRemainder = number
     
     'Unrolled loop
-    tmpDigit = tmpRemainder / MYRIAD : tmpRemainder = tmpRemainder MOD MYRIAD
+    _tmpDigit = _tmpRemainder / MYRIAD : _tmpRemainder = _tmpRemainder MOD MYRIAD
     _printCurrentNumber()
-    tmpDigit = tmpRemainder / THOUSAND : tmpRemainder = tmpRemainder MOD THOUSAND
+    _tmpDigit = _tmpRemainder / THOUSAND : _tmpRemainder = _tmpRemainder MOD THOUSAND
     _printCurrentNumber()
-    tmpDigit = tmpRemainder / HUNDRED : tmpRemainder = tmpRemainder MOD HUNDRED
+    _tmpDigit = _tmpRemainder / HUNDRED : _tmpRemainder = _tmpRemainder MOD HUNDRED
     _printCurrentNumber()
-    tmpDigit = tmpRemainder / TEN : tmpRemainder = tmpRemainder MOD TEN
+    _tmpDigit = _tmpRemainder / TEN : _tmpRemainder = _tmpRemainder MOD TEN
     _printCurrentNumber()
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpRemainder)) << CHAR_SHIFT_BITS ))
+    setCharAddress(_currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + _tmpRemainder)) << CHAR_SHIFT_BITS ))
     _callPutChar()
 END SUB
 
 'Prints a [UBYTE] with current font and print setup
 SUB printUByte(number AS UBYTE)
-    numberPrinted = FALSE
-    tmpRemainderByte = number
-    tmpDigit = tmpRemainderByte / HUNDRED : tmpRemainderByte = tmpRemainderByte MOD HUNDRED
+    _numberPrinted = FALSE
+    _tmpRemainderByte = number
+    _tmpDigit = _tmpRemainderByte / HUNDRED : _tmpRemainderByte = _tmpRemainderByte MOD HUNDRED
     _printCurrentNumber()
-    tmpDigit = tmpRemainderByte / TEN : tmpRemainderByte = tmpRemainderByte MOD TEN
+    _tmpDigit = _tmpRemainderByte / TEN : _tmpRemainderByte = _tmpRemainderByte MOD TEN
     _printCurrentNumber()
-    setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpRemainderByte)) << CHAR_SHIFT_BITS ))
+    setCharAddress(_currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + _tmpRemainderByte)) << CHAR_SHIFT_BITS ))
     _callPutChar()
 END SUB
 
 'Initializes the text scroller
 SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, BYREF scroller AS STRING)
-    scrollerTargetFrames = frames
-    scrollerRemainingFrames = _SCROLLER_REMAINIG_FRAMES_START
-    scrollerX = x
-    scrollerY = y
-    scrollerTargetWidth = width - 1
-    scrollerPointer = _SCROLLER_POINTER_START
-    scrollerString = scroller
-    scrollerStringLength = LEN(scrollerString)
+    _scrollerTargetFrames = frames
+    _scrollerRemainingFrames = _SCROLLER_REMAINIG_FRAMES_START
+    _scrollerX = x
+    _scrollerY = y
+    _scrollerTargetWidth = width - 1
+    _scrollerPointer = _SCROLLER_POINTER_START
+    _scrollerString = scroller
+    _scrollerStringLength = LEN(_scrollerString)
 END SUB
 
 'You must set attributes and setup print before calling
@@ -238,48 +241,48 @@ END SUB
 'want the string to dissapear completely
 'Call it on each frame
 SUB frameTextScroller()
-    scrollerRemainingFrames = scrollerRemainingFrames - 1
-    IF scrollerRemainingFrames = _SCROLLER_FRAMES_DONE THEN
-        scrollerRemainingFrames = scrollerTargetFrames
-        printStringAt(scrollerX, scrollerY, scrollerString(scrollerPointer TO scrollerPointer + scrollerTargetWidth))
-        IF scrollerPointer + scrollerTargetWidth >= scrollerStringLength THEN
-            scrollerPointer = _SCROLLER_POINTER_START
+    _scrollerRemainingFrames = _scrollerRemainingFrames - 1
+    IF _scrollerRemainingFrames = _SCROLLER_FRAMES_DONE THEN
+        _scrollerRemainingFrames = _scrollerTargetFrames
+        printStringAt(_scrollerX, _scrollerY, _scrollerString(_scrollerPointer TO _scrollerPointer + _scrollerTargetWidth))
+        IF _scrollerPointer + _scrollerTargetWidth >= _scrollerStringLength THEN
+            _scrollerPointer = _SCROLLER_POINTER_START
         ELSE
-            scrollerPointer = scrollerPointer + 1
+            _scrollerPointer = _scrollerPointer + 1
         END IF
     END IF
 END SUB
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************
-'Join current char with tmpVwf
+'Join current char with _tmpVwf
 SUB _joinVwfChar()
-    uIntegerOrEquals(@tmpVwf, uByteShiftUInteger(tmpAddr, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 2, uByteShiftUInteger(tmpAddr + 1, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 4, uByteShiftUInteger(tmpAddr + 2, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 6, uByteShiftUInteger(tmpAddr + 3, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 8, uByteShiftUInteger(tmpAddr + 4, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 10, uByteShiftUInteger(tmpAddr + 5, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 12, uByteShiftUInteger(tmpAddr + 6, tmpVwfOffset))
-    uIntegerOrEquals(@tmpVwf + 14, uByteShiftUInteger(tmpAddr + 7, tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf, uByteShiftUInteger(tmpAddr, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 2, uByteShiftUInteger(tmpAddr + 1, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 4, uByteShiftUInteger(tmpAddr + 2, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 6, uByteShiftUInteger(tmpAddr + 3, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 8, uByteShiftUInteger(tmpAddr + 4, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 10, uByteShiftUInteger(tmpAddr + 5, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 12, uByteShiftUInteger(tmpAddr + 6, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf + 14, uByteShiftUInteger(tmpAddr + 7, _tmpVwfOffset))
 END SUB
 
-'Join current char with tmpVwf
+'Join current char with _tmpVwf
 FUNCTION _postVwfChar() AS UBYTE
     'Move offset adding width
-    tmpVwfOffset = tmpVwfOffset + PEEK(currentVWFTableAddress + currentCharNum)
+    _tmpVwfOffset = _tmpVwfOffset + PEEK(_currentVWFTableAddress + _currentCharNum)
 
-    IF tmpVwfOffset >= UBYTE_BITS THEN
-        tmpVwfOffset = tmpVwfOffset - UBYTE_BITS
+    IF _tmpVwfOffset >= UBYTE_BITS THEN
+        _tmpVwfOffset = _tmpVwfOffset - UBYTE_BITS
         'Clean and switch bytes
-        uIntegerSwitchAndClear(@tmpVwf)
-        uIntegerSwitchAndClear(@tmpVwf + 2)
-        uIntegerSwitchAndClear(@tmpVwf + 4)
-        uIntegerSwitchAndClear(@tmpVwf + 6)
-        uIntegerSwitchAndClear(@tmpVwf + 8)
-        uIntegerSwitchAndClear(@tmpVwf + 10)
-        uIntegerSwitchAndClear(@tmpVwf + 12)
-        uIntegerSwitchAndClear(@tmpVwf + 14)
+        uIntegerSwitchAndClear(@_tmpVwf)
+        uIntegerSwitchAndClear(@_tmpVwf + 2)
+        uIntegerSwitchAndClear(@_tmpVwf + 4)
+        uIntegerSwitchAndClear(@_tmpVwf + 6)
+        uIntegerSwitchAndClear(@_tmpVwf + 8)
+        uIntegerSwitchAndClear(@_tmpVwf + 10)
+        uIntegerSwitchAndClear(@_tmpVwf + 12)
+        uIntegerSwitchAndClear(@_tmpVwf + 14)
         nextCharColumn()
         RETURN TRUE
     END IF
@@ -295,14 +298,14 @@ END SUB
 
 'Prints current vwf char to screen
 SUB _commitVwfChar()
-    POKE(currentCharAddr, PEEK(@tmpVwf + 1))
-    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(@tmpVwf + 3))
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(@tmpVwf + 5))
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(@tmpVwf + 7))
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(@tmpVwf + 9))
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(@tmpVwf + 11))
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(@tmpVwf + 13))
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(@tmpVwf + 15))
+    POKE(currentCharAddr, PEEK(@_tmpVwf + 1))
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(@_tmpVwf + 3))
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(@_tmpVwf + 5))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(@_tmpVwf + 7))
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(@_tmpVwf + 9))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(@_tmpVwf + 11))
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(@_tmpVwf + 13))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(@_tmpVwf + 15))
     setCharAttributes()
 END SUB
 
@@ -336,18 +339,18 @@ END SUB
 
 'Put half tall char doubled
 SUB _putHalfTallChar()
-    tmpCharByte = PEEK(tmpAddr + 1)
-    POKE(currentCharAddr, tmpCharByte)
-    POKE(currentCharAddr + SCAN_LINE_INC, tmpCharByte)
-    tmpCharByte = PEEK(tmpAddr + 3)
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, tmpCharByte)
-    tmpCharByte = PEEK(tmpAddr + 5)
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, tmpCharByte)
-    tmpCharByte = PEEK(tmpAddr + 7)
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr + 1)
+    POKE(currentCharAddr, _tmpCharByte)
+    POKE(currentCharAddr + SCAN_LINE_INC, _tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr + 3)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, _tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr + 5)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, _tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr + 7)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, _tmpCharByte)
     setCharAttributes()
 END SUB
 
@@ -366,13 +369,13 @@ END SUB
 
 'Puts one tall char of the VWF tall character
 SUB _putOneVwfCharTall()
-    setAttributes(upperAttributes)
-    tmpAddr = @tmpVwf
-    executeSub(putHalfCharFunction)
+    setAttributes(_upperAttributes)
+    tmpAddr = @_tmpVwf
+    executeSub(_putHalfCharFunction)
     nextCharRow()
-    setAttributes(lowerAttributes)
-    tmpAddr = @tmpVwf + 8
-    executeSub(putHalfCharFunction)
+    setAttributes(_lowerAttributes)
+    tmpAddr = @_tmpVwf + 8
+    executeSub(_putHalfCharFunction)
     prevCharRow()
 END SUB
 
@@ -385,21 +388,21 @@ END SUB
 
 'Put half a char doubling lines
 SUB _putHalfCharTall()
-    tmpCharByte = PEEK(tmpAddr)
-    POKE(currentCharAddr, tmpCharByte)
-    POKE(currentCharAddr + SCAN_LINE_INC, tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr, _tmpCharByte)
+    POKE(currentCharAddr + SCAN_LINE_INC, _tmpCharByte)
     tmpAddr = tmpAddr + 1
-    tmpCharByte = PEEK(tmpAddr)
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, _tmpCharByte)
     tmpAddr = tmpAddr + 1
-    tmpCharByte = PEEK(tmpAddr)
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, _tmpCharByte)
     tmpAddr = tmpAddr + 1
-    tmpCharByte = PEEK(tmpAddr)
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, tmpCharByte)
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, tmpCharByte)
+    _tmpCharByte = PEEK(tmpAddr)
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, _tmpCharByte)
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, _tmpCharByte)
     tmpAddr = tmpAddr + 1
     setCharAttributes()
 END SUB
@@ -423,20 +426,20 @@ END SUB
 
 'Prints the current number
 SUB _printCurrentNumber()
-    IF numberPrinted bOR tmpDigit > 0 THEN
-        setCharAddress(currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + tmpDigit)) << CHAR_SHIFT_BITS ))
+    IF _numberPrinted bOR _tmpDigit > 0 THEN
+        setCharAddress(_currentFontAddress + ((CAST(UINTEGER, _ASCII_ZERO_NUMBER + _tmpDigit)) << CHAR_SHIFT_BITS ))
         _callPutChar()
-        numberPrinted = TRUE
+        _numberPrinted = TRUE
     END IF  
 END SUB
 
 'Puts the tall char with the current half tall char function
 SUB _putCharTall()
-    setAttributes(upperAttributes)
-    executeSub(putHalfCharFunction)
+    setAttributes(_upperAttributes)
+    executeSub(_putHalfCharFunction)
     nextCharRow()
-    setAttributes(lowerAttributes)
-    executeSub(putHalfCharFunction)
+    setAttributes(_lowerAttributes)
+    executeSub(_putHalfCharFunction)
     prevCharRow()
     nextCharColumn()
     tmpAddr = tmpAddr - CHARACTER_BYTES

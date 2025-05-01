@@ -1,3 +1,4 @@
+'*******************PUBLIC CONSTANTS AREA*******************
 'Controls
 #define CONTROL_NONE  %00000000
 #define CONTROL_UP    %00000001
@@ -12,6 +13,7 @@
 #define CONTROL_UP_INDEX    2
 #define CONTROL_DOWN_INDEX  3
 #define CONTROL_FIRE_INDEX  4
+#define KEYS_MAX_INDEX CONTROL_FIRE_INDEX
 
 'Miscelaneous keys to define
 #define CONTROL_MISC_1_INDEX 0
@@ -34,35 +36,8 @@
 #define CONTROL_TYPE_SINCLAIR_2 3
 #define CONTROL_TYPE_CURSOR     4
 
-#define NUM_PLAYERS_MAX_INDEX NUM_PLAYERS - 1
-#define KEYS_MAX_INDEX CONTROL_FIRE_INDEX
-
-'Kempston
-#define KEMPSTON_PORT  1Fh
-#define KEMPSTON_RIGHT %00000001
-#define KEMPSTON_LEFT  %00000010
-#define KEMPSTON_DOWN  %00000100
-#define KEMPSTON_UP    %00001000
-#define KEMPSTON_FIRE  %00010000
-
-'Keyboard reading
-#define LAST_KEYBOARD_KEY_INDEX 39
-#define LAST_KEYBOARD_PORT_INDEX 7
-#define KEYBOARD_KEY_NOT_PRESSED 0
 #define NO_KEYBOARD_KEY_PRESSED 255
-#define KEYBOARD_ROW_PART_INTERLEAVE 2
-#define KEYBOARD_PORT_KEYS 5
-#define KEYBOARD_PORT_KEY_ONE   1
-#define KEYBOARD_PORT_KEY_TWO   2
-#define KEYBOARD_PORT_KEY_THREE 4
-#define KEYBOARD_PORT_KEY_FOUR  8
-#define KEYBOARD_PORT_KEY_FIVE  16
-#define KEYBOARD_PORT_INVERT_VALUE 255
-#define KEYBOARD_PORT_KEY_TWO_OFFSET   1
-#define KEYBOARD_PORT_KEY_THREE_OFFSET 2
-#define KEYBOARD_PORT_KEY_FOUR_OFFSET  3
-#define KEYBOARD_PORT_KEY_FIVE_OFFSET  4
-#define KEYBOARD_PORT_VALUE_SIZE 2
+
 'Keyboard key indexes
 #define KBD_IDX_1   0
 #define KBD_IDX_2   1
@@ -104,50 +79,80 @@
 #define KBD_IDX_M   37
 #define KBD_IDX_SYM 36
 #define KBD_IDX_SPC 35
+'*****************PUBLIC CONSTANTS AREA END*****************
 
-#define KEMPSTON_MIN_STABLE_FRAMES 50
+'******************PRIVATE CONSTANTS AREA*******************
+#define _NUM_PLAYERS_MAX_INDEX NUM_PLAYERS - 1
 
+'Kempston
+#define _KEMPSTON_PORT  1Fh
+#define _KEMPSTON_RIGHT %00000001
+#define _KEMPSTON_LEFT  %00000010
+#define _KEMPSTON_DOWN  %00000100
+#define _KEMPSTON_UP    %00001000
+#define _KEMPSTON_FIRE  %00010000
+#define _KEMPSTON_MIN_STABLE_FRAMES 50
+
+'Keyboard reading
+#define _LAST_KEYBOARD_KEY_INDEX 39
+#define _LAST_KEYBOARD_PORT_INDEX 7
+#define _KEYBOARD_KEY_NOT_PRESSED 0
+#define _KEYBOARD_PORT_KEYS 5
+#define _KEYBOARD_PORT_KEY_ONE   1
+#define _KEYBOARD_PORT_KEY_TWO   2
+#define _KEYBOARD_PORT_KEY_THREE 4
+#define _KEYBOARD_PORT_KEY_FOUR  8
+#define _KEYBOARD_PORT_KEY_FIVE  16
+#define _KEYBOARD_PORT_INVERT_VALUE 255
+#define _KEYBOARD_PORT_KEY_TWO_OFFSET   1
+#define _KEYBOARD_PORT_KEY_THREE_OFFSET 2
+#define _KEYBOARD_PORT_KEY_FOUR_OFFSET  3
+#define _KEYBOARD_PORT_KEY_FIVE_OFFSET  4
+#define _KEYBOARD_PORT_VALUE_SIZE 2
+'****************PRIVATE CONSTANTS AREA END*****************
+
+'***********************VARS AREA***************************
 'Frames with kempston reading 0
-DIM kempstonStableFrames AS UBYTE
+DIM _kempstonStableFrames AS UBYTE
 
 'Input vars
-DIM controls(NUM_PLAYERS_MAX_INDEX) AS UBYTE
-DIM controlTypes(NUM_PLAYERS_MAX_INDEX) AS UBYTE
+DIM _controls(_NUM_PLAYERS_MAX_INDEX) AS UBYTE
+DIM _controlTypes(_NUM_PLAYERS_MAX_INDEX) AS UBYTE
 
 'Player keys
-DIM keys(NUM_PLAYERS_MAX_INDEX, KEYS_MAX_INDEX) AS UBYTE
-DIM miscKeys AS STRING = "TYUFGHCVB"
-DIM miscKeysControl AS UBYTE
+DIM _playerKeys(_NUM_PLAYERS_MAX_INDEX, KEYS_MAX_INDEX) AS UBYTE
+DIM _miscKeys AS STRING = "TYUFGHCVB"
+DIM _miscKeysControl AS UBYTE
 
 'OPQAM
-DIM defaultKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_O, KBD_IDX_P, KBD_IDX_Q, KBD_IDX_A, KBD_IDX_M }
+DIM _defaultKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_O, KBD_IDX_P, KBD_IDX_Q, KBD_IDX_A, KBD_IDX_M }
 'ONE (the one to the right) appears at keys 6 to 0
 '6 (left), 7 (right), 9 (up), 8 (down) and 0 (fire)
-DIM sinclairOne(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_6, KBD_IDX_7, KBD_IDX_9, KBD_IDX_8, KBD_IDX_0 }
+DIM _sinclairOneKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_6, KBD_IDX_7, KBD_IDX_9, KBD_IDX_8, KBD_IDX_0 }
 'TWO (left) appears at keys 1 to 5
 '1 (left), 2 (right), 4 (up), 3 (down) and 5 (fire)
-DIM sinclairTwo(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_1, KBD_IDX_2, KBD_IDX_4, KBD_IDX_3, KBD_IDX_5 }
+DIM _sinclairTwoKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_1, KBD_IDX_2, KBD_IDX_4, KBD_IDX_3, KBD_IDX_5 }
 '5 (left), 8 (right), 7 (up), 6 (down) and 0 (fire)
-DIM cursor(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_5, KBD_IDX_8, KBD_IDX_7, KBD_IDX_6, KBD_IDX_0 }
+DIM _cursorKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_5, KBD_IDX_8, KBD_IDX_7, KBD_IDX_6, KBD_IDX_0 }
 
 'Tmp vars for speed
-DIM tmpControl AS UBYTE
+DIM _tmpControl AS UBYTE
 DIM tmpInput AS UBYTE
 
 'Keyboard ports in top to bottom left to right order
-DIM keyboardPorts(LAST_KEYBOARD_PORT_INDEX) AS UINTEGER => {_
+DIM _keyboardPorts(_LAST_KEYBOARD_PORT_INDEX) AS UINTEGER => {_
     0xF7FE, 0xEFFE, 0xFBFE, 0xDFFE, 0xFDFE, 0xBFFE, 0xFEFE, 0x7FFE _
 }
 
 'The status of the keyboard 0 not pressed otherwise pressed
-DIM keyboard(LAST_KEYBOARD_KEY_INDEX) AS UBYTE
+DIM _keyboardKeysStatus(_LAST_KEYBOARD_KEY_INDEX) AS UBYTE
 
 '12345 09876
 'QWERT POIUY
 'ASDFG eLKJH
 'sZXCV _yMNB
 'The ascii values of the keyboard keys
-DIM keyboardValues(LAST_KEYBOARD_KEY_INDEX) AS UBYTE => {_
+DIM _keyboardValues(_LAST_KEYBOARD_KEY_INDEX) AS UBYTE => {_
     31h, 32h, 33h, 34h, 35h, 30h, 39h, 38h, 37h, 36h,_
     51h, 57h, 45h, 52h, 54h, 50h, 4Fh, 49h, 55h, 59h,_
     41h, 53h, 44h, 46h, 47h, 65h, 4Ch, 4Bh, 4Ah, 48h,_
@@ -155,135 +160,106 @@ DIM keyboardValues(LAST_KEYBOARD_KEY_INDEX) AS UBYTE => {_
 }
 
 'To speed up and decrease code
-DIM portRead AS UBYTE
-DIM keyboardAddr AS UINTEGER
-DIM keyboardPortsAddr AS UINTEGER
+DIM _portRead AS UBYTE
+DIM _keyboardAddr AS UINTEGER
+DIM _keyboardPortsAddr AS UINTEGER
+'*********************VARS AREA END*************************
 
-'Clears all keyboard keys status
-SUB clearKeyboard()
-    FOR keyboardAddr = @keyboard TO @keyboard + LAST_KEYBOARD_KEY_INDEX
-        POKE(keyboardAddr, KEYBOARD_KEY_NOT_PRESSED)
-    NEXT keyboardAddr
+'********************PRIVATE DEFINES AREA*******************
+'******************PRIVATE DEFINES AREA END*****************
+
+'***********************PUBLIC AREA*************************
+'Get a player key
+FUNCTION getPlayerKey(playerIndex as UBYTE, keyIndex AS UBYTE) AS UBYTE
+    RETURN _playerKeys(playerIndex, keyIndex)
+END FUNCTION
+
+'Set a player key
+SUB setPlayerKey(playerIndex as UBYTE, keyIndex AS UBYTE, value AS UBYTE)
+    _playerKeys(playerIndex, keyIndex) = value
 END SUB
 
-'Reads a keyboard row half
-SUB readHalfKeyboardRow()
-    POKE(keyboardAddr, portRead bAND KEYBOARD_PORT_KEY_ONE)
-    POKE(keyboardAddr + KEYBOARD_PORT_KEY_TWO_OFFSET, portRead bAND KEYBOARD_PORT_KEY_TWO)
-    POKE(keyboardAddr + KEYBOARD_PORT_KEY_THREE_OFFSET, portRead bAND KEYBOARD_PORT_KEY_THREE)
-    POKE(keyboardAddr + KEYBOARD_PORT_KEY_FOUR_OFFSET, portRead bAND KEYBOARD_PORT_KEY_FOUR)
-    POKE(keyboardAddr + KEYBOARD_PORT_KEY_FIVE_OFFSET, portRead bAND KEYBOARD_PORT_KEY_FIVE)
-END SUB
-
-'Reads all keyboard keys status
-SUB readKeyboard()
-    keyboardAddr = @keyboard
-    FOR keyboardPortsAddr = @keyboardPorts TO _
-        @keyboardPorts + LAST_KEYBOARD_PORT_INDEX * KEYBOARD_PORT_VALUE_SIZE _
-            STEP KEYBOARD_PORT_VALUE_SIZE
-        portRead = IN(PEEK(UINTEGER, keyboardPortsAddr)) bXOR KEYBOARD_PORT_INVERT_VALUE
-        readHalfKeyboardRow()
-        keyboardAddr = keyboardAddr + KEYBOARD_PORT_KEYS
-    NEXT keyboardPortsAddr
-END SUB
+'Get a key index ascii
+FUNCTION getKeyIndexAscii(keyIndex as UBYTE) AS UBYTE
+    RETURN _keyboardValues(keyIndex)
+END FUNCTION
 
 'Returns the index of the first key pressed from top to bottom, left to right on the keyboard
 'Returns 255 if no key pressed
 FUNCTION getFirstKeyPressed() AS UBYTE
-    FOR keyboardAddr = @keyboard TO @keyboard + LAST_KEYBOARD_KEY_INDEX
-        IF PEEK(keyboardAddr) <> KEYBOARD_KEY_NOT_PRESSED THEN RETURN keyboardAddr - @keyboard
-    NEXT keyboardAddr
+    FOR _keyboardAddr = @_keyboardKeysStatus TO @_keyboardKeysStatus + _LAST_KEYBOARD_KEY_INDEX
+        IF PEEK(_keyboardAddr) <> _KEYBOARD_KEY_NOT_PRESSED THEN RETURN _keyboardAddr - @_keyboardKeysStatus
+    NEXT _keyboardAddr
     RETURN NO_KEYBOARD_KEY_PRESSED
 END FUNCTION
 
 'Returns the controls readed for the frame for the selected player
 FUNCTION getControls(playerIndex AS UBYTE) AS UBYTE
-    RETURN controls(playerIndex)
+    RETURN _controls(playerIndex)
 END FUNCTION
 
 'Returns the control char for the selected player
 FUNCTION getControlChar(playerIndex AS UBYTE, controlIndex AS UBYTE) AS STRING
-    RETURN CHR(keyboardValues(keys(playerIndex, controlIndex)))
+    RETURN CHR(_keyboardValues(_playerKeys(playerIndex, controlIndex)))
 END FUNCTION
 
 'Returns the miscKeys readed for the frame
 FUNCTION getMiscKeysControl() AS UBYTE
-    RETURN miscKeysControl
+    RETURN _miscKeysControl
 END FUNCTION
 
 'Inits the input system, sets all control types to keyboard
 SUB initInput()
     DIM i AS UBYTE
 
-    FOR i = 0 TO NUM_PLAYERS_MAX_INDEX
+    FOR i = 0 TO _NUM_PLAYERS_MAX_INDEX
         setControlType(i, CONTROL_TYPE_KEYBOARD)
-    NEXT i
-END SUB
-
-'Copy the keys to the player
-SUB copyKeys(playerIndex AS UBYTE, BYREF newKeys() AS UBYTE)
-    DIM i AS UBYTE
-
-    FOR i = 0 TO KEYS_MAX_INDEX
-        keys(playerIndex, i) = newKeys(i)       
     NEXT i
 END SUB
 
 'Sets the control type of a player
 SUB setControlType(playerIndex AS UBYTE, controlType AS UBYTE)
-    controlTypes(playerIndex) = controlType
+    _controlTypes(playerIndex) = controlType
     IF controlType = CONTROL_TYPE_KEYBOARD THEN
-        copyKeys(playerIndex, defaultKeys)
+        _copyKeys(playerIndex, _defaultKeys)
     ELSEIF controlType = CONTROL_TYPE_SINCLAIR_1 THEN
-        copyKeys(playerIndex, sinclairOne)
+        _copyKeys(playerIndex, _sinclairOneKeys)
     ELSEIF controlType = CONTROL_TYPE_SINCLAIR_2 THEN
-        copyKeys(playerIndex, sinclairTwo)
+        _copyKeys(playerIndex, _sinclairTwoKeys)
     ELSEIF controlType = CONTROL_TYPE_CURSOR THEN
-        copyKeys(playerIndex, cursor)
+        _copyKeys(playerIndex, _cursorKeys)
     END IF
 END SUB
 
 'Gets the control type of a player
 FUNCTION getControlType(playerIndex AS UBYTE) AS UBYTE
-    RETURN controlTypes(playerIndex)
+    RETURN _controlTypes(playerIndex)
 END FUNCTION
-
-'Reads the [playerIndex] player keyboard keys (Or Sinclair/Cursor Joysticks)
-SUB readPlayerKeyboard(playerIndex AS UBYTE)
-    tmpControl = CONTROL_NONE
-    keyboardAddr = @keys(playerIndex, 0)
-    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_LEFT_INDEX)) THEN tmpControl = tmpControl + CONTROL_LEFT
-    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_RIGHT_INDEX)) THEN tmpControl = tmpControl + CONTROL_RIGHT
-    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_UP_INDEX)) THEN tmpControl = tmpControl + CONTROL_UP
-    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_DOWN_INDEX)) THEN tmpControl = tmpControl + CONTROL_DOWN
-    IF PEEK(@keyboard + PEEK(keyboardAddr + CONTROL_FIRE_INDEX)) THEN tmpControl = tmpControl + CONTROL_FIRE
-    controls(playerIndex) = tmpControl
-END SUB
 
 'Reads the Kempston joystick
 FUNCTION readKempston() AS UBYTE
-    tmpControl = CONTROL_NONE
-    tmpInput = IN KEMPSTON_PORT
+    _tmpControl = CONTROL_NONE
+    tmpInput = IN _KEMPSTON_PORT
 
-    IF tmpInput bAND KEMPSTON_UP THEN tmpControl = tmpControl + CONTROL_UP
-    IF tmpInput bAND KEMPSTON_DOWN THEN tmpControl = tmpControl + CONTROL_DOWN
-    IF tmpInput bAND KEMPSTON_LEFT THEN tmpControl = tmpControl + CONTROL_LEFT
-    IF tmpInput bAND KEMPSTON_RIGHT THEN tmpControl = tmpControl + CONTROL_RIGHT
-    IF tmpInput bAND KEMPSTON_FIRE THEN tmpControl = tmpControl + CONTROL_FIRE
+    IF tmpInput bAND _KEMPSTON_UP THEN _tmpControl = _tmpControl + CONTROL_UP
+    IF tmpInput bAND _KEMPSTON_DOWN THEN _tmpControl = _tmpControl + CONTROL_DOWN
+    IF tmpInput bAND _KEMPSTON_LEFT THEN _tmpControl = _tmpControl + CONTROL_LEFT
+    IF tmpInput bAND _KEMPSTON_RIGHT THEN _tmpControl = _tmpControl + CONTROL_RIGHT
+    IF tmpInput bAND _KEMPSTON_FIRE THEN _tmpControl = _tmpControl + CONTROL_FIRE
 
-    RETURN tmpControl
+    RETURN _tmpControl
 END FUNCTION
 
 'Updates the controls reading the [keys]
 SUB updateControls()
     DIM i AS UBYTE
 
-    readKeyboard()
-    FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
+    _readKeyboard()
+    FOR i = PLAYER_1_INDEX TO _NUM_PLAYERS_MAX_INDEX
         IF getControlType(i) = CONTROL_TYPE_KEMPSTON THEN
-            controls(i) = readKempston()
+            _controls(i) = readKempston()
         ELSE
-            readPlayerKeyboard(i)
+            _readPlayerKeyboard(i)
         END IF        
     NEXT i
 END SUB
@@ -292,7 +268,7 @@ END SUB
 FUNCTION anyControlPressed() AS UBYTE
     DIM i AS UBYTE
 
-    FOR i = PLAYER_1_INDEX TO NUM_PLAYERS_MAX_INDEX
+    FOR i = PLAYER_1_INDEX TO _NUM_PLAYERS_MAX_INDEX
         IF getControls(i) <> CONTROL_NONE THEN RETURN TRUE
     NEXT i
     RETURN FALSE
@@ -300,19 +276,64 @@ END FUNCTION
 
 'Inits the counter to test the kempston
 SUB initKempstonProbe()
-    kempstonStableFrames = 0
+    _kempstonStableFrames = 0
 END SUB
 
 'Probes the kempston to check if has no value
 SUB probeKempstonStable()
     IF readKempston() = CONTROL_NONE THEN
-        kempstonStableFrames = kempstonStableFrames + 1
+        _kempstonStableFrames = _kempstonStableFrames + 1
     ELSE
-        kempstonStableFrames = 0
+        _kempstonStableFrames = 0
     END IF
 END SUB
 
 'Returns true if kempston port passed the threshold of stable checks
 FUNCTION isKempstonStable() AS UBYTE
-    RETURN kempstonStableFrames >= KEMPSTON_MIN_STABLE_FRAMES
+    RETURN _kempstonStableFrames >= _KEMPSTON_MIN_STABLE_FRAMES
 END FUNCTION
+'*********************PUBLIC AREA END***********************
+
+'***********************PRIVATE AREA************************
+'Reads a keyboard row half
+SUB _readHalfKeyboardRow()
+    POKE(_keyboardAddr, _portRead bAND _KEYBOARD_PORT_KEY_ONE)
+    POKE(_keyboardAddr + _KEYBOARD_PORT_KEY_TWO_OFFSET, _portRead bAND _KEYBOARD_PORT_KEY_TWO)
+    POKE(_keyboardAddr + _KEYBOARD_PORT_KEY_THREE_OFFSET, _portRead bAND _KEYBOARD_PORT_KEY_THREE)
+    POKE(_keyboardAddr + _KEYBOARD_PORT_KEY_FOUR_OFFSET, _portRead bAND _KEYBOARD_PORT_KEY_FOUR)
+    POKE(_keyboardAddr + _KEYBOARD_PORT_KEY_FIVE_OFFSET, _portRead bAND _KEYBOARD_PORT_KEY_FIVE)
+END SUB
+
+'Reads all keyboard keys status
+SUB _readKeyboard()
+    _keyboardAddr = @_keyboardKeysStatus
+    FOR _keyboardPortsAddr = @_keyboardPorts TO _
+        @_keyboardPorts + _LAST_KEYBOARD_PORT_INDEX * _KEYBOARD_PORT_VALUE_SIZE _
+            STEP _KEYBOARD_PORT_VALUE_SIZE
+        _portRead = IN(PEEK(UINTEGER, _keyboardPortsAddr)) bXOR _KEYBOARD_PORT_INVERT_VALUE
+        _readHalfKeyboardRow()
+        _keyboardAddr = _keyboardAddr + _KEYBOARD_PORT_KEYS
+    NEXT _keyboardPortsAddr
+END SUB
+
+'Copy the keys to the player
+SUB _copyKeys(playerIndex AS UBYTE, BYREF newKeys() AS UBYTE)
+    DIM i AS UBYTE
+
+    FOR i = 0 TO KEYS_MAX_INDEX
+        _playerKeys(playerIndex, i) = newKeys(i)       
+    NEXT i
+END SUB
+
+'Reads the [playerIndex] player keyboard keys (Or Sinclair/Cursor Joysticks)
+SUB _readPlayerKeyboard(playerIndex AS UBYTE)
+    _tmpControl = CONTROL_NONE
+    _keyboardAddr = @_playerKeys(playerIndex, 0)
+    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_LEFT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_LEFT
+    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_RIGHT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_RIGHT
+    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_UP_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_UP
+    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_DOWN_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_DOWN
+    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_FIRE_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_FIRE
+    _controls(playerIndex) = _tmpControl
+END SUB
+'*********************PRIVATE AREA END**********************
