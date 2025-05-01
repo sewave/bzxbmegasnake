@@ -1,114 +1,125 @@
-'Generic states
-#define STATE_WAIT_FRAMES   0
-#define STATE_WAIT_A_KEY    1
-#define STATE_WAIT_ANY_KEY  2
-#define STATE_WAIT_NO_KEY   3
-#define STATE_FADE_TO_BLACK 4
+'*******************PUBLIC CONSTANTS AREA*******************
 #define FIRST_UNUSED_STATE  8
-#define FRAMES_TO_WAIT_DEC  1
-#define NO_FRAMES_TO_WAIT   0
+'*****************PUBLIC CONSTANTS AREA END*****************
 
+'******************PRIVATE CONSTANTS AREA*******************
+'Generic states
+#define _STATE_WAIT_FRAMES   0
+#define _STATE_WAIT_A_KEY    1
+#define _STATE_WAIT_ANY_KEY  2
+#define _STATE_WAIT_NO_KEY   3
+#define _STATE_FADE_TO       4
+'****************PRIVATE CONSTANTS AREA END*****************
+
+'***********************VARS AREA***************************
 'State vars
-DIM gameState AS UBYTE
-DIM nextGameState AS UBYTE
-DIM framesToWait AS UBYTE
-DIM keyToWait AS UBYTE
-DIM targetFadeStepframes AS UBYTE
-DIM fadeStepframes AS UBYTE
+DIM _gameState AS UBYTE
+DIM _nextGameState AS UBYTE
+DIM _framesToWait AS UBYTE
+DIM _keyToWait AS UBYTE
+DIM _targetFadeStepframes AS UBYTE
+DIM _fadeStepframes AS UBYTE
+'*********************VARS AREA END*************************
 
+'********************PRIVATE DEFINES AREA*******************
+'Gets the defined next game state
+FUNCTION _getNextGameState() AS UBYTE
+    RETURN _nextGameState
+END FUNCTION
+'******************PRIVATE DEFINES AREA END*****************
+
+'***********************PUBLIC AREA*************************
 'Gets the current game state
 FUNCTION getGameState() AS UBYTE
-    RETURN gameState
-END FUNCTION
-
-'Gets the defined next game state
-FUNCTION getNextGameState() AS UBYTE
-    RETURN nextGameState
+    RETURN _gameState
 END FUNCTION
 
 'Sets the current game state
 SUB setGameState(newGameState AS UBYTE)
-    gameState = newGameState
+    _gameState = newGameState
 END SUB
 
 'Sets the next game state
 SUB setNextGameState(newNextGameState AS UBYTE)
-    nextGameState = newNextGameState
+    _nextGameState = newNextGameState
 END SUB
 
-'Copies the next game state to game state
-SUB moveNextGameStateToGameState()
-    setGameState(getNextGameState())
-END SUB
-
-'Sets the current game state to [newGameState] and next game state to [nextGameState]
+'Sets the current game state to [newGameState] and next game state to [_nextGameState]
 'This is useful for reusable states like wait key
-SUB setGameStateAndNext(newGameState AS UBYTE, nextGameState AS UBYTE)
+SUB setGameStateAndNext(newGameState AS UBYTE, _nextGameState AS UBYTE)
     setGameState(newGameState)
-    setNextGameState(nextGameState)
+    setNextGameState(_nextGameState)
 END SUB
 
 'Sets the state to wait for [waitFrames] frames and the next game state after that
-SUB setStateWaitFrames(waitFrames AS UBYTE, nextGameState AS UBYTE)
-    framesToWait = waitFrames
-    setGameStateAndNext(STATE_WAIT_FRAMES, nextGameState)
+SUB setStateWaitFrames(waitFrames AS UBYTE, _nextGameState AS UBYTE)
+    _framesToWait = waitFrames
+    setGameStateAndNext(_STATE_WAIT_FRAMES, _nextGameState)
 END SUB
 
-'Sets the state to wait for any key and the next game state to [nextGameState]
-SUB setStateWaitAnyKey(nextGameState AS UBYTE)
-    setGameStateAndNext(STATE_WAIT_ANY_KEY, nextGameState)
+'Sets the state to wait for any key and the next game state to [_nextGameState]
+SUB setStateWaitAnyKey(_nextGameState AS UBYTE)
+    setGameStateAndNext(_STATE_WAIT_ANY_KEY, _nextGameState)
 END SUB
 
-'Sets the state to wait for [newKeyToWait] key and the next game state to [nextGameState]
-SUB setStateWaitAKey(newKeyToWait AS UBYTE, nextGameState AS UBYTE)
-    keyToWait = newKeyToWait
-    setGameStateAndNext(STATE_WAIT_A_KEY, nextGameState)
+'Sets the state to wait for [newKeyToWait] key and the next game state to [_nextGameState]
+SUB setStateWaitAKey(newKeyToWait AS UBYTE, _nextGameState AS UBYTE)
+    _keyToWait = newKeyToWait
+    setGameStateAndNext(_STATE_WAIT_A_KEY, _nextGameState)
 END SUB
 
-'Sets the state to wait for no key and the next game state to [nextGameState]
-SUB setStateWaitNoKey(nextGameState AS UBYTE)
-    setGameStateAndNext(STATE_WAIT_NO_KEY, nextGameState)
+'Sets the state to wait for no key and the next game state to [_nextGameState]
+SUB setStateWaitNoKey(_nextGameState AS UBYTE)
+    setGameStateAndNext(_STATE_WAIT_NO_KEY, _nextGameState)
 END SUB
 
-'Sets the next state to fade to black, waiting [pTargetFadeStepframes] frames
-'per step of [fadeType] and then switches to [nextGameState]
-SUB setStateFadeToBlack(fadeType AS UBYTE, pTargetFadeStepframes AS UBYTE, nextGameState AS UBYTE)
-    targetFadeStepframes = pTargetFadeStepframes
-    fadeStepframes = targetFadeStepframes
-    setFadeToBlackType(fadeType)
-    setGameStateAndNext(STATE_FADE_TO_BLACK, nextGameState)
+'Sets the next state to fade to, waiting [targetFadeStepframes] frames
+'per step of [fadeType], using [attributes],  and then switches to [_nextGameState]
+SUB setStateFadeTo(fadeType AS UBYTE, attributes AS UBYTE, targetFadeStepframes AS UBYTE, _nextGameState AS UBYTE)
+    _targetFadeStepframes = targetFadeStepframes
+    _fadeStepframes = _targetFadeStepframes
+    setFadeToTypeAndAttributes(fadeType, attributes)
+    setGameStateAndNext(_STATE_FADE_TO, _nextGameState)
 END SUB
 
 'Reusable states
 
-'Waits for [framesToWait] frames and then goes to next game state
+'Waits for [_framesToWait] frames and then goes to next game state
 SUB stateWaitFrames()
-    framesToWait = framesToWait - FRAMES_TO_WAIT_DEC
-    IF framesToWait = NO_FRAMES_TO_WAIT THEN moveNextGameStateToGameState()
+    _framesToWait = _framesToWait - 1
+    IF _framesToWait = 0 THEN _moveNextGameStateToGameState()
 END SUB
 
-'Waits for no key pressed, then goes to [nextGameState]
+'Waits for no key pressed, then goes to [_nextGameState]
 SUB stateWaitNoKey()
-    IF getFirstKeyPressed() = NO_KEYBOARD_KEY_PRESSED AND anyControlPressed() = FALSE THEN moveNextGameStateToGameState()
+    IF getFirstKeyPressed() = NO_KEYBOARD_KEY_PRESSED AND anyControlPressed() = FALSE THEN _moveNextGameStateToGameState()
 END SUB
 
-'Waits for any key pressed, then goes to [nextGameState]
+'Waits for any key pressed, then goes to [_nextGameState]
 SUB stateWaitAnyKey()
-    IF getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE THEN moveNextGameStateToGameState()
+    IF getFirstKeyPressed() <> NO_KEYBOARD_KEY_PRESSED OR anyControlPressed() = TRUE THEN _moveNextGameStateToGameState()
 END SUB
 
-'Waits for [keyToWait] key pressed, then goes to [nextGameState]
+'Waits for [_keyToWait] key pressed, then goes to [_nextGameState]
 SUB stateWaitAKey()
-    IF getFirstKeyPressed() <> keyToWait THEN moveNextGameStateToGameState()
+    IF getFirstKeyPressed() <> _keyToWait THEN _moveNextGameStateToGameState()
 END SUB
 
-'Waits for [targetFadeStepframes] frames and then lowers attributes, 8 steps
-SUB stateFadeToBlack()
-    fadeStepframes = fadeStepframes - 1
-    IF fadeStepframes = 0 THEN
+'Waits for [_targetFadeStepframes] frames and then changes calls to fadeTo
+SUB stateFadeTo()
+    _fadeStepframes = _fadeStepframes - 1
+    IF _fadeStepframes = 0 THEN
         remainingFadeSteps = remainingFadeSteps - 1
         callFadeToBlack()
-        fadeStepframes = targetFadeStepframes
-        IF remainingFadeSteps = 0 THEN setStateWaitFrames(fadeStepframes, getNextGameState())
+        _fadeStepframes = _targetFadeStepframes
+        IF remainingFadeSteps = 0 THEN setStateWaitFrames(_fadeStepframes, _getNextGameState())
     END IF
 END SUB
+'*********************PUBLIC AREA END***********************
+
+'***********************PRIVATE AREA************************
+'Copies the next game state to game state
+SUB _moveNextGameStateToGameState()
+    setGameState(_getNextGameState())
+END SUB
+'*********************PRIVATE AREA END**********************

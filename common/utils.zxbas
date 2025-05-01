@@ -1,2 +1,19 @@
+'*******************PUBLIC CONSTANTS AREA*******************
+'*****************PUBLIC CONSTANTS AREA END*****************
+
+'******************PRIVATE CONSTANTS AREA*******************
+'****************PRIVATE CONSTANTS AREA END*****************
+
+'***********************VARS AREA***************************
+'*********************VARS AREA END*************************
+
+'********************PRIVATE DEFINES AREA*******************
+'******************PRIVATE DEFINES AREA END*****************
+
+'***********************PUBLIC AREA*************************
 'Trick to execute subroutine at [subAddress], address 0 is rom so not writable
 #define executeSub(subAddress) POKE 0, USR subAddress
+'*********************PUBLIC AREA END***********************
+
+'***********************PRIVATE AREA************************
+'*********************PRIVATE AREA END**********************

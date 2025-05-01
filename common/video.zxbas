@@ -61,25 +61,25 @@
 #define FRAME_MED_BYTE 23673
 #define FRAME_HI_BYTE 23674
 
-#define FADE_TO_BLACK_COLOR_STEPS     8
-#define FADE_TO_BLACK_CLOSE_HOR_STEPS 16
-#define FADE_TO_BLACK_OPEN_HOR_STEPS  16
-#define FADE_TO_BLACK_CLOSE_VER_STEPS 12
-#define FADE_TO_BLACK_OPEN_VER_STEPS  12
-#define FADE_TO_BLACK_UP_STEPS        12
-#define FADE_TO_BLACK_DOWN_STEPS      12
-#define FADE_TO_BLACK_LEFT_STEPS      16
-#define FADE_TO_BLACK_RIGHT_STEPS     16
+#define FADE_TO_COLOR_STEPS     8
+#define FADE_TO_CLOSE_HOR_STEPS 16
+#define FADE_TO_OPEN_HOR_STEPS  16
+#define FADE_TO_CLOSE_VER_STEPS 12
+#define FADE_TO_OPEN_VER_STEPS  12
+#define FADE_TO_UP_STEPS        12
+#define FADE_TO_DOWN_STEPS      12
+#define FADE_TO_LEFT_STEPS      16
+#define FADE_TO_RIGHT_STEPS     16
 
-#define FADE_TO_BLACK_COLOR     0
-#define FADE_TO_BLACK_CLOSE_HOR 1
-#define FADE_TO_BLACK_OPEN_HOR  2
-#define FADE_TO_BLACK_CLOSE_VER 3
-#define FADE_TO_BLACK_OPEN_VER  4
-#define FADE_TO_BLACK_UP        5
-#define FADE_TO_BLACK_DOWN      6
-#define FADE_TO_BLACK_LEFT      7
-#define FADE_TO_BLACK_RIGHT     8
+#define FADE_TO_COLOR     0
+#define FADE_TO_CLOSE_HOR 1
+#define FADE_TO_OPEN_HOR  2
+#define FADE_TO_CLOSE_VER 3
+#define FADE_TO_OPEN_VER  4
+#define FADE_TO_UP        5
+#define FADE_TO_DOWN      6
+#define FADE_TO_LEFT      7
+#define FADE_TO_RIGHT     8
 
 DIM remainingFadeSteps AS UBYTE
 DIM fadeToBlackFunction AS UINTEGER
@@ -333,16 +333,16 @@ SUB drawWindowFilled(startX as UBYTE, startY as UBYTE, width as UBYTE, height as
     drawWindow(startX, startY, width, height, attributes, characters)
 END SUB
 
-'Sets the fade to black type
-SUB setFadeToBlackType(fadeType AS UBYTE)
-    IF fadeType = FADE_TO_BLACK_COLOR THEN
-        remainingFadeSteps = FADE_TO_BLACK_COLOR_STEPS
+'Sets the fade to a type and attributes
+SUB setFadeToTypeAndAttributes(fadeType AS UBYTE, attributes AS UBYTE)
+    IF fadeType = FADE_TO_COLOR THEN
+        remainingFadeSteps = FADE_TO_COLOR_STEPS
         fadeToBlackFunction = @fadeAttributesToBlack
-    ELSEIF fadeType = FADE_TO_BLACK_CLOSE_HOR THEN
-        remainingFadeSteps = FADE_TO_BLACK_CLOSE_HOR_STEPS
+    ELSEIF fadeType = FADE_TO_CLOSE_HOR THEN
+        remainingFadeSteps = FADE_TO_CLOSE_HOR_STEPS
         fadeToBlackFunction = @fadeAttributesToBlackCloseHorizontal
-    ELSEIF fadeType = FADE_TO_BLACK_OPEN_HOR THEN
-        remainingFadeSteps = FADE_TO_BLACK_OPEN_HOR_STEPS
+    ELSEIF fadeType = FADE_TO_OPEN_HOR THEN
+        remainingFadeSteps = FADE_TO_OPEN_HOR_STEPS
         fadeToBlackFunction = @fadeAttributesToBlackOpenHorizontal
     END IF
 END SUB
@@ -369,7 +369,7 @@ SUB fadeAttributesToBlackCloseHorizontal()
     DIM i AS UBYTE
     DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
 
-    attrIndex = ATTRIBUTES_START_ADDR + (FADE_TO_BLACK_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
+    attrIndex = ATTRIBUTES_START_ADDR + (FADE_TO_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
 
     FOR i = 0 TO SCREEN_MAX_ROW
         POKE(attrIndex, 0)
@@ -381,7 +381,7 @@ END SUB
 'Fades to black putting attributes to 0 from center to borders in horizontal
 SUB fadeAttributesToBlackOpenHorizontal()
     DIM i AS UBYTE
-    DIM inc AS UBYTE = ((FADE_TO_BLACK_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
+    DIM inc AS UBYTE = ((FADE_TO_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
 
     attrIndex = ATTRIBUTES_START_ADDR + remainingFadeSteps
 
