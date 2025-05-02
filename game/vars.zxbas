@@ -20,3 +20,5 @@ DIM pauseExits AS UBYTE = FALSE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM endGameCounter AS UBYTE
 DIM endGameMessageNumber AS UBYTE
+DIM pauseCounter as UBYTE
+DIM inBonus AS UBYTE

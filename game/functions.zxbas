@@ -404,6 +404,8 @@ END SUB
 SUB resetGameLevel()
     DIM i AS UBYTE
 
+    clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
+
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES

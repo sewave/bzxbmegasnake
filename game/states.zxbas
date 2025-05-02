@@ -21,6 +21,7 @@ SUB stateStartPause()
     printStringAt(PAUSE_X, PAUSE_Y, PAUSE_STRING)
     printPauseContinue()
     pauseExits = FALSE
+    pauseCounter = 0
     setStateWaitNoKey(STATE_WAIT_UNPAUSE)
 END SUB
 
@@ -28,12 +29,16 @@ END SUB
 SUB stateWaitUnpause()
     DIM control AS UBYTE = getControls(PLAYER_1_INDEX)
     IF control bAND CONTROL_FIRE THEN
-        IF pauseExits = TRUE THEN
-            setStateFadeTo(FADE_TO_COLOR, TOTAL_BLACK_ATTRIBUTES, DIE_FADE_FRAMES, STATE_START_TITLE)
+        IF  pauseCounter > FRAMES_IN_SECOND THEN
+            IF pauseExits = TRUE THEN
+                setStateFadeTo(FADE_TO_COLOR, TOTAL_BLACK_ATTRIBUTES, DIE_FADE_FRAMES, STATE_START_TITLE)
+            ELSE
+                clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+                clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+                setStateWaitNoKey(STATE_GAME_PLAYING)
+            END IF
         ELSE
-            clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
-            clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
-            setStateWaitNoKey(STATE_GAME_PLAYING)
+            pauseCounter = pauseCounter + 1
         END IF
     ELSEIF control bAND CONTROL_LEFT THEN
         clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
@@ -43,6 +48,8 @@ SUB stateWaitUnpause()
         clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
         printPauseExit()
         pauseExits = TRUE
+    ELSE
+        pauseCounter = 0
     END IF
 END SUB
 
@@ -115,6 +122,7 @@ SUB stateStartGame()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
+    inBonus = FALSE
     snakeLength = INITIAL_SNAKE_LENGTH
     reloadTime = TRUE
     noDeathInLevel = TRUE
@@ -304,9 +312,13 @@ SUB stateStartEndLevel()
     printStringAt(END_LEVEL_TOTAL_X, END_LEVEL_TOTAL_Y, END_LEVEL_TOTAL_STRING)
     printPaddedNumberThousands(score, END_LEVEL_NUMBER_PAD)
     checkMaxScore()
+    setStateWaitFrames(END_LEVEL_WAIT_FRAMES, STATE_END_END_LEVEL)
+END SUB
 
+'State to end the end level
+SUB stateEndEndLevel()
     IF level >= LAST_LEVEL_INDEX THEN
-        setStateWaitFrames(TO_END_FRAMES, STATE_START_END_GAME)
+        setGameState(STATE_START_END_GAME)
     ELSE
         'Increase level and restore initial level vars
         level = level + 1
@@ -315,8 +327,12 @@ SUB stateStartEndLevel()
         snakeLength = INITIAL_SNAKE_LENGTH
         growth = START_GROWTH
         initLevelFruits()
-        setStateWaitAnyKey(STATE_RESTART_LEVEL)
-    END IF    
+        IF level MOD BONUS_LEVEL_MOD = 0 THEN
+            setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_START_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_BONUS)
+        ELSE
+            setGameState(STATE_RESTART_LEVEL)
+        END IF
+    END IF 
 END SUB
 
 'Starts the end game sequence
@@ -366,8 +382,38 @@ SUB stateLoopEndGame()
     END IF
 
     IF endGameMessageNumber > LAST_END_GAME_MESSAGE AND (getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE) THEN
-        setStateFadeTo(FADE_TO_CLOSE_HOR,  TOTAL_BLACK_ATTRIBUTES, END_FADE_FRAMES, STATE_START_TITLE)
+        setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, END_FADE_FRAMES, STATE_START_TITLE)
     END IF
+END SUB
+
+'State to start the bonus
+SUB stateStartBonus()
+    inBonus = TRUE
+    setupPrint(PRINT_MODE_TALL)
+    setTallAttributes(BONUS_START_UPPER_ATTRIBUTES, BONUS_START_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BONUS_START_1_STRING), BONUS_START_1_STRING_Y, BONUS_START_1_STRING)
+    printStringAt(centerScreenX(BONUS_START_2_STRING), BONUS_START_2_STRING_Y, BONUS_START_2_STRING)
+    setTallAttributes(BONUS_START_EXIT_UPPER_ATTRIBUTES, BONUS_START_EXIT_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BONUS_START_3_STRING), BONUS_START_3_STRING_Y, BONUS_START_3_STRING)
+    setStateWaitNoKey(STATE_WAIT_BONUS)
+END SUB
+
+'State to wait the start of the bonus
+SUB stateWaitBonus()
+    IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
+        setStateFadeTo(FADE_TO_CLOSE_HOR, BONUS_START_LEVEL_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_RESTART_LEVEL)
+    END IF
+END SUB
+
+'State to start the end of the bonus
+SUB stateStartEndBonus()
+    inBonus = FALSE
+    setStateWaitNoKey(STATE_WAIT_END_BONUS)
+END SUB
+
+'State to wait the end of the bonus
+SUB stateWaitEndBonus()
+    IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN setStateWaitNoKey(STATE_RESTART_LEVEL)
 END SUB
 
 'Slots 5-7 are reserved for future use
@@ -396,5 +442,10 @@ DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateStartEndLevel, _
     @stateStartEndGame, _
     @stateLoopEndGame, _
+    @stateStartBonus, _
+    @stateWaitBonus, _
+    @stateStartEndBonus, _
+    @stateWaitEndBonus, _
+    @stateEndEndLevel, _
     @stateStartMenu _
 }
