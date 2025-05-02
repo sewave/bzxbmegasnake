@@ -39,6 +39,13 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
 }
 
+'Put all enemies as NONE
+SUB clearEnemies()
+    FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
+        enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE
+    NEXT tmpEnemyNumber
+END SUB
+
 'Resets enemies and copies enemies from level to active status
 SUB initEnemies()
     FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX

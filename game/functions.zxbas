@@ -62,7 +62,11 @@ END SUB
 SUB drawFruits()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
-    printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
+    IF inBonus THEN
+        printStringAt(BONUS_FRUITS_X, BONUS_FRUITS_Y, BONUS_FRUITS_STRING)
+    ELSE
+        printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
+    END IF
 END SUB
 
 'Draws the Time
@@ -76,7 +80,11 @@ END SUB
 SUB drawLevelValue()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
-    printPaddedNumberTensAt(LEVEL_NUM_X, LEVEL_NUM_Y, level + 1, STATUS_NUM_PAD)
+    IF inBonus THEN
+        printStringAt(LEVEL_BONUS_STRING_X, LEVEL_BONUS_STRING_Y, BONUS_LEVEL_STRING)
+    ELSE
+        printPaddedNumberTensAt(LEVEL_NUM_X, LEVEL_NUM_Y, level + 1, STATUS_NUM_PAD)
+    END IF
 END SUB
 
 'Draws the score and max score numbers
@@ -89,12 +97,16 @@ END SUB
 
 'Loses live and checks to see new state
 SUB loseLive()
-    lives = lives - 1
-    noDeathInLevel = FALSE
-    IF lives > 0 THEN
-        setGameState(STATE_START_LOSE_LIVE)
+    IF inBonus THEN
+        setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_END_BONUS)
     ELSE
-        setGameState(STATE_START_GAME_OVER)
+        lives = lives - 1
+        noDeathInLevel = FALSE
+        IF lives > 0 THEN
+            setGameState(STATE_START_LOSE_LIVE)
+        ELSE
+            setGameState(STATE_START_GAME_OVER)
+        END IF
     END IF
 END SUB
 
@@ -415,13 +427,21 @@ SUB resetGameLevel()
         reloadTime = FALSE
     END IF
     initBoard()
-    initEnemies()
-    initItems()
+    IF inBonus THEN
+        clearEnemies()
+    ELSE
+        initEnemies()
+        initItems()
+    END IF
     initSnake()
     drawStatusWindow()
     drawStatusValues()
-    'Puts the remaining fruits in the board
-    FOR i = 0 TO fruits - 1: putFruit(): NEXT i
+    IF inBonus THEN
+        putFruit()
+    ELSE 
+        'Puts the remaining fruits in the board
+        FOR i = 0 TO fruits - 1: putFruit(): NEXT i
+    END IF
     startSound()
 END SUB
 
@@ -441,7 +461,7 @@ SUB checkTime()
         drawTime()
         IF remainingTime = 0 THEN
             reloadTime = TRUE
-            setGameState(STATE_START_LOSE_LIVE)
+            loseLive()
         END IF
     END IF
 END SUB

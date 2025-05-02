@@ -40,6 +40,8 @@ CONST BONUS_END_1_STRING AS STRING ="Saliendo del nivel"
 CONST BONUS_END_2_STRING AS STRING ="de bonificaci"+ACUTE_LC_O+"n"
 CONST BONUS_END_3_STRING AS STRING ="Yendo al nivel "
 CONST BONUS_END_4_STRING AS STRING ="Pulsa FUEGO cuando est"+ACUTE_LC_E+"s listo"
+CONST BONUS_LEVEL_STRING AS STRING ="BONOS"
+CONST BONUS_FRUITS_STRING AS STRING = "Inf."
 
 DIM TITLE_TEXT_SCROLLER AS STRING =   "                              "+START_EXCL+"Bienvenido a Mega Serpiente!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote todas las frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Y cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!                              "
 CONST END_GAME_COMPLETED_STRING AS STRING = START_EXCL+"FELICIDADES!"

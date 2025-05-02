@@ -70,17 +70,18 @@ SUB initBoard()
     NEXT i
     drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
         levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTES, inWindowsCharacters)
-    
-    'Draw the level layout
-    DIM rectangle AS UBYTE = 0
-    WHILE rectangle <= LAST_LEVEL_RECTANGLE_INDEX AND levelsBoardData(level, rectangle, 0) <> RECT_END
-        putBoardRectangle(_
-            levelsBoardData(level, rectangle, RECT_X_INDEX),_
-            levelsBoardData(level, rectangle, RECT_Y_INDEX),_
-            levelsBoardData(level, rectangle, RECT_WIDTH_INDEX),_
-            levelsBoardData(level, rectangle, RECT_HEIGHT_INDEX))
-        rectangle = rectangle + 1
-    END WHILE
+    IF inBonus = FALSE THEN
+        'Draw the level layout
+        DIM rectangle AS UBYTE = 0
+        WHILE rectangle <= LAST_LEVEL_RECTANGLE_INDEX AND levelsBoardData(level, rectangle, 0) <> RECT_END
+            putBoardRectangle(_
+                levelsBoardData(level, rectangle, RECT_X_INDEX),_
+                levelsBoardData(level, rectangle, RECT_Y_INDEX),_
+                levelsBoardData(level, rectangle, RECT_WIDTH_INDEX),_
+                levelsBoardData(level, rectangle, RECT_HEIGHT_INDEX))
+            rectangle = rectangle + 1
+        END WHILE
+    END IF
 END SUB
 
 
@@ -123,8 +124,12 @@ SUB checkFruit()
         clearBoardSnakePosition()
         score = score + FRUIT_INC_SCORE
         checkMaxScore()
-        fruits = fruits - 1
-        drawFruits()
+        IF inBonus THEN
+            putFruit()
+        ELSE
+            fruits = fruits - 1
+            drawFruits()
+        END IF
         drawScores()
         IF fruits > 0 THEN
             IF snakeLength < MAX_SNAKE_LENGTH THEN growth = growth + FRUIT_GROWTH
