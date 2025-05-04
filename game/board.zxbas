@@ -156,7 +156,6 @@ SUB getRandomEmptyBoardPosition()
         emptyScreenXPosition = RND() * (PLAY_BOARD_MAX_X + 1)
         emptyScreenYPosition = RND() * (PLAY_BOARD_MAX_Y + 1)
     LOOP UNTIL board(emptyScreenXPosition, emptyScreenYPosition) = BOARD_TYPE_EMPTY
-    emptyScreenYPosition = emptyScreenYPosition
 END SUB
 
 'Puts a new fruit on a free board position

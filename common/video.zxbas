@@ -7,6 +7,7 @@
 #define UBYTE_BITS 8
 #define PAPER_SHIFT_BITS 3
 #define SCREEN_COLUMNS 32
+#define SCREEN_COLUMNS_BITS 5
 #define SCREEN_ROWS 24
 #define SCREEN_MAX_COLUMN 31
 #define SCREEN_MAX_ROW 23
@@ -79,10 +80,10 @@
 #define _FADE_TO_OPEN_HOR_STEPS  16
 #define _FADE_TO_CLOSE_VER_STEPS 12
 #define _FADE_TO_OPEN_VER_STEPS  12
-#define _FADE_TO_UP_STEPS        12
-#define _FADE_TO_DOWN_STEPS      12
-#define _FADE_TO_LEFT_STEPS      16
-#define _FADE_TO_RIGHT_STEPS     16
+#define _FADE_TO_UP_STEPS        24
+#define _FADE_TO_DOWN_STEPS      25
+#define _FADE_TO_LEFT_STEPS      32
+#define _FADE_TO_RIGHT_STEPS     32
 '****************PRIVATE CONSTANTS AREA END*****************
 
 '***********************VARS AREA***************************
@@ -112,6 +113,7 @@ DIM _tmpAttribute AS UBYTE
 DIM _tmpPaper AS UBYTE
 DIM _tmpInk AS UBYTE
 DIM _attrIndex AS UINTEGER
+DIM _fadeAttrInc AS UINTEGER
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
@@ -208,6 +210,24 @@ SUB setFadeToTypeAndAttributes(fadeType AS UBYTE, attributes AS UBYTE)
     ELSEIF fadeType = FADE_TO_OPEN_HOR THEN
         remainingFadeSteps = _FADE_TO_OPEN_HOR_STEPS
         _fadeToFunction = @_fadeAttributesToColorOpenHorizontal
+    ELSEIF fadeType = FADE_TO_CLOSE_VER THEN
+        remainingFadeSteps = _FADE_TO_CLOSE_VER_STEPS
+        _fadeToFunction = @_fadeAttributesToColorCloseVertical
+    ELSEIF fadeType = FADE_TO_OPEN_VER THEN
+        remainingFadeSteps = _FADE_TO_OPEN_VER_STEPS
+        _fadeToFunction = @_fadeAttributesToColorOpenVertical
+    ELSEIF fadeType = FADE_TO_UP THEN
+        remainingFadeSteps = _FADE_TO_UP_STEPS
+        _fadeToFunction = @_fadeAttributesToColorUp
+    ELSEIF fadeType = FADE_TO_DOWN THEN
+        remainingFadeSteps = _FADE_TO_DOWN_STEPS
+        _fadeToFunction = @_fadeAttributesToColorDown
+    ELSEIF fadeType = FADE_TO_LEFT THEN
+        remainingFadeSteps = _FADE_TO_LEFT_STEPS
+        _fadeToFunction = @_fadeAttributesToColorLeft
+    ELSEIF fadeType = FADE_TO_RIGHT THEN
+        remainingFadeSteps = _FADE_TO_RIGHT_STEPS
+        _fadeToFunction = @_fadeAttributesToColorRight
     END IF
 END SUB
 
@@ -378,6 +398,27 @@ END SUB
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************
+'The loop to do vertical fades on full rows with optional increment
+SUB _fadeAttributesFullRowLoop()
+    DIM i AS UBYTE
+
+    FOR i = 0 TO SCREEN_MAX_COLUMN
+        POKE(_attrIndex, _fadeToAttributes)
+        IF _fadeAttrInc > 0 THEN POKE(_attrIndex + _fadeAttrInc, _fadeToAttributes)
+        _attrIndex = _attrIndex + 1
+    NEXT i
+END SUB
+
+'The loop to do horizontal fades on full columns with optional increment
+SUB _fadeAttributesFullColumnLoop()
+    DIM i AS UBYTE
+
+    FOR i = 0 TO SCREEN_MAX_ROW
+        POKE(_attrIndex, _fadeToAttributes)
+        IF _fadeAttrInc > 0 THEN POKE(_attrIndex + _fadeAttrInc, _fadeToAttributes)
+        _attrIndex = _attrIndex + SCREEN_COLUMNS
+    NEXT i
+END SUB
 
 'Changes all attributes, starts by flash and bright, then paper and color
 SUB _fadeAttributesToColor()
@@ -398,31 +439,69 @@ SUB _fadeAttributesToColor()
     NEXT _attrIndex
 END SUB
 
-'Fades to color putting attributes to 0 from borders to center in horizontal
+'Fades to color putting attributes from borders to center in horizontal
 SUB _fadeAttributesToColorCloseHorizontal()
-    DIM i AS UBYTE
-    DIM inc AS UBYTE = (remainingFadeSteps << 1) + 1
-
+    _fadeAttrInc = (remainingFadeSteps << 1) + 1
     _attrIndex = _ATTRIBUTES_START_ADDR + (_FADE_TO_CLOSE_HOR_STEPS - remainingFadeSteps - 1)    
 
-    FOR i = 0 TO SCREEN_MAX_ROW
-        POKE(_attrIndex, _fadeToAttributes)
-        POKE(_attrIndex + inc, _fadeToAttributes)
-        _attrIndex = _attrIndex + SCREEN_COLUMNS
-    NEXT i
+    _fadeAttributesFullColumnLoop()
 END SUB
 
-'Fades to color putting attributes to 0 from center to borders in horizontal
+'Fades to color putting attributes from center to borders in horizontal
 SUB _fadeAttributesToColorOpenHorizontal()
-    DIM i AS UBYTE
-    DIM inc AS UBYTE = ((_FADE_TO_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
-
+    _fadeAttrInc = ((_FADE_TO_OPEN_HOR_STEPS - remainingFadeSteps) << 1) - 1
     _attrIndex = _ATTRIBUTES_START_ADDR + remainingFadeSteps
 
-    FOR i = 0 TO SCREEN_MAX_ROW
-        POKE(_attrIndex, _fadeToAttributes)
-        POKE(_attrIndex + inc, _fadeToAttributes)
-        _attrIndex = _attrIndex + SCREEN_COLUMNS
-    NEXT i
+    _fadeAttributesFullColumnLoop()
+END SUB
+
+'Fades to color putting attributes from borders to center in vertical
+SUB _fadeAttributesToColorCloseVertical()
+    _fadeAttrInc = CAST(UINTEGER, ((remainingFadeSteps << 1) + 1)) << SCREEN_COLUMNS_BITS
+    _attrIndex = _ATTRIBUTES_START_ADDR + _
+        (CAST(UINTEGER, _FADE_TO_CLOSE_VER_STEPS - remainingFadeSteps - 1) << SCREEN_COLUMNS_BITS)
+
+    _fadeAttributesFullRowLoop()
+END SUB
+
+'Fades to color putting attributes from center to borders in vertical
+SUB _fadeAttributesToColorOpenVertical()
+    _fadeAttrInc = CAST(UINTEGER, ((_FADE_TO_OPEN_VER_STEPS - remainingFadeSteps) << 1) - 1)_
+        << SCREEN_COLUMNS_BITS
+    _attrIndex = _ATTRIBUTES_START_ADDR + (CAST(UINTEGER, remainingFadeSteps) << SCREEN_COLUMNS_BITS)
+
+    _fadeAttributesFullRowLoop()
+END SUB
+
+'Fades to color putting attributes from bottom to top
+SUB _fadeAttributesToColorUp()
+    _fadeAttrInc = 0
+    _attrIndex = _ATTRIBUTES_START_ADDR + (CAST(UINTEGER, remainingFadeSteps) << SCREEN_COLUMNS_BITS)
+
+    _fadeAttributesFullRowLoop()
+END SUB
+
+'Fades to color putting attributes from top to bottom
+SUB _fadeAttributesToColorDown()
+    _fadeAttrInc = 0
+    _attrIndex = _ATTRIBUTES_START_ADDR + (CAST(UINTEGER, (_FADE_TO_DOWN_STEPS - remainingFadeSteps - 1)) << SCREEN_COLUMNS_BITS)
+
+    _fadeAttributesFullRowLoop()
+END SUB
+
+'Fades to color putting attributes from right to left
+SUB _fadeAttributesToColorLeft()
+    _fadeAttrInc = 0
+    _attrIndex = _ATTRIBUTES_START_ADDR + remainingFadeSteps
+
+    _fadeAttributesFullColumnLoop()
+END SUB
+
+'Fades to color putting attributes from left to right
+SUB _fadeAttributesToColorRight()
+    _fadeAttrInc = 0
+    _attrIndex = _ATTRIBUTES_START_ADDR + (_FADE_TO_RIGHT_STEPS - remainingFadeSteps - 1)
+
+    _fadeAttributesFullColumnLoop()
 END SUB
 '*********************PRIVATE AREA END**********************
