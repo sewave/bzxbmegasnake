@@ -158,7 +158,7 @@ SUB stateGamePlaying()
         moveEnemies()
     END IF
     #ifdef DEBUG
-        IF (getControls(PLAYER_1_INDEX) bAND (CONTROL_DOWN bOR CONTROL_UP)) = (CONTROL_DOWN bOR CONTROL_UP) THEN
+        IF (getControls(PLAYER_1_INDEX) & (CONTROL_DOWN | CONTROL_UP)) = (CONTROL_DOWN | CONTROL_UP) THEN
             setGameState(STATE_START_END_LEVEL)
         END IF
     #endif
@@ -411,7 +411,6 @@ END SUB
 
 'State to start the end of the bonus
 SUB stateStartEndBonus()
-    inBonus = FALSE
     setupPrint(PRINT_MODE_TALL)
     setTallAttributes(BONUS_END_UPPER_ATTRIBUTES, BONUS_END_LOWER_ATTRIBUTES)
     printStringAt(centerScreenX(BONUS_END_1_STRING), BONUS_END_1_STRING_Y, BONUS_END_1_STRING)
@@ -427,6 +426,7 @@ END SUB
 'State to wait the end of the bonus
 SUB stateWaitEndBonus()
     IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
+        inBonus = FALSE
         reloadTime = TRUE
         initLevelFruits()
         setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_LEVEL_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_RESTART_LEVEL)

@@ -98,7 +98,8 @@ END SUB
 'Loses live and checks to see new state
 SUB loseLive()
     IF inBonus THEN
-        setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_END_BONUS)
+        setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_FADE_ATTRIBUTES,_
+            BONUS_FADE_FRAMES, STATE_START_END_BONUS)
     ELSE
         lives = lives - 1
         noDeathInLevel = FALSE
@@ -385,8 +386,13 @@ SUB initSnake()
     snakeLength = INITIAL_SNAKE_LENGTH
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
-    snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)
-    snakeY(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_Y_INDEX)
+    IF inBonus THEN
+        snakeX(headPosition) = IN_BONUS_SNAKE_INITIAL_X
+        snakeY(headPosition) = IN_BONUS_SNAKE_INITIAL_Y
+    ELSE
+        snakeX(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_X_INDEX)
+        snakeY(headPosition) = levelsMiscData(level, LEVEL_MISC_DATA_SNAKE_Y_INDEX)
+    END IF
     board(snakeX(headPosition), snakeY(headPosition)) = BOARD_TYPE_SNAKE
     direction = DIRECTION_NONE
     drawSnakeHead(ATTRIBUTE_FLASH_OFF)
@@ -475,7 +481,6 @@ END SUB
 
 'Prints the exit on pause
 SUB printPauseExit()
-setupPrint(PRINT_MODE_NORMAL)
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(PAUSE_CONT_EXIT_ATTRIBUTES)
     printStringAt(PAUSE_X, PAUSE_EXIT_Y, PAUSE_EXIT_STRING)
