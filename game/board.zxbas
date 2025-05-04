@@ -121,15 +121,15 @@ END SUB
 SUB checkFruit()
     IF getBoardOnSnakePosition() = BOARD_TYPE_FRUIT THEN
         fruitSound()
-        clearBoardSnakePosition()
-        score = score + FRUIT_INC_SCORE
-        checkMaxScore()
         IF inBonus THEN
             putFruit()
         ELSE
             fruits = fruits - 1
             drawFruits()
         END IF
+        clearBoardSnakePosition()
+        score = score + FRUIT_INC_SCORE
+        checkMaxScore()
         drawScores()
         IF fruits > 0 THEN
             IF snakeLength < MAX_SNAKE_LENGTH THEN growth = growth + FRUIT_GROWTH
