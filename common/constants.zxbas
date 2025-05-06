@@ -1,24 +1,24 @@
 'Colors
-#define BLACK       0
-#define BLUE        1
-#define RED         2
-#define PURPLE      3
-#define GREEN       4
-#define CYAN        5
-#define YELLOW      6
-#define WHITE       7
-#define TRANSPARENT 8
+CONST BLACK              AS UBYTE    = 0
+CONST BLUE               AS UBYTE    = 1
+CONST RED                AS UBYTE    = 2
+CONST PURPLE             AS UBYTE    = 3
+CONST GREEN              AS UBYTE    = 4
+CONST CYAN               AS UBYTE    = 5
+CONST YELLOW             AS UBYTE    = 6
+CONST WHITE              AS UBYTE    = 7
+CONST TRANSPARENT        AS UBYTE    = 8
 
 'Boolean
-#define TRUE 1
-#define FALSE 0
+CONST TRUE               AS UBYTE    = 1
+CONST FALSE              AS UBYTE    = 0
 
-#define INTEGER_BITS 16
-#define INTEGER_BYTES 2
+CONST INTEGER_BITS       AS UBYTE    = 16
+CONST INTEGER_BYTES      AS UBYTE    = 2
 
-#define MYRIAD   10000
-#define THOUSAND 1000
-#define HUNDRED  100
-#define TEN      10
+CONST MYRIAD             AS UINTEGER = 10000
+CONST THOUSAND           AS UINTEGER = 1000
+CONST HUNDRED            AS UBYTE    = 100
+CONST TEN                AS UBYTE    = 10
 
-#define STRING_DATA_OFFSET 2
+CONST STRING_DATA_OFFSET AS UBYTE    = 2

@@ -137,7 +137,7 @@ DIM _cursorKeys(KEYS_MAX_INDEX) AS UBYTE => { KBD_IDX_5, KBD_IDX_8, KBD_IDX_7, K
 
 'Tmp vars for speed
 DIM _tmpControl AS UBYTE
-DIM tmpInput AS UBYTE
+DIM _tmpInput AS UBYTE
 
 'Keyboard ports in top to bottom left to right order
 DIM _keyboardPorts(_LAST_KEYBOARD_PORT_INDEX) AS UINTEGER => {_
@@ -239,13 +239,13 @@ END FUNCTION
 'Reads the Kempston joystick
 FUNCTION readKempston() AS UBYTE
     _tmpControl = CONTROL_NONE
-    tmpInput = IN _KEMPSTON_PORT
+    _tmpInput = IN _KEMPSTON_PORT
 
-    IF tmpInput bAND _KEMPSTON_UP THEN _tmpControl = _tmpControl + CONTROL_UP
-    IF tmpInput bAND _KEMPSTON_DOWN THEN _tmpControl = _tmpControl + CONTROL_DOWN
-    IF tmpInput bAND _KEMPSTON_LEFT THEN _tmpControl = _tmpControl + CONTROL_LEFT
-    IF tmpInput bAND _KEMPSTON_RIGHT THEN _tmpControl = _tmpControl + CONTROL_RIGHT
-    IF tmpInput bAND _KEMPSTON_FIRE THEN _tmpControl = _tmpControl + CONTROL_FIRE
+    IF _tmpInput & _KEMPSTON_UP THEN _tmpControl = _tmpControl + CONTROL_UP
+    IF _tmpInput & _KEMPSTON_DOWN THEN _tmpControl = _tmpControl + CONTROL_DOWN
+    IF _tmpInput & _KEMPSTON_LEFT THEN _tmpControl = _tmpControl + CONTROL_LEFT
+    IF _tmpInput & _KEMPSTON_RIGHT THEN _tmpControl = _tmpControl + CONTROL_RIGHT
+    IF _tmpInput & _KEMPSTON_FIRE THEN _tmpControl = _tmpControl + CONTROL_FIRE
 
     RETURN _tmpControl
 END FUNCTION
