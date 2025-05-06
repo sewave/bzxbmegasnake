@@ -1,14 +1,14 @@
 '*******************PUBLIC CONSTANTS AREA*******************
-#define FIRST_UNUSED_STATE  8
+CONST FIRST_UNUSED_STATE AS UBYTE = 8
 '*****************PUBLIC CONSTANTS AREA END*****************
 
 '******************PRIVATE CONSTANTS AREA*******************
 'Generic states
-#define _STATE_WAIT_FRAMES   0
-#define _STATE_WAIT_A_KEY    1
-#define _STATE_WAIT_ANY_KEY  2
-#define _STATE_WAIT_NO_KEY   3
-#define _STATE_FADE_TO       4
+CONST _STATE_WAIT_FRAMES  AS UBYTE = 0
+CONST _STATE_WAIT_A_KEY   AS UBYTE = 1
+CONST _STATE_WAIT_ANY_KEY AS UBYTE = 2
+CONST _STATE_WAIT_NO_KEY  AS UBYTE = 3
+CONST _STATE_FADE_TO      AS UBYTE = 4
 '****************PRIVATE CONSTANTS AREA END*****************
 
 '***********************VARS AREA***************************
