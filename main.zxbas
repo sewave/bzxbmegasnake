@@ -12,7 +12,7 @@
 #include "gfx\\gfx.zxbas"
 #include "game\\game.zxbas"
 
-setGameState(STATE_INIT_GAME)
+setStateWaitNoKey(STATE_INIT_GAME)
 'Main loop
 DO
     updateControls()

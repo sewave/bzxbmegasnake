@@ -137,7 +137,11 @@ SUB stateInitGame()
     initInput()
     setupFont(@font, VWF_NULL_TABLE)
     maxScore = INITIAL_MAX_SCORE
-    setGameState(STATE_START_TITLE)
+    setupPrint(PRINT_MODE_NORMAL)
+    setAttributes(PRESS_TO_START_KEY_ATTRIBUTES)
+    printStringAt(centerScreenX(PRESS_TO_START_KEY_STRING), PRESS_TO_START_KEY_STRING_Y,_
+        PRESS_TO_START_KEY_STRING)
+    setStateWaitAnyKey(STATE_START_TITLE)
 END SUB
 
 'Updates all the game status
