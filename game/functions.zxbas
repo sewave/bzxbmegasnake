@@ -329,7 +329,7 @@ END SUB
 
 'Returns true if the new key is not already defined and is on the printable
 'uppercase range
-FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex as UBYTE) AS UBYTE
+FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex AS UBYTE) AS UBYTE
     DIM i AS UBYTE
 
     IF keyCode = NO_KEYBOARD_KEY_PRESSED THEN RETURN FALSE

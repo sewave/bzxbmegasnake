@@ -165,7 +165,7 @@ END SUB
 'Tall characters functions
 
 'Setups the font, [vWFTableAddress] only needed if using vwf, put [VWF_NULL_TABLE] if unused
-SUB setupFont(fontAddress as UINTEGER, vWFTableAddress AS UINTEGER)
+SUB setupFont(fontAddress AS UINTEGER, vWFTableAddress AS UINTEGER)
     _currentFontAddress = fontAddress - FONT_OFFSET
     _currentVWFTableAddress = vWFTableAddress - _VWF_OFFSET
 END SUB

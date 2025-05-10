@@ -1,5 +1,5 @@
 #ifndef LANG
-    'Spanish as default
+    'Spanish default
     #define LANG es
 #endif
 

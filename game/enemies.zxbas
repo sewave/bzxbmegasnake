@@ -39,7 +39,7 @@ DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
 }
 
-'Put all enemies as NONE
+'Put all enemies type NONE
 SUB clearEnemies()
     FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
         enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE

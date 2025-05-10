@@ -170,17 +170,17 @@ DIM _keyboardPortsAddr AS UINTEGER
 
 '***********************PUBLIC AREA*************************
 'Get a player key
-FUNCTION getPlayerKey(playerIndex as UBYTE, keyIndex AS UBYTE) AS UBYTE
+FUNCTION getPlayerKey(playerIndex AS UBYTE, keyIndex AS UBYTE) AS UBYTE
     RETURN _playerKeys(playerIndex, keyIndex)
 END FUNCTION
 
 'Set a player key
-SUB setPlayerKey(playerIndex as UBYTE, keyIndex AS UBYTE, value AS UBYTE)
+SUB setPlayerKey(playerIndex AS UBYTE, keyIndex AS UBYTE, value AS UBYTE)
     _playerKeys(playerIndex, keyIndex) = value
 END SUB
 
 'Get a key index ascii
-FUNCTION getKeyIndexAscii(keyIndex as UBYTE) AS UBYTE
+FUNCTION getKeyIndexAscii(keyIndex AS UBYTE) AS UBYTE
     RETURN _keyboardValues(keyIndex)
 END FUNCTION
 
