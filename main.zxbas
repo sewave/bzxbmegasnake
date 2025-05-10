@@ -7,7 +7,7 @@
 #pragma strict = true
 
 'Set up max players to use less memory
-#define NUM_PLAYERS 1
+CONST NUM_PLAYERS AS UBYTE = 1
 #include "common\\common.zxbas"
 #include "gfx\\gfx.zxbas"
 #include "game\\game.zxbas"
