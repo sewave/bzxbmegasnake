@@ -4,7 +4,7 @@
 
 Juego escrito en **Boriel Basic** usando **únicamente** el lenguaje Basic.
 
-Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/https:/) por las increíbles fuentes. (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/https:/))
+Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/) por las increíbles fuentes. (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/))
 
 ## El juego
 
