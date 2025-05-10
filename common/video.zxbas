@@ -281,9 +281,14 @@ SUB drawVerticalLine(x as UBYTE, y as UBYTE, length as UBYTE, character as UINTE
     putRowCharsAt(x, y, length, character)
 END SUB
 
-'Clears the screen with the selected paper-border and ink
-SUB clearScreen(pPaper as UBYTE, pInk as UBYTE)
-    BORDER pPaper: PAPER pPaper : INK pInk : CLS
+'Clears the screen with the selected attributes
+SUB clearScreen(attributes as UBYTE)
+    DIM i AS UBYTE
+    setAttributes(attributes)
+    FOR i = 0 TO SCREEN_ROWS
+        setCharPosition(0, i)
+        clearChars(SCREEN_COLUMNS)
+    NEXT i
 END SUB
 
 'Wait vsync

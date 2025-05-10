@@ -55,8 +55,7 @@ END SUB
 
 'Draws all the title, waits for difficulty selection and then starts a new game
 SUB stateStartTitle()
-    BRIGHT TRUE
-    clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
+    clearScreen(GAME_CLEAR_ATTRIBUTES)
     
     'Title window
     drawWindow(INTRO_WINDOW_X, INTRO_WINDOW_Y, INTRO_WINDOW_WIDTH, INTRO_WINDOW_HEIGHT, BOARD_COLOR, outWindowsCharacters)
@@ -127,13 +126,14 @@ SUB stateStartGame()
     reloadTime = TRUE
     noDeathInLevel = TRUE
     initLevelFruits()
-    clearScreen(GAMEPLAY_PAPER, GAMEPLAY_INK)
+    clearScreen(GAME_CLEAR_ATTRIBUTES)
     resetGameLevel()
     setGameState(STATE_GAME_PLAYING)
 END SUB
 
 'Inits the game
 SUB stateInitGame()
+    BORDER GAME_BORDER
     initInput()
     setupFont(@font, VWF_NULL_TABLE)
     maxScore = INITIAL_MAX_SCORE

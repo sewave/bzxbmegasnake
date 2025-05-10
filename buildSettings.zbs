@@ -1,11 +1,11 @@
 {
   "MainFile": "main.zxbas",
-  "OptimizationLevel": 3,
+  "OptimizationLevel": 2,
   "Origin": null,
   "ArrayBase": null,
   "StringBase": null,
   "SinclairMode": false,
-  "HeapSize": 2048,
+  "HeapSize": 1024,
   "StrictBool": false,
   "EnableBreak": false,
   "Explicit": false,
