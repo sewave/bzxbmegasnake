@@ -2,7 +2,7 @@
 
 ©2025 Wave
 
-Juego escrito para **Boriel Basic** usando **únicamente** el lenguaje Basic.
+Juego escrito en **Boriel Basic** usando **únicamente** el lenguaje Basic.
 
 Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/https:/) por las increíbles fuentes. (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/https:/))
 
@@ -18,10 +18,10 @@ Puedes morir si se te acaba el tiempo o te chocas con la cabeza contra una pared
 
 Por defecto son:
 
-**O**: Izquierda
-**P**: Derecha
-**Q**: Arriba
-**A**: Abajo
+**O**: Izquierda, **P**: Derecha
+
+**Q**: Arriba, **A**: Abajo
+
 **M**: Elegir/Pausa
 
 Pero se pueden redefinir o elegir Sinclair 1, Sinclair 2, Cursor o Kempston.
@@ -34,11 +34,11 @@ Para salir debes pulsar el botón de Elegir/Pausa un segundo sin soltarlo.
 
 ## LOS ÍTEMS
 
-Fruta: Incrementa el tamaño de la serpiente, da puntos y permite terminar el nivel.
-Fruta envenenada: Hace que la serpiente vuelva al tamaño original.
-^^: Hace más veloz a la serpiente si no va a velocidad máxima.
-vv: Hace más lenta a la serpiente si no va a velocidad mínima.
-Flechas: Te obligan a moverte a esa dirección
+* Fruta: Incrementa el tamaño de la serpiente, da puntos y permite terminar el nivel
+* Fruta envenenada: Hace que la serpiente vuelva al tamaño original
+* ^^: Hace más veloz a la serpiente si no va a velocidad máxima
+* vv: Hace más lenta a la serpiente si no va a velocidad mínima
+* Flechas: Te obligan a moverte a esa dirección
 
 ## LOS OBSTÁCULOS
 
@@ -70,6 +70,7 @@ Este bicho elige un nuevo camino cada vez que se topa con un obstáculo, pero si
 
 ## Algunas pistas
 
--Si mueres por chocarte, el tiempo no se reiniciará.
--Ganarás más puntos si no mueres en el nivel.
--Ganarás más puntos si completas rápidamente el nivel.
+* Si mueres por chocarte, el tiempo no se reiniciará
+* Ganarás más puntos si no mueres en el nivel
+* Ganarás más puntos si completas rápidamente el nivel.
+
