@@ -18,12 +18,12 @@ DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
 }
 DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
     @font,_
-    @udgs(0, 0),_
-    @udgs(2, 0),_
-    @udgs(4, 0),_
-    @udgs(6, 0),_
-    @udgs(8, 0),_
-    @udgs(10, 0)_
+    @sprites_Horizontal_Bug(0, 0),_
+    @sprites_Vertical_Bug(0, 0),_
+    @sprites_Diagonal_Left_Bug(0, 0),_
+    @sprites_Diagonal_Right_Bug(0, 0),_
+    @sprites_Clockwise_Bug(0, 0),_
+    @sprites_Counter_Clockwise_Bug(0, 0)_
 }
 DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     createAttributes(FALSE, FALSE, BLACK, BLACK),_

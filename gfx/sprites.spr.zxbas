@@ -131,3 +131,51 @@ DIM sprites_Go_Down(7) AS UByte => { _
 DIM sprites_Go_Left(7) AS UByte => { _
 	$00,$10,$30,$7E,$7E,$30,$10,$00 _
 }
+DIM sprites_Horizontal_Bug(1,7) AS UByte => { _
+	{ _
+		$18,$3C,$7E,$7E,$7E,$7E,$3C,$18 _
+	}, _
+	{ _
+		$3C,$7E,$7E,$7E,$7E,$7E,$7E,$3C _
+	} _
+}
+DIM sprites_Vertical_Bug(1,7) AS UByte => { _
+	{ _
+		$00,$3C,$7E,$FF,$FF,$7E,$3C,$00 _
+	}, _
+	{ _
+		$00,$7E,$FF,$FF,$FF,$FF,$7E,$00 _
+	} _
+}
+DIM sprites_Diagonal_Left_Bug(1,7) AS UByte => { _
+	{ _
+		$38,$7C,$FE,$FF,$FF,$7F,$3E,$1C _
+	}, _
+	{ _
+		$F8,$FC,$FE,$FF,$FF,$7F,$3F,$1F _
+	} _
+}
+DIM sprites_Diagonal_Right_Bug(1,7) AS UByte => { _
+	{ _
+		$1C,$3E,$7F,$FF,$FF,$FE,$7C,$38 _
+	}, _
+	{ _
+		$1F,$3F,$7F,$FF,$FF,$FE,$FC,$F8 _
+	} _
+}
+DIM sprites_Clockwise_Bug(1,7) AS UByte => { _
+	{ _
+		$FF,$01,$81,$C1,$81,$81,$81,$FF _
+	}, _
+	{ _
+		$FD,$89,$81,$81,$81,$81,$81,$FF _
+	} _
+}
+DIM sprites_Counter_Clockwise_Bug(1,7) AS UByte => { _
+	{ _
+		$FF,$80,$81,$83,$81,$81,$81,$FF _
+	}, _
+	{ _
+		$BF,$91,$81,$81,$81,$81,$81,$FF _
+	} _
+}
