@@ -10,11 +10,13 @@
 CONST NUM_PLAYERS AS UBYTE = 1
 #include "common\\common.zxbas"
 #include "gfx\\gfx.zxbas"
+#include "audio\\audio.zxbas"
 #include "game\\game.zxbas"
 
 setStateWaitNoKey(STATE_INIT_GAME)
 'Main loop
 DO
+    updateAudio()
     updateControls()
     executeSub(stateSubroutines(getGameState()))
     waitVsync()

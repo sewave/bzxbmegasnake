@@ -1,6 +1,6 @@
 'Beeps the fruit sound
 SUB fruitSound()
-    BEEP .02, 10
+    playSoundEffect(@music1Data)
 END SUB
 
 'Beeps the die sound

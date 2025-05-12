@@ -1,0 +1,14 @@
+DIM music1Data(3) AS UBYTE => {2, 6, CAST(UBYTE, @pattern1Data), CAST(UBYTE, @pattern1Data / 256)}
+DIM pattern1Data(0) AS UINTEGER => {@pat10}
+DIM pat10(21) AS UBYTE => {2,_
+96,1,_
+98,1,_
+100,1,_
+101,1,_
+103,1,_
+103,1,_
+101,1,_
+100,1,_
+98,1,_
+96,1,_
+0}

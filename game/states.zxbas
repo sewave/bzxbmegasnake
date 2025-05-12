@@ -135,6 +135,7 @@ END SUB
 SUB stateInitGame()
     BORDER GAME_BORDER
     initInput()
+    initAudio()
     setupFont(@font, VWF_NULL_TABLE)
     maxScore = INITIAL_MAX_SCORE
     setupPrint(PRINT_MODE_NORMAL)
@@ -258,8 +259,8 @@ SUB stateStartMenu()
     setupPrint(PRINT_MODE_TALL)
     setTallAttributes(INTRO_MAX_SCORE_NUM_UP_ATTR, INTRO_MAX_SCORE_NUM_DOWN_ATTR)
     printUIntegerAt(INTRO_MAX_SCORE_X + LEN(INTRO_MAX_SCORE_STRING), INTRO_MAX_SCORE_Y, maxScore)
-
-    setStateWaitNoKey(STATE_WAIT_MENU) 
+    playMusic(@musicData)
+    setStateWaitNoKey(STATE_WAIT_MENU)
 END SUB
 
 'State to start to lose a live
