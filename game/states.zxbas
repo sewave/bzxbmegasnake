@@ -118,6 +118,7 @@ END SUB
 
 'Resets the game, restores everything except the max score
 SUB stateStartGame()
+    stopMusic()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
@@ -285,6 +286,7 @@ SUB stateStartEndLevel()
     DIM timeBonus AS UINTEGER = remainingTime * LEVEL_TIME_BONUS
     DIM oldScore AS UINTEGER = score
     score = score + timeBonus
+    stopAudio()
 
     drawWindowFilled(END_LEVEL_BIG_WINDOW_X, END_LEVEL_BIG_WINDOW_Y,_
         END_LEVEL_BIG_WINDOW_WIDTH, END_LEVEL_BIG_WINDOW_HEIGHT,_

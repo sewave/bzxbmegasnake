@@ -206,6 +206,12 @@ SUB resetSoundEffectNoteAdjustment()
     _effectNoteAdjustment = _INITIAL_NOTE_ADJUSTMENT
 END SUB
 
+'Stops music and sound effects
+SUB stopAudio()
+    stopMusic()
+    stopSoundEffect()
+END SUB
+
 'Updates the audio for this frame
 'Beepola ROM Beep compatible player
 'Tempo is from 16 to 1, maps in Beepola to 1 to 20.
