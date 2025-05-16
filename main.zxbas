@@ -1,6 +1,5 @@
 'Mega Serpiente for Boriel ZX Basic
-'Thanks to DamienG (https://damieng.com/typography/zx-origins/)
-'for the awesome fonts
+'Thanks to DamienG (https://damieng.com/typography/zx-origins/) for the awesome fonts
 'Wave 2025
 
 #pragma explicit = true
@@ -9,15 +8,6 @@
 'Set up max players to use less memory
 CONST NUM_PLAYERS AS UBYTE = 1
 #include "common\\common.zxbas"
-#include "gfx\\gfx.zxbas"
-#include "audio\\audio.zxbas"
 #include "game\\game.zxbas"
 
-setStateWaitNoKey(STATE_INIT_GAME)
-'Main loop
-DO
-    updateAudio()
-    updateControls()
-    executeSub(stateSubroutines(getGameState()))
-    waitVsync()
-LOOP
+initStatesAndRun(STATE_INIT_GAME)

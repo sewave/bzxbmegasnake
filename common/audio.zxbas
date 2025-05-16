@@ -15,12 +15,18 @@ CONST _REST_CHANNEL_NOTE AS UBYTE = 1
 CONST _BEEPOLA_NOTES_OFFSET AS UBYTE = 60
 CONST _CHANNEL_ONE AS UBYTE = 0
 CONST _CHANNEL_TWO AS UBYTE = 1
+CONST _INITIAL_TEMPO_ADJUSTMENT AS BYTE = 0
+CONST _INITIAL_NOTE_ADJUSTMENT AS BYTE = 0
+CONST _MIN_NOTE AS BYTE = 0
+CONST _MAX_NOTE AS BYTE = 59
+CONST _MIN_TEMPO AS BYTE = 2
+CONST _MAX_TEMPO AS BYTE = 32
 '****************PRIVATE CONSTANTS AREA END*****************
 
 '***********************VARS AREA***************************
 'Misc vars
 DIM _currentChannel AS UBYTE
-DIM _tmpAudioNote AS UBYTE
+DIM _tmpAudioNote AS BYTE
 
 'Beepola ROM BEEP compatible player
 DIM _musicPatternIndex AS UBYTE
@@ -31,11 +37,19 @@ DIM _musicAddress AS UINTEGER
 DIM _musicInitialPatternAddress AS UINTEGER
 DIM _musicPatternAddress AS UINTEGER
 DIM _musicPatternLength AS UBYTE
+DIM _musicPlaying AS UBYTE
+DIM _musicTempoAdjustment AS BYTE
+DIM _musicNoteAdjustment AS BYTE
+DIM _musicLooping AS BYTE
+DIM _musicContinueOnEffect AS BYTE
 
 'Effect vars
 DIM _effectTempo AS UBYTE
 DIM _effectTempoCounter AS UBYTE
 DIM _effectAddress AS UINTEGER
+DIM _effectPlaying AS UBYTE
+DIM _effectTempoAdjustment AS BYTE
+DIM _effectNoteAdjustment AS BYTE
 
 DIM _fastBeepSubroutines(_LAST_NOTE) AS UINTEGER => { _
     @_fastBeep00, @_fastBeep01, @_fastBeep02, @_fastBeep03, @_fastBeep04, @_fastBeep05, _
@@ -52,15 +66,21 @@ DIM _fastBeepSubroutines(_LAST_NOTE) AS UINTEGER => { _
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
-'Pitch -60 - 127, BEEP -24 - 35, Notes 0-59
-#define _fastBeep(note) BEEP .005, note
+'Pitch -60 - 127, BEEP -24 - 35, Notes 0-593
+#define _fastBeep(note) BEEP .006, note
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
-
 'Inits the audio system
 SUB initAudio()
-    _musicAddress = _NO_AUDIO_ADDRESS
+    pauseMusic()
+    pauseSoundEffect()
+    resetMusicNoteAdjustment()
+    resetSoundEffectNoteAdjustment()
+    resetMusicTempoAdjustment()
+    resetSoundEffectTempoAdjustment()
+    enableMusicLooping()
+    enableMusicContinueOnEffect()
     _currentChannel = _CHANNEL_ONE
 END SUB
 
@@ -71,69 +91,173 @@ SUB playMusic(playMusicAddress AS UINTEGER)
     _musicPatternLength = PEEK(_musicAddress + _MUSIC_HEADER_PATTERN_LENGHT_INDEX)
     _musicPatternIndex = 0
     _musicInitialPatternAddress = PEEK(UINTEGER, _musicAddress + _MUSIC_HEADER_PATTERN_TABLE_INDEX)
-    _prepareMusicPattern()
+    _prepareMusicPattern()    
+    unpauseMusic()
 END SUB
 
 'Plays the selected music in loop
 SUB playSoundEffect(playSoundEffectAddress AS UINTEGER)
     _effectAddress = playSoundEffectAddress
-    'Read patterns table
-    _effectAddress = PEEK(UINTEGER, _effectAddress + _MUSIC_HEADER_PATTERN_TABLE_INDEX)
-    'Go to first (and unique) pattern
-    _effectAddress = PEEK(UINTEGER, _effectAddress)
     _effectTempo = (PEEK(_effectAddress) << 2) - 1
-    _effectTempoCounter = _effectTempo
+    _loadAdjustedSoundEffectTempoCounter()
     _effectAddress = _effectAddress + _MUSIC_PATTERN_TEMPO_LENGTH
+    unpauseEffect()
 END SUB
 
 'Stops the current sound effect
-SUB stopSoundEFfect()
+SUB stopSoundEffect()
+    pauseSoundEffect()
     _effectAddress = _NO_AUDIO_ADDRESS
 END SUB
 
 'Stops the current music
 SUB stopMusic()
+    pauseMusic()
     _musicAddress = _NO_AUDIO_ADDRESS
 END SUB
 
+'Pauses current music
+SUB pauseMusic()
+    _musicPlaying = FALSE
+END SUB
+
+'Pauses current sound effect
+SUB pauseSoundEffect()
+    _effectPlaying = FALSE
+END SUB
+
+'Unpauses current music, cannot unpause without address
+SUB unpauseMusic()
+    _musicPlaying = _musicAddress <> _NO_AUDIO_ADDRESS
+END SUB
+
+'Unpauses current effect
+SUB unpauseEffect()
+    _effectPlaying = _effectAddress <> _NO_AUDIO_ADDRESS
+END SUB
+
+'Returns TRUE if music is playing
+FUNCTION isMusicPlaying() AS UBYTE
+    RETURN _musicPlaying
+END FUNCTION
+
+'Returns TRUE if sound effect is playing
+FUNCTION isSoundEffectPlaying() AS UBYTE
+    RETURN _effectPlaying
+END FUNCTION
+
+'Enables music looping
+SUB enableMusicLooping()
+    _musicLooping = TRUE
+END SUB
+
+'Disables music looping
+SUB disableMusicLooping()
+    _musicLooping = FALSE
+END SUB
+
+'Enables music continue on effect
+SUB enableMusicContinueOnEffect()
+    _musicContinueOnEffect = TRUE
+END SUB
+
+'Disables music continue on effect
+SUB disableMusicContinueOnEffect()
+    _musicContinueOnEffect = FALSE
+END SUB
+
+'Sets the music tempo adjustment
+SUB setMusicTempoAdjustment(tempoAdjustment AS BYTE)
+    _musicTempoAdjustment = tempoAdjustment
+END SUB
+
+'Resets music tempo adjustment
+SUB resetMusicTempoAdjustment()
+    _musicTempoAdjustment = _INITIAL_TEMPO_ADJUSTMENT
+END SUB
+
+'Sets the sound effect tempo adjustment
+SUB setSoundEffectTempoAdjustment(tempoAdjustment AS BYTE)
+    _effectTempoAdjustment = tempoAdjustment
+END SUB
+
+'Resets sound effect tempo adjustment
+SUB resetSoundEffectTempoAdjustment()
+    _effectTempoAdjustment = _INITIAL_TEMPO_ADJUSTMENT
+END SUB
+
+'Sets the music note adjustment
+SUB setMusicNoteAdjustment(noteAdjustment AS BYTE)
+    _musicNoteAdjustment = noteAdjustment
+END SUB
+
+'Resets music note adjustment
+SUB resetMusicNoteAdjustment()
+    _musicNoteAdjustment = _INITIAL_NOTE_ADJUSTMENT
+END SUB
+
+'Sets the sound effect note adjustment
+SUB setSoundEffectNoteAdjustment(noteAdjustment AS BYTE)
+    _effectNoteAdjustment = noteAdjustment
+END SUB
+
+'Resets sound effect note adjustment
+SUB resetSoundEffectNoteAdjustment()
+    _effectNoteAdjustment = _INITIAL_NOTE_ADJUSTMENT
+END SUB
+
 'Updates the audio for this frame
+'Beepola ROM Beep compatible player
+'Tempo is from 16 to 1, maps in Beepola to 1 to 20.
+'Frames per row is the double of tempo.
+'This player instead of arpeggio alternates channel note each frame.
+'Distributes channel 1 note for frame 1 and channel 2 note for frame 2.
+'This consumes less frame time and sounds similar.
+'The engine is shifted up an octave or more due to ROM BEEP limitations, more
+'than the other engines. Octave 5 is not human-audible.
+'Notes go from C-1 to A#5.
 SUB updateAudio()
-    IF _musicAddress <> _NO_AUDIO_ADDRESS AND _effectAddress = _NO_AUDIO_ADDRESS THEN
+    IF _musicPlaying = TRUE THEN
         _tmpAudioNote = PEEK(_musicPatternAddress)
         IF _tmpAudioNote = _END_PATTERN_NOTE THEN
-            _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
-            IF _musicPatternIndex = _musicPatternLength THEN
-                _musicPatternIndex = _musicLoopPatternIndex
-            END IF
-            _prepareMusicPattern()
-        ELSE
-            IF _currentChannel = _CHANNEL_ONE THEN
-                _playNote()
-            ELSE
-                IF _effectAddress = _NO_AUDIO_ADDRESS THEN
-                    _tmpAudioNote = PEEK(_musicPatternAddress + 1)
-                    _playNote()
+            IF _musicLooping = TRUE THEN
+                _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
+                IF _musicPatternIndex = _musicPatternLength THEN
+                    _musicPatternIndex = _musicLoopPatternIndex
                 END IF
+                _prepareMusicPattern()
+            ELSE
+                stopMusic()
             END IF
-            _musicPatternTempoCounter = _musicPatternTempoCounter - 1
-            IF _musicPatternTempoCounter = 0 THEN
-                _musicPatternTempoCounter = _musicPatternTempo
-                _musicPatternAddress = _musicPatternAddress + _MUSIC_PATTERN_NOTES_LENGTH
+        ELSE
+            IF _effectPlaying = FALSE THEN
+                IF _currentChannel = _CHANNEL_TWO THEN
+                    _tmpAudioNote = PEEK(_musicPatternAddress + 1)
+                END IF
+                _playAdjustedNote(_musicNoteAdjustment)
+            END IF
+            IF _effectPlaying = FALSE OR _musicContinueOnEffect = TRUE THEN
+                _musicPatternTempoCounter = _musicPatternTempoCounter - 1
+                IF _musicPatternTempoCounter = 0 THEN
+                    _currentChannel = 0
+                    _loadAdjustedMusicTempoCounter()
+                    _musicPatternAddress = _musicPatternAddress + _MUSIC_PATTERN_NOTES_LENGTH
+                END IF
             END IF
         END IF
     END IF
-    IF _effectAddress <>_NO_AUDIO_ADDRESS THEN
-        'Effect uses channel 1 data over channel 2
+    IF _effectPlaying = TRUE THEN
         _tmpAudioNote = PEEK(_effectAddress)
         IF _tmpAudioNote = _END_PATTERN_NOTE THEN
-            _effectAddress = _NO_AUDIO_ADDRESS
+            stopSoundEffect()
         ELSE
             IF _currentChannel = _CHANNEL_TWO THEN
-                _playNote()
+                _tmpAudioNote = PEEK(_effectAddress + 1)
             END IF
+            _playAdjustedNote(_effectNoteAdjustment)
             _effectTempoCounter = _effectTempoCounter - 1
             IF _effectTempoCounter = 0 THEN
-                _effectTempoCounter = _effectTempo
+                _loadAdjustedSoundEffectTempoCounter()
                 _effectAddress = _effectAddress + _MUSIC_PATTERN_NOTES_LENGTH
             END IF
         END IF
@@ -143,19 +267,45 @@ END SUB
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************
+'Play adjusted music note
+SUB _playAdjustedNote(adjustment AS BYTE)
+    IF _tmpAudioNote > _REST_CHANNEL_NOTE THEN
+        _tmpAudioNote = _tmpAudioNote - _BEEPOLA_NOTES_OFFSET + adjustment
+        IF _tmpAudioNote < _MIN_NOTE THEN
+            _tmpAudioNote = _MIN_NOTE
+        ELSEIF _tmpAudioNote > _MAX_NOTE THEN
+            _tmpAudioNote = _MAX_NOTE
+        END IF
+        executeSub(_fastBeepSubroutines(_tmpAudioNote))
+    END IF
+END SUB
+
+'Load adjusted sound effect tempo counter
+SUB _loadAdjustedSoundEffectTempoCounter()
+    _effectTempoCounter = _effectTempo + _effectTempoAdjustment
+    IF _effectTempoCounter < _MIN_TEMPO THEN
+        _effectTempoCounter = _MIN_TEMPO
+    ELSEIF _effectTempoCounter > _MAX_TEMPO THEN
+        _effectTempoCounter = _MAX_TEMPO
+    END IF
+END SUB
+
+'Load adjusted music tempo counter
+SUB _loadAdjustedMusicTempoCounter()
+    _musicPatternTempoCounter = _musicPatternTempo + _musicTempoAdjustment
+    IF _musicPatternTempoCounter < _MIN_TEMPO THEN
+        _musicPatternTempoCounter = _MIN_TEMPO
+    ELSEIF _musicPatternTempoCounter > _MAX_TEMPO THEN
+        _musicPatternTempoCounter = _MAX_TEMPO
+    END IF
+END SUB
+
 'Prepares the pattern music variables
 SUB _prepareMusicPattern()
     _musicPatternAddress = PEEK(UINTEGER, _musicInitialPatternAddress + _musicPatternIndex)
     _musicPatternTempo = (PEEK(_musicPatternAddress) << 2) - 1
-    _musicPatternTempoCounter = _musicPatternTempo
+    _loadAdjustedMusicTempoCounter()
     _musicPatternAddress =_musicPatternAddress + _MUSIC_PATTERN_TEMPO_LENGTH
-END SUB
-
-'Plays the note if valid
-SUB _playNote()
-    IF _tmpAudioNote > _REST_CHANNEL_NOTE THEN
-        executeSub(_fastBeepSubroutines(_tmpAudioNote - _BEEPOLA_NOTES_OFFSET))
-    END IF
 END SUB
 
 'Collection of precalculated fast beeps

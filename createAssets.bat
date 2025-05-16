@@ -1,0 +1,2 @@
+python .\common\tools\convertEffects.py .\game\audio\assets\effects.asm .\game\audio\effects.zxbas
+python .\common\tools\convertMusic.py .\game\audio\assets\intro_music.asm .\game\audio\intro_music.zxbas intro

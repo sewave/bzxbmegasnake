@@ -134,8 +134,6 @@ END SUB
 'Inits the game
 SUB stateInitGame()
     BORDER GAME_BORDER
-    initInput()
-    initAudio()
     setupFont(@font, VWF_NULL_TABLE)
     maxScore = INITIAL_MAX_SCORE
     setupPrint(PRINT_MODE_NORMAL)
@@ -475,3 +473,8 @@ DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateEndEndLevel, _
     @stateStartMenu _
 }
+
+'Returns the current state subroutine
+FUNCTION getCurrentStateSubroutine() AS UINTEGER
+    RETURN stateSubroutines(getGameState())
+END FUNCTION

@@ -1,38 +1,34 @@
 'Beeps the fruit sound
 SUB fruitSound()
-    playSoundEffect(@music1Data)
+    playSoundEffect(@effect4)
 END SUB
 
 'Beeps the die sound
 SUB dieSound()
-    BEEP .1, 20
+    playSoundEffect(@effect1)
 END SUB
 
 'Beeps the start sound
 SUB startSound()
-    BEEP .4, 40
+    playSoundEffect(@effect2)
 END SUB
 
 'Beeps the ungrow sound
 SUB ungrowSound()
-    BEEP .02, 15
+    playSoundEffect(@effect3)
 END SUB
 
 'Beeps the speed up sound
 SUB speedUpSound()
-    BEEP .001, 12
-    BEEP .001, 13
-    BEEP .001, 14
+    playSoundEffect(@effect5)
 END SUB
 
 'Beeps the speed down sound
 SUB speedDownSound()
-    BEEP .001, 14
-    BEEP .001, 13
-    BEEP .001, 12
+    playSoundEffect(@effect6)
 END SUB
 
 'Beeps the go direction sound
 SUB goDirectionSound()
-    BEEP .1, 5
+    playSoundEffect(@effect7)
 END SUB

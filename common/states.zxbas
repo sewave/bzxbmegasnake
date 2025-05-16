@@ -115,6 +115,23 @@ SUB stateFadeTo()
         IF remainingFadeSteps = 0 THEN setStateWaitFrames(_fadeStepframes, _getNextGameState())
     END IF
 END SUB
+
+'This function has to be implemented by the actual game
+DECLARE FUNCTION getCurrentStateSubroutine() AS UINTEGER
+
+'Inits the system and starts the states and runs
+SUB initStatesAndRun(startingState AS UBYTE)
+    initInput()
+    initAudio()
+    setStateWaitNoKey(startingState)
+    DO
+        updateAudio()
+        updateControls()
+        executeSub(getCurrentStateSubroutine())
+        waitVsync()
+    LOOP
+END SUB
+
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************

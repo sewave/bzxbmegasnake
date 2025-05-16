@@ -1,3 +1,8 @@
+'Independent assets
+#include "gfx\\gfx.zxbas"
+#include "audio\\audio.zxbas"
+
+'Game code
 #include "constants.zxbas"
 #include "localize.zxbas"
 #include "data.zxbas"
