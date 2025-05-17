@@ -58,7 +58,7 @@ SUB stateStartTitle()
     clearScreen(GAME_CLEAR_ATTRIBUTES)
     
     'Title window
-    drawWindow(INTRO_WINDOW_X, INTRO_WINDOW_Y, INTRO_WINDOW_WIDTH, INTRO_WINDOW_HEIGHT, BOARD_COLOR, outWindowsCharacters)
+    drawWindow(TITLE_WINDOW_X, TITLE_WINDOW_Y, TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, BOARD_COLOR, outWindowsCharacters)
 
     setupPrint(PRINT_MODE_NORMAL)
 
@@ -71,8 +71,8 @@ SUB stateStartTitle()
     printStringAt(TITLE_SNAKE_X, TITLE_SNAKE_Y, TITLE_SNAKE_STRING)
 
     'Print credits
-    setAttributes(INTRO_CREDITS_ATTRIBUTES)
-    printStringAt(INTRO_CREDITS_X, INTRO_CREDITS_Y, INTRO_CREDITS)
+    setAttributes(TITLE_CREDITS_ATTRIBUTES)
+    printStringAt(TITLE_CREDITS_X, TITLE_CREDITS_Y, TITLE_CREDITS)
     
     'Scroller
     initTextScroller(TITLE_SCROLLER_X, TITLE_SCROLLER_Y, TITLE_SCROLLER_WIDTH,_
@@ -236,13 +236,13 @@ SUB stateStartMenu()
     
     'Print max score string
     setupPrint(PRINT_MODE_INTERLEAVED | PRINT_MODE_TALL)
-    setTallAttributes(INTRO_MAX_SCORE_UP_ATTR, INTRO_MAX_SCORE_DOWN_ATTR)
-    printStringAt(INTRO_MAX_SCORE_X, INTRO_MAX_SCORE_Y, INTRO_MAX_SCORE_STRING)
+    setTallAttributes(TITLE_MAX_SCORE_UP_ATTR, TITLE_MAX_SCORE_DOWN_ATTR)
+    printStringAt(TITLE_MAX_SCORE_X, TITLE_MAX_SCORE_Y, TITLE_MAX_SCORE_STRING)
 
     'Print max score number
     setupPrint(PRINT_MODE_TALL)
-    setTallAttributes(INTRO_MAX_SCORE_NUM_UP_ATTR, INTRO_MAX_SCORE_NUM_DOWN_ATTR)
-    printUIntegerAt(INTRO_MAX_SCORE_X + LEN(INTRO_MAX_SCORE_STRING), INTRO_MAX_SCORE_Y, maxScore)
+    setTallAttributes(TITLE_MAX_SCORE_NUM_UP_ATTR, TITLE_MAX_SCORE_NUM_DOWN_ATTR)
+    printUIntegerAt(TITLE_MAX_SCORE_X + LEN(TITLE_MAX_SCORE_STRING), TITLE_MAX_SCORE_Y, maxScore)
     playMusic(@musicData)
     setStateWaitNoKey(STATE_WAIT_MENU)
 END SUB
