@@ -58,7 +58,8 @@ SUB stateStartTitle()
     clearScreen(GAME_CLEAR_ATTRIBUTES)
     
     'Title window
-    drawWindow(TITLE_WINDOW_X, TITLE_WINDOW_Y, TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, BOARD_COLOR, outWindowsCharacters)
+    drawWindow(TITLE_WINDOW_X, TITLE_WINDOW_Y, TITLE_WINDOW_WIDTH,_
+        TITLE_WINDOW_HEIGHT, BOARD_COLOR, outWindowsCharacters)
 
     setupPrint(PRINT_MODE_NORMAL)
 
@@ -72,7 +73,7 @@ SUB stateStartTitle()
 
     'Print credits
     setAttributes(TITLE_CREDITS_ATTRIBUTES)
-    printStringAt(TITLE_CREDITS_X, TITLE_CREDITS_Y, TITLE_CREDITS)
+    printStringAt(TITLE_CREDITS_X, TITLE_CREDITS_Y, TITLE_CREDITS_STRING)
     
     'Scroller
     initTextScroller(TITLE_SCROLLER_X, TITLE_SCROLLER_Y, TITLE_SCROLLER_WIDTH,_
