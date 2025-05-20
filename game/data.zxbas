@@ -68,22 +68,22 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
 'Level misc data snakeInitialX, snakeInitalY, levelFruits, time, board rectangle window Attributes,
 'board rectangle filler Attributes,
 DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
-    {11, 12, 10, 60, createAttributes(FALSE, FALSE, YELLOW, PURPLE), createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
-    {1, 1, 10, 60, createAttributes(FALSE, FALSE, BLACK, BLUE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {11, 15, 10, 60, createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 15, 99, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 10, 30, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 15, 30, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {12, 4, 10, 30, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, BLUE, PURPLE)},_
-    {1, 1, 10, 99, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)},_
-    {1, 1, 5, 60, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, FALSE, PURPLE, PURPLE)}_
+    {11, 12, 10, 60, createAttributes(FALSE, FALSE, BLACK, RED),    createAttributes(FALSE, TRUE, BLACK, BLACK)},_
+    {1, 1, 10, 60,   createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, TRUE, RED, BLACK)},_
+    {11, 15, 10, 60, createAttributes(FALSE, FALSE, BLACK, GREEN),  createAttributes(FALSE, TRUE, PURPLE, BLACK)},_
+    {1, 1, 15, 99,   createAttributes(FALSE, FALSE, BLACK, CYAN),   createAttributes(FALSE, TRUE, GREEN, BLACK)},_
+    {1, 1, 10, 30,   createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, TRUE, CYAN, BLACK)},_
+    {1, 1, 15, 30,   createAttributes(FALSE, FALSE, BLACK, WHITE),  createAttributes(FALSE, TRUE, YELLOW, BLACK)},_
+    {12, 4, 10, 30,  createAttributes(FALSE, FALSE, BLACK, BLUE),   createAttributes(FALSE, TRUE, WHITE, BLACK)},_
+    {1, 1, 10, 99,   createAttributes(FALSE, FALSE, BLACK, GREEN),  createAttributes(FALSE, TRUE, BLACK, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, WHITE),   createAttributes(FALSE, FALSE, BLUE, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, YELLOW),  createAttributes(FALSE, FALSE, RED, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, PURPLE),  createAttributes(FALSE, FALSE, GREEN, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, GREEN),   createAttributes(FALSE, FALSE, CYAN, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, BLUE),    createAttributes(FALSE, FALSE, YELLOW, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, RED),     createAttributes(FALSE, FALSE, WHITE, BLACK)},_
+    {1, 1, 5, 60,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, BLACK, BLACK)}_
 }
 
 'Level item data type, xPos, yPos
