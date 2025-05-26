@@ -15,5 +15,13 @@
   "IgnoreCase": false,
   "Strict": false,
   "Headerless": false,
-  "NextMode": false
+  "NextMode": false,
+  "PreBuild": false,
+  "PreBuildValue": "",
+  "CustomCompiler": false,
+  "CustomCompilerValue": "-O 2 -S 32768 -H 1024 -D DEBUG=1 -D LANG=en",
+  "PostBuild": false,
+  "PostBuildValue": "",
+  "ExternalEmulator": false,
+  "ExternalEmuladorValue": ""
 }
