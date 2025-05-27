@@ -322,7 +322,7 @@ SUB stateEndEndLevel()
             setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_START_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_BONUS)
         ELSE
             initLevelFruits()
-            setGameState(STATE_RESTART_LEVEL)
+            setStateFadeTo(FADE_TO_COLOR, END_LEVEL_FADE_ATTRIBUTES, END_LEVEL_FADE_FRAMES, STATE_RESTART_LEVEL)
         END IF
     END IF 
 END SUB
