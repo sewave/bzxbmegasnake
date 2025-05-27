@@ -303,6 +303,7 @@ SUB stateStartEndLevel()
     printStringAt(END_LEVEL_TOTAL_X, END_LEVEL_TOTAL_Y, END_LEVEL_TOTAL_STRING)
     printPaddedNumberThousands(score, END_LEVEL_NUMBER_PAD)
     checkMaxScore()
+    playEndLevelSound()
     setStateWaitFrames(END_LEVEL_WAIT_FRAMES, STATE_END_END_LEVEL)
 END SUB
 

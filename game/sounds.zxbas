@@ -32,3 +32,8 @@ END SUB
 SUB goDirectionSound()
     playSoundEffect(@effect7)
 END SUB
+
+'Beeps the end level sound
+SUB playEndLevelSound()
+    playSoundEffect(@effect8)
+END SUB
