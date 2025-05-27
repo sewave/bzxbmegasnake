@@ -19,7 +19,7 @@
   "PreBuild": false,
   "PreBuildValue": "",
   "CustomCompiler": false,
-  "CustomCompilerValue": "-O 2 -S 32768 -H 1024 -D DEBUG=1 -D LANG=en",
+  "CustomCompilerValue": "-O 2 -S 32768 -H 1024 -D DEBUG=1",
   "PostBuild": false,
   "PostBuildValue": "",
   "ExternalEmulator": false,
