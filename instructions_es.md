@@ -66,7 +66,7 @@ Su movimiento es diagonal, los hay que van hacia un lado y los hay que van hacia
 
 #### Rotativo
 
-Este bicho elige un nuevo camino cada vez que se topa con un obstáculo, pero si nueva dirección dependerá de su tipo.
+Este bicho elige un nuevo camino cada vez que se topa con un obstáculo, pero su nueva dirección dependerá de su tipo.
 
 ## Algunas pistas
 
