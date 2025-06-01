@@ -402,7 +402,8 @@ END SUB
 SUB initItems()
     DIM item AS UBYTE = 0
 
-    WHILE(levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX) <> BOARD_TYPE_EMPTY)
+    WHILE(levelsItemData(level, item, LEVEL_ITEM_DATA_TYPE_INDEX) <> BOARD_TYPE_EMPTY _
+        AND item <= LAST_LEVEL_ITEM_INDEX)
         putItem(item)
         item = item + 1
     END WHILE
