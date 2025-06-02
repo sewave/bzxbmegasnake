@@ -44,8 +44,8 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
         {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}_
     },_
     {_
-        {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0},_
-        {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}_
+        {2, 5, 20, 2}, {2, 14, 20, 2}, {13, 1, 3, 2}, {13, 16, 3, 3},_
+        {13, 21, 3, 2}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}_
     },_
     {_
         {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0}, {RECT_END, 0, 0, 0},_
@@ -79,7 +79,7 @@ DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
     {1,   1, 15, 60,    createAttributes(FALSE, TRUE, BLACK, WHITE),   createAttributes(FALSE, FALSE, BLUE, BLACK)},_ 'Level 9
     {22,  1, 15, 60,    createAttributes(FALSE, TRUE, BLACK, YELLOW),  createAttributes(FALSE, FALSE, RED, BLACK)},_
     {11,   11, 15, 60,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
-    {1,   1, 15, 60,    createAttributes(FALSE, TRUE, BLACK, PURPLE),  createAttributes(FALSE, FALSE, GREEN, BLACK)},_
+    {12,   10, 15, 60,    createAttributes(FALSE, TRUE, BLACK, PURPLE),  createAttributes(FALSE, FALSE, GREEN, BLACK)},_
     {1,   1, 20, 75,    createAttributes(FALSE, TRUE, BLACK, GREEN),   createAttributes(FALSE, FALSE, CYAN, BLACK)},_
     {1,   1, 22, 75,    createAttributes(FALSE, TRUE, BLACK, BLUE),    createAttributes(FALSE, FALSE, YELLOW, BLACK)},_
     {1,   1, 25, 75,    createAttributes(FALSE, TRUE, BLACK, RED),     createAttributes(FALSE, FALSE, WHITE, BLACK)},_
@@ -102,7 +102,8 @@ DIM levelsItemData(LAST_LEVEL_INDEX, LAST_LEVEL_ITEM_INDEX, LEVEL_ITEM_DATA_LAST
     { {BOARD_TYPE_SPEED_UP, 3, 1}, {BOARD_TYPE_GO_RIGHT, 7, 1}, {BOARD_TYPE_GO_DOWN, 12, 1}, {BOARD_TYPE_SPEED_UP, 12, 7}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_ 'Level 9
     { {BOARD_TYPE_GO_DOWN, 11, 2}, {BOARD_TYPE_GO_DOWN, 1, 10}, {BOARD_TYPE_GO_DOWN, 22, 11}, {BOARD_TYPE_GO_DOWN, 22, 20}, {BOARD_TYPE_GO_UP, 12, 2}, {BOARD_TYPE_GO_UP, 2, 11}, {BOARD_TYPE_GO_UP, 21, 10}, {BOARD_TYPE_GO_UP, 1, 20} },_
     { {BOARD_TYPE_GO_UP, 17, 5}, {BOARD_TYPE_GO_DOWN, 18, 5}, {BOARD_TYPE_UNGROW, 17, 6}, {BOARD_TYPE_UNGROW, 18, 6}, {BOARD_TYPE_SPEED_UP, 11, 16}, {BOARD_TYPE_SPEED_UP, 16, 16}, {BOARD_TYPE_SPEED_DOWN, 11, 18}, {BOARD_TYPE_SPEED_DOWN, 16, 18} },_
-    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
+    { {BOARD_TYPE_SPEED_UP, 14, 3}, {BOARD_TYPE_SPEED_UP, 14, 4}, {BOARD_TYPE_SPEED_UP, 14, 19}, {BOARD_TYPE_SPEED_UP, 14, 20},_
+        {BOARD_TYPE_GO_UP, 22, 6}, {BOARD_TYPE_GO_UP, 22, 14}, {BOARD_TYPE_GO_DOWN, 1, 5}, {BOARD_TYPE_GO_DOWN, 1, 15} },_
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },_
@@ -156,8 +157,8 @@ DIM levelsEnemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_IN
         {ENEMY_TYPE_U_D, 13, 16, 2}, {ENEMY_TYPE_L_R, 11, 9, 2}_
     },_
     {_
-        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
-        {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0}_
+        {ENEMY_TYPE_CLO, 12, 4, 2}, {ENEMY_TYPE_CCLO, 12, 16, 2},_
+        {ENEMY_TYPE_DIAR, 16, 4, 1}, {ENEMY_TYPE_DIAL, 16, 18, 1}_
     },_
     {_
         {ENEMY_TYPE_NONE, 0, 0, 0}, {ENEMY_TYPE_NONE, 0, 0, 0},_
