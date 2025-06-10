@@ -1,6 +1,6 @@
 {
   "MainFile": "main.zxbas",
-  "OptimizationLevel": 2,
+  "OptimizationLevel": 3,
   "Origin": null,
   "ArrayBase": null,
   "StringBase": null,
@@ -19,7 +19,7 @@
   "PreBuild": false,
   "PreBuildValue": "",
   "CustomCompiler": false,
-  "CustomCompilerValue": "-O 2 -S 32768 -H 1024 -D DEBUG=1",
+  "CustomCompilerValue": "-O 3 -S 32768 -H 1024 -D DEBUG=1",
   "PostBuild": false,
   "PostBuildValue": "",
   "ExternalEmulator": false,

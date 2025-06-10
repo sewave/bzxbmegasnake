@@ -82,8 +82,8 @@ DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
     {12,   10, 15, 60,    createAttributes(FALSE, TRUE, BLACK, PURPLE),  createAttributes(FALSE, FALSE, GREEN, BLACK)},_
     {1,   5, 20, 75,    createAttributes(FALSE, TRUE, BLACK, GREEN),   createAttributes(FALSE, FALSE, CYAN, BLACK)},_
     {11,   12, 5, 75,    createAttributes(FALSE, TRUE, BLACK, BLUE),    createAttributes(FALSE, FALSE, YELLOW, BLACK)},_
-    {20,   11, 25, 75,    createAttributes(FALSE, TRUE, BLACK, RED),     createAttributes(FALSE, FALSE, WHITE, BLACK)},_
-    {1,   1, 30, 75,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, BLACK, BLACK)}_
+    {20,   11, 15, 75,    createAttributes(FALSE, TRUE, BLACK, RED),     createAttributes(FALSE, FALSE, WHITE, BLACK)},_
+    {1,   1, 10, 75,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, BLACK, BLACK)}_
 }
 
 'Level item data type, xPos, yPos
