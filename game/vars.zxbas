@@ -16,7 +16,7 @@ DIM remainingTime AS UBYTE
 DIM delayedFrames AS UBYTE
 DIM reloadTime AS UBYTE
 DIM noDeathInLevel AS UBYTE
-DIM pauseExits AS UBYTE = FALSE
+DIM pauseExits AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM endGameCounter AS UBYTE
 DIM endGameMessageNumber AS UBYTE

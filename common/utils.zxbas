@@ -13,6 +13,21 @@
 '***********************PUBLIC AREA*************************
 'Trick to execute subroutine at [subAddress], address 0 is rom so not writable
 #define executeSub(subAddress) POKE 0, USR subAddress
+
+'Ors an address value with value argument
+SUB uIntegerOrEquals(addr AS UINTEGER, value AS UINTEGER)
+    POKE(UINTEGER, addr, PEEK(UINTEGER, addr) | value)
+END SUB
+
+'Loads byte from address as high INTEGER and then moves bits to right
+FUNCTION uByteShiftUInteger(addr AS UINTEGER, bits AS BYTE) AS UINTEGER
+    RETURN (CAST(UINTEGER, PEEK(addr)) << UBYTE_BITS) >> bits
+END FUNCTION
+
+'Moves byte from address to address + 1 and clears address
+SUB uIntegerSwitchAndClear(addr AS UINTEGER)
+    POKE(addr + 1, PEEK(addr)) : POKE(addr, 0)
+END SUB
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************

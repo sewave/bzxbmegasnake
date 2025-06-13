@@ -4,7 +4,6 @@ CONST CHAR_SHIFT_BITS AS UBYTE = 3
 'Video
 CONST FRAMES_IN_SECOND AS UBYTE = 50
 CONST CHARACTER_BYTES AS UBYTE = 8
-CONST UBYTE_BITS AS UBYTE = 8
 CONST PAPER_SHIFT_BITS AS UBYTE = 3
 CONST SCREEN_COLUMNS AS UBYTE = 32
 CONST SCREEN_COLUMNS_BITS AS UBYTE = 5
@@ -117,9 +116,7 @@ DIM _fadeAttrInc AS UINTEGER
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
-#define uIntegerOrEquals(addr, value) POKE(UINTEGER, addr, PEEK(UINTEGER, addr) | value)
-#define uByteShiftUInteger(addr, bits) ((CAST(UINTEGER, PEEK(addr)) << UBYTE_BITS) >> bits)
-#define uIntegerSwitchAndClear(addr) POKE(addr + 1, PEEK(addr)) : POKE(addr, 0)
+
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
