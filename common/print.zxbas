@@ -223,7 +223,7 @@ SUB printUByte(number AS UBYTE)
 END SUB
 
 'Initializes the text scroller
-SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, BYREF scroller AS STRING)
+SUB initTextScroller(x AS UBYTE, y AS UBYTE, width AS UBYTE, frames AS UBYTE, scroller AS STRING)
     _scrollerTargetFrames = frames
     _scrollerRemainingFrames = _SCROLLER_REMAINIG_FRAMES_START
     _scrollerX = x
