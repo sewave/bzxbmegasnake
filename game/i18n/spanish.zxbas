@@ -45,10 +45,4 @@ CONST END_GAME_RETURN_STRING        AS STRING = "Pulsa fuego para ir al t"+ACUTE
 
 CONST TITLE_TEXT_SCROLLER           AS STRING = "                              "+START_EXCL+"Bienvenido a Mega Serpiente!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote todas las frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Y cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!                              "
 
-DIM END_GAME_MESSAGE_STRINGS(LAST_END_GAME_MESSAGE) AS STRING
-END_GAME_MESSAGE_STRINGS(0)                   = "Conseguiste comerte todas las "
-END_GAME_MESSAGE_STRINGS(1)                   = "frutas que los malvados bichos"
-END_GAME_MESSAGE_STRINGS(2)                   = "hab"+ACUTE_LC_I+"an robado.                "
-END_GAME_MESSAGE_STRINGS(3)                   = "Ahora saben quien manda...    "
-END_GAME_MESSAGE_STRINGS(4)                   = "     "+START_EXCL+"LA MEGA SERPIENTE!      "
-END_GAME_MESSAGE_STRINGS(5)                   = "Piensa en la digesti"+ACUTE_LC_O+"n...      "
+CONST END_GAME_MESSAGE AS STRING = "Conseguiste comerte todas las \nfrutas que los malvados bichos\nhab"+ACUTE_LC_I+"an robado.                \nAhora saben quien manda...    \n     "+START_EXCL+"LA MEGA SERPIENTE!      \nPiensa en la digesti"+ACUTE_LC_O+"n...     "

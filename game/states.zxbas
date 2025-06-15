@@ -113,6 +113,7 @@ END SUB
 'Resets the game, restores everything except the max score
 SUB stateStartGame()
     stopMusic()
+    clearTextScroller()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
@@ -344,38 +345,33 @@ SUB stateStartEndGame()
     setTallAttributes(END_GAME_SCORE_NUM_UP_ATTR, END_GAME_SCORE_NUM_DOWN_ATTR)
     printUIntegerAt(END_GAME_SCORE_NUM_X, END_GAME_SCORE_NUM_Y, score)
 
-    endGameCounter = 0
-    endGameMessageNumber = 0
+    endGameMessageStringIndex = 0
+    endGameMessageString = END_GAME_MESSAGE
+    endGameMessageStringMaxIndex = LEN(endGameMessageString) - 1
 
     setupPrint(PRINT_MODE_TALL | PRINT_MODE_INTERLEAVED)
     setTallAttributes(END_GAME_WINDOW_FILLER_ATTRIBUTES, END_GAME_WINDOW_FILLER_ATTRIBUTES)
+    setCharPosition(END_GAME_MESSAGE_STRINGS_X, END_GAME_MESSAGE_STRINGS_BASE_Y)
+    storeCurrentCharPositionAddresses()
     setGameState(STATE_LOOP_END_GAME)
 END SUB
 
 'Loops the end game sequence
 SUB stateLoopEndGame()
-    IF endGameMessageNumber <= LAST_END_GAME_MESSAGE THEN
-        IF endGameCounter < END_GAME_MESSAGE_WAIT THEN
-            DIM messageIndex AS UBYTE = endGameCounter >> 1
-            IF messageIndex <= END_GAME_MESSAGE_LAST_INDEX THEN
-                printStringAt(END_GAME_MESSAGE_STRINGS_X + messageIndex,_
-                    END_GAME_MESSAGE_STRINGS_BASE_Y + (endGameMessageNumber << 1),_
-                        END_GAME_MESSAGE_STRINGS(endGameMessageNumber)(messageIndex to messageIndex))
-            END IF
-            endGameCounter = endGameCounter + 1
-        ELSE
-            endGameCounter = 0
-            endGameMessageNumber = endGameMessageNumber + 1
-            IF endGameMessageNumber > LAST_END_GAME_MESSAGE THEN
-                setupPrint(PRINT_MODE_TALL)
-                setTallAttributes(END_GAME_TITLE_UP_ATTR, END_GAME_TITLE_DOWN_ATTR)
-                printStringAt(END_GAME_TITLE_STRING_X, END_GAME_TITLE_STRING_Y, END_GAME_RETURN_STRING)
-            END IF
+    IF endGameMessageStringIndex <= endGameMessageStringMaxIndex THEN
+        printStringNoStore(endGameMessageString(endGameMessageStringIndex to endGameMessageStringIndex))
+        endGameMessageStringIndex = endGameMessageStringIndex + 1
+    ELSE
+        IF endGameMessageStringIndex = endGameMessageStringMaxIndex + 1 THEN
+            setupPrint(PRINT_MODE_TALL)
+            setTallAttributes(END_GAME_RETURN_UP_ATTR, END_GAME_RETURN_DOWN_ATTR)
+            printStringAt(END_GAME_RETURN_STRING_X, END_GAME_RETURN_STRING_Y, END_GAME_RETURN_STRING)
+            endGameMessageStringIndex = endGameMessageStringIndex + 1
         END IF
-    END IF
-
-    IF endGameMessageNumber > LAST_END_GAME_MESSAGE AND (getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE) THEN
-        setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, END_FADE_FRAMES, STATE_START_TITLE)
+        IF getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
+            endGameMessageString = EMPTY_STRING
+            setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, END_FADE_FRAMES, STATE_START_TITLE)
+        END IF
     END IF
 END SUB
 

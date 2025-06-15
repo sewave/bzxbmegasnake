@@ -172,11 +172,16 @@ END SUB
 
 'Prints a string with current font and print setup
 SUB printString(printString AS STRING)
+    storeCurrentCharPositionAddresses()
+    printStringNoStore(printString)
+END SUB
+
+'Prints a string with current font and print setup not storing current char address
+SUB printStringNoStore(printString AS STRING)
     DIM i AS UBYTE
     _tmpStrLen = LEN(printString) - 1
     _tmpStrDataAddr = PEEK(UINTEGER, @printString) + STRING_DATA_OFFSET
-    storeCurrentCharPositionAddresses()
-
+    
     FOR i = 0 TO _tmpStrLen
         _currentCharNum = PEEK(_tmpStrDataAddr + i)
         IF _currentCharNum = NEW_LINE_CHAR THEN
@@ -251,6 +256,11 @@ SUB frameTextScroller()
             _scrollerPointer = _scrollerPointer + 1
         END IF
     END IF
+END SUB
+
+'Clears the text scroller, if not, the string remains in the heap
+SUB clearTextScroller()
+    _scrollerString = EMPTY_STRING
 END SUB
 '*********************PUBLIC AREA END***********************
 

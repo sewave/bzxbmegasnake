@@ -43,12 +43,6 @@ CONST END_GAME_COMPLETED_STRING     AS STRING = "CONGRATULATIONS!"
 CONST END_GAME_SCORE_STRING         AS STRING = "Final score"
 CONST END_GAME_RETURN_STRING        AS STRING = "  Press fire to go to title   "
 
-DIM TITLE_TEXT_SCROLLER             AS STRING = "                              Welcome to Mega Serpiente!    Your mission is to complete the 16 levels eating all the fruits. Do not hit the walls!    And be careful! The bugs will not make it easy.   Try to achieve the best score using the least time possible!                              "
+CONST TITLE_TEXT_SCROLLER           AS STRING = "                              Welcome to Mega Serpiente!    Your mission is to complete the 16 levels eating all the fruits. Do not hit the walls!    And be careful! The bugs will not make it easy.   Try to achieve the best score using the least time possible!                              "
 
-DIM END_GAME_MESSAGE_STRINGS(LAST_END_GAME_MESSAGE) AS STRING
-END_GAME_MESSAGE_STRINGS(0)                   = "You managed to eat all the    "
-END_GAME_MESSAGE_STRINGS(1)                   = "fruits that the evil bugs had "
-END_GAME_MESSAGE_STRINGS(2)                   = "stolen.                       "
-END_GAME_MESSAGE_STRINGS(3)                   = "Now they know who rules...    "
-END_GAME_MESSAGE_STRINGS(4)                   = "       THE MEGA SNAKE!        "
-END_GAME_MESSAGE_STRINGS(5)                   = "Think about digesting...      "
+CONST END_GAME_MESSAGE AS STRING = "You managed to eat all the    \nfruits that the evil bugs had \nstolen.                       \nNow they know who rules...    \n       THE MEGA SNAKE!        \nThink about digesting...      "
