@@ -4,11 +4,12 @@ CONST FIRST_UNUSED_STATE AS UBYTE = 8
 
 '******************PRIVATE CONSTANTS AREA*******************
 'Generic states
-CONST _STATE_WAIT_FRAMES  AS UBYTE = 0
-CONST _STATE_WAIT_A_KEY   AS UBYTE = 1
-CONST _STATE_WAIT_ANY_KEY AS UBYTE = 2
-CONST _STATE_WAIT_NO_KEY  AS UBYTE = 3
-CONST _STATE_FADE_TO      AS UBYTE = 4
+CONST _STATE_WAIT_FRAMES       AS UBYTE = 0
+CONST _STATE_WAIT_A_KEY        AS UBYTE = 1
+CONST _STATE_WAIT_ANY_KEY      AS UBYTE = 2
+CONST _STATE_WAIT_NO_KEY       AS UBYTE = 3
+CONST _STATE_FADE_TO           AS UBYTE = 4
+CONST _STATE_PRINT_STRING_CHAR AS UBYTE = 5
 '****************PRIVATE CONSTANTS AREA END*****************
 
 '***********************VARS AREA***************************
@@ -19,6 +20,12 @@ DIM _framesToWait AS UBYTE
 DIM _keyToWait AS UBYTE
 DIM _targetFadeStepframes AS UBYTE
 DIM _fadeStepframes AS UBYTE
+DIM _printStringIndex AS UINTEGER
+DIM _printStringMaxIndex AS UINTEGER
+DIM _printStringFrames AS UINTEGER
+DIM _printStringMaxFrames AS UINTEGER
+DIM _printString AS STRING
+DIM _printStringFireEnds AS UBYTE
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
@@ -116,6 +123,40 @@ SUB stateFadeTo()
     END IF
 END SUB
 
+'Inits the state to print a string char per char, print config and position must be configured before
+SUB setStatePrintStringChar(stringToPrint AS STRING, stringCharFrames AS UBYTE, printStringFireEnds AS UBYTE, nextGameState AS UBYTE)
+    _printStringFireEnds = printStringFireEnds
+    _printString = stringToPrint
+    _printStringFrames = 0
+    _printStringMaxFrames = stringCharFrames
+    _printStringIndex = 0
+    _printStringMaxIndex = LEN(_printString) - 1
+    storeCurrentCharPositionAddresses()
+    setGameStateAndNext(_STATE_PRINT_STRING_CHAR, nextGameState)
+END SUB
+
+'Prints a char of a string, needs to be initialized first
+SUB statePrintStringChar()
+    IF _printStringFrames < _printStringMaxFrames THEN
+        _printStringFrames = _printStringFrames + 1
+    ELSE
+        _printStringFrames = 0
+        IF _printStringIndex <= _printStringMaxIndex THEN
+            IF _printStringFireEnds AND getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
+                printStringNoStore(_printString(_printStringIndex to _printStringMaxIndex))
+                _printStringIndex = _printStringMaxIndex + 1
+            ELSE
+                printStringNoStore(_printString(_printStringIndex to _printStringIndex))
+                _printStringIndex = _printStringIndex + 1
+            END IF
+        ELSE
+            'Clear heap
+            _printString = EMPTY_STRING
+            setGameState(_getNextGameState())
+        END IF
+    END IF
+END SUB
+
 'This function has to be implemented by the actual game
 DECLARE FUNCTION getCurrentStateSubroutine() AS UINTEGER
 
@@ -125,10 +166,10 @@ SUB initStatesAndRun(startingState AS UBYTE)
     initAudio()
     setStateWaitNoKey(startingState)
     DO
+        waitVsync()
         updateAudio()
         updateControls()
         executeSub(getCurrentStateSubroutine())
-        waitVsync()
     LOOP
 END SUB
 
