@@ -152,7 +152,7 @@ SUB statePrintStringChar()
         ELSE
             'Clear heap
             _printString = EMPTY_STRING
-            setGameState(_getNextGameState())
+            _moveNextGameStateToGameState()
         END IF
     END IF
 END SUB
