@@ -47,7 +47,7 @@ SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
 
     drawWindowFilled(x, y, width, height,_
         levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
-        inWindowsCharacters)
+        inWindowsCharacters, BOARD_CHARACTER)
     FOR i = x TO x + width - 1
         FOR j = y TO y + height - 1
             board(i, j) = BOARD_TYPE_SOLID
@@ -69,7 +69,7 @@ SUB initBoard()
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
     drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), TOTAL_BLACK_ATTRIBUTES, inWindowsCharacters)
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), PLAY_ATTRIBUTES, inWindowsCharacters,  PLAY_CHARACTER)
     IF inBonus = FALSE THEN
         'Draw the level layout
         DIM rectangle AS UBYTE = 0

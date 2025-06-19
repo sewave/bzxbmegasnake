@@ -330,15 +330,25 @@ SUB clearRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE, attr
     NEXT i
 END SUB
 
+'Fill a rectangular region
+SUB fillRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE, character AS UINTEGER, attributes AS UBYTE)
+    DIM i AS UBYTE
+    setAttributes(attributes)
+
+    FOR i = y TO (y + height - 1)
+        drawHorizontalLine(x, i, width, character)
+    NEXT i
+END SUB
+
 'Draws a space filled window using the string characters to cover all
 'possibilities like:
 '0112
 '7FF3
 '7FF3
 '6554
-SUB drawWindowFilled(startX AS UBYTE, startY AS UBYTE, width AS UBYTE, height AS UBYTE, attributes AS UBYTE, fillAttributes AS UBYTE, BYREF characters() AS UINTEGER)
+SUB drawWindowFilled(startX AS UBYTE, startY AS UBYTE, width AS UBYTE, height AS UBYTE, attributes AS UBYTE, fillAttributes AS UBYTE, BYREF characters() AS UINTEGER, fillCharacter AS UINTEGER)
     IF width > _MIN_WINDOW_REPEAT_WIDTH AND height > _MIN_WINDOW_REPEAT_HEIGHT THEN
-        clearRectangle(startX + 1, startY + 1, width - 2, height - 2, fillAttributes)
+        fillRectangle(startX + 1, startY + 1, width - 2, height - 2, fillCharacter, fillAttributes)
     END IF
     drawWindow(startX, startY, width, height, attributes, characters)
 END SUB

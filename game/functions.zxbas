@@ -265,7 +265,7 @@ END SUB
 
 'Erases the snake tail
 SUB eraseSnakeTail()
-    clearCharAt(snakeX(tailPosition), snakeY(tailPosition), BOARD_ATTRIBUTES)
+    drawBackgroundCharacter(snakeX(tailPosition), snakeY(tailPosition))
     board(snakeX(tailPosition), snakeY(tailPosition)) = BOARD_TYPE_EMPTY
     snakeX(tailPosition) = SNAKE_OUT_BOUNDS_X
     snakeY(tailPosition) = SNAKE_OUT_BOUNDS_Y
@@ -485,4 +485,11 @@ SUB printPauseExit()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(PAUSE_CONT_EXIT_ATTRIBUTES)
     printStringAt(PAUSE_X, PAUSE_EXIT_Y, PAUSE_EXIT_STRING)
+END SUB
+
+'Redraws a board character background
+SUB drawBackgroundCharacter(x AS UBYTE, y AS UBYTE)
+    'TODO get attributes from level
+    'TODO get character from level
+    putCharAt(x, y, PLAY_ATTRIBUTES, PLAY_CHARACTER)
 END SUB

@@ -109,7 +109,7 @@ SUB moveEnemy()
     enemyX(tmpEnemyNumber) = tmpEnemyX
     enemyY(tmpEnemyNumber) = tmpEnemyY
 
-    clearCharAt(tmpOldEnemyX, tmpOldEnemyY, BOARD_ATTRIBUTES)
+    drawBackgroundCharacter(tmpOldEnemyX, tmpOldEnemyY)
     putCharAt(tmpEnemyX, tmpEnemyY, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
     IF snakeX(headPosition) = tmpEnemyX AND snakeY(headPosition) = tmpEnemyY THEN loseLive()
 END SUB
