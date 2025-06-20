@@ -1,3 +1,27 @@
+'Returns the stage equivalent
+FUNCTION getStage() AS UBYTE
+    RETURN level >> 2
+END FUNCTION
+
+'Returns the substage equivalent
+FUNCTION getSubstage() AS UBYTE
+    RETURN level MOD 4
+END FUNCTION
+
+'Returns true if the new key is not already defined and is on the printable
+'uppercase range
+FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex AS UBYTE) AS UBYTE
+    DIM i AS UBYTE
+
+    IF keyCode = NO_KEYBOARD_KEY_PRESSED THEN RETURN FALSE
+    IF redefinedKeys THEN
+        FOR i = 0 TO redefinedKeys - 1
+            IF getPlayerKey(playerIndex, i) = keyCode THEN return FALSE
+        NEXT i
+    END IF
+    RETURN TRUE
+END FUNCTION
+
 'Checks if max score has to be updated
 SUB checkMaxScore()
     IF score > maxScore THEN maxScore = score
@@ -327,20 +351,6 @@ SUB printControls()
     END IF
 END SUB
 
-'Returns true if the new key is not already defined and is on the printable
-'uppercase range
-FUNCTION keyCodeAcceptable(keyCode AS UBYTE, playerIndex AS UBYTE) AS UBYTE
-    DIM i AS UBYTE
-
-    IF keyCode = NO_KEYBOARD_KEY_PRESSED THEN RETURN FALSE
-    IF redefinedKeys THEN
-        FOR i = 0 TO redefinedKeys - 1
-            IF getPlayerKey(playerIndex, i) = keyCode THEN return FALSE
-        NEXT i
-    END IF
-    RETURN TRUE
-END FUNCTION
-
 'Prints the scrolling text
 SUB printTitleScroller()
     setupPrint(PRINT_MODE_TALL)
@@ -487,9 +497,14 @@ SUB printPauseExit()
     printStringAt(PAUSE_X, PAUSE_EXIT_Y, PAUSE_EXIT_STRING)
 END SUB
 
+'Loads the address of the background character and attributes
+SUB loadLevelBackgroundData()
+    DIM stage AS UBYTE = getStage()
+    backgroundCharacter = @sprites_Play_Background + (stage << 3)
+    backgroundAttributes = backgroundAttributesArray(stage)
+END SUB
+
 'Redraws a board character background
 SUB drawBackgroundCharacter(x AS UBYTE, y AS UBYTE)
-    'TODO get attributes from level
-    'TODO get character from level
-    putCharAt(x, y, PLAY_ATTRIBUTES, PLAY_CHARACTER)
+    putCharAt(x, y, backgroundAttributes, backgroundCharacter)
 END SUB

@@ -20,3 +20,5 @@ DIM pauseExits AS UBYTE
 DIM board(PLAY_BOARD_MAX_X, PLAY_BOARD_MAX_Y) AS UBYTE
 DIM pauseCounter AS UBYTE
 DIM inBonus AS UBYTE
+DIM backgroundCharacter AS UINTEGER
+DIM backgroundAttributes AS UBYTE

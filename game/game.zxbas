@@ -8,7 +8,7 @@
 #include "data.zxbas"
 #include "sounds.zxbas"
 #include "vars.zxbas"
-#include "board.zxbas"
 #include "functions.zxbas"
+#include "board.zxbas"
 #include "enemies.zxbas"
 #include "states.zxbas"

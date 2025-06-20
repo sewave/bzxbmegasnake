@@ -4,7 +4,7 @@
 
 Game written in **Boriel Basic** using **only** the Basic language.
 
-Special thanks to [DamienG](https://damieng.com/typography/zx-origins/) for the amazing fonts. (I use the [Koncrete](https://damieng.com/typography/zx-origins/koncrete/) font)
+Special thanks to [DamienG](https://damieng.com/typography/zx-origins/) for the amazing fonts (I use the [Koncrete](https://damieng.com/typography/zx-origins/koncrete/) font) and to Andrew C. E. Dent for the characters at [8x8.me](https://github.com/ace-dent/8x8.me).
 
 ## The Game
 

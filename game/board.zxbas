@@ -2,20 +2,6 @@
 DIM snakeHeadBoardAddress AS UINTEGER
 DIM emptyScreenXPosition, emptyScreenYPosition AS UBYTE
 
-DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Reduction, @sprites_Speed_Up,_
-    @sprites_Speed_Down, @sprites_Go_Up, _
-    @sprites_Go_Right, @sprites_Go_Down, _
-    @sprites_Go_Left _
-}
-
-DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    createAttributes(TRUE, TRUE, BLACK, RED), createAttributes(TRUE, TRUE, RED, YELLOW),_
-    createAttributes(TRUE, TRUE, BLUE, GREEN), createAttributes(TRUE, TRUE, WHITE, GREEN),_
-    createAttributes(TRUE, TRUE, WHITE, YELLOW), createAttributes(TRUE, TRUE, WHITE, RED),_
-    createAttributes(TRUE, TRUE, WHITE, PURPLE) _
-}
-
 'Updates the snake head board address
 #define updateSnakeHeadBoardAddress() snakeHeadBoardAddress = @board(snakeX(headPosition), snakeY(headPosition))
 
@@ -46,8 +32,9 @@ SUB putBoardRectangle(x AS UBYTE, y AS UBYTE, width AS UBYTE, height AS UBYTE)
     DIM i, j AS UBYTE
 
     drawWindowFilled(x, y, width, height,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
-        inWindowsCharacters, BOARD_CHARACTER)
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX),_
+        levelsMiscData(level, LEVEL_MISC_DATA_FILL_ATTR_INDEX),_
+        inWindowsCharacters, @sprites_Board_Background + (getStage() << 3))
     FOR i = x TO x + width - 1
         FOR j = y TO y + height - 1
             board(i, j) = BOARD_TYPE_SOLID
@@ -68,8 +55,9 @@ SUB initBoard()
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
+    loadLevelBackgroundData()
     drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), PLAY_ATTRIBUTES, inWindowsCharacters,  PLAY_CHARACTER)
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), backgroundAttributes, inWindowsCharacters,  backgroundCharacter)
     IF inBonus = FALSE THEN
         'Draw the level layout
         DIM rectangle AS UBYTE = 0
