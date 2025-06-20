@@ -108,11 +108,12 @@ END SUB
 'put a new fruit
 SUB checkFruit()
     IF getBoardOnSnakePosition() = BOARD_TYPE_FRUIT THEN
-        fruitSound()
         IF inBonus THEN
+            fruitSound()
             putFruit()
         ELSE
             fruits = fruits - 1
+            IF fruits > 0 THEN fruitSound()
             drawFruits()
         END IF
         clearBoardSnakePosition()

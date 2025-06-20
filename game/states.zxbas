@@ -412,6 +412,7 @@ SUB stateWaitEndBonus()
     IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
         inBonus = FALSE
         reloadTime = TRUE
+        snakeLength = INITIAL_SNAKE_LENGTH
         initLevelFruits()
         setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_LEVEL_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_RESTART_LEVEL)
     END IF

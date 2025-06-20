@@ -125,6 +125,7 @@ END SUB
 'Loses live and checks to see new state
 SUB loseLive()
     IF inBonus THEN
+        playEndLevelSound()
         setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_END_FADE_ATTRIBUTES,_
             BONUS_FADE_FRAMES, STATE_START_END_BONUS)
     ELSE
