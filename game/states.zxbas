@@ -286,7 +286,9 @@ SUB stateStartEndLevel()
     setAttributes(END_LEVEL_TEXT_ATTRIBUTES)
 
     printStringAt(END_LEVEL_FINISHED_X, END_LEVEL_FINISHED_Y, END_LEVEL_FINISHED_STRING)
-    printPaddedNumberTens(level + 1, END_LEVEL_NUMBER_PAD)
+    printUByte(getStage() + 1)
+    printString(STAGE_SEPARATOR)
+    printUByte(getSubstage() + 1)
     printString(END_LEVEL_FINISHED_STRING_2)
     
     IF noDeathInLevel THEN
@@ -396,8 +398,10 @@ SUB stateStartEndBonus()
     printStringAt(centerScreenX(BONUS_END_1_STRING), BONUS_END_1_STRING_Y, BONUS_END_1_STRING)
     printStringAt(centerScreenX(BONUS_END_2_STRING), BONUS_END_2_STRING_Y, BONUS_END_2_STRING)
     
-    printStringAt(centerScreenX(BONUS_END_3_STRING) - 1, BONUS_END_3_STRING_Y, BONUS_END_3_STRING)
-    printUByte(level + 1)
+    printStringAt(centerScreenX(BONUS_END_3_STRING) - 2, BONUS_END_3_STRING_Y, BONUS_END_3_STRING)
+    printUByte(getStage() + 1)
+    printString(STAGE_SEPARATOR)
+    printUByte(getSubstage() + 1)
     setTallAttributes(BONUS_END_EXIT_UPPER_ATTRIBUTES, BONUS_END_EXIT_LOWER_ATTRIBUTES)
     printStringAt(centerScreenX(BONUS_END_4_STRING), BONUS_END_4_STRING_Y, BONUS_END_4_STRING)
     setStateWaitNoKey(STATE_WAIT_END_BONUS)
