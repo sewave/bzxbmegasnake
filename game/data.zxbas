@@ -68,22 +68,22 @@ DIM levelsBoardData(LAST_LEVEL_INDEX, LAST_LEVEL_RECTANGLE_INDEX, LAST_LEVEL_REC
 'Level misc data snakeInitialX, snakeInitalY, levelFruits, time, board rectangle window Attributes,
 'board rectangle filler Attributes,
 DIM levelsMiscData(LAST_LEVEL_INDEX, LEVEL_MISC_DATA_LAST_INDEX) AS UBYTE => {_
-    {11, 12, 5, 30, createAttributes(FALSE, FALSE, BLACK, RED),    createAttributes(FALSE, TRUE, BLACK, BLACK)},_
-    {1 ,  1, 5, 30,   createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, TRUE, RED, BLACK)},_
-    {11, 15, 5, 30, createAttributes(FALSE, FALSE, BLACK, GREEN),  createAttributes(FALSE, TRUE, PURPLE, BLACK)},_
-    {1,   1, 5, 30,   createAttributes(FALSE, FALSE, BLACK, CYAN),   createAttributes(FALSE, TRUE, GREEN, BLACK)},_
-    {1,   1, 10, 45,   createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, TRUE, CYAN, BLACK)},_
-    {1,   1, 10, 45,   createAttributes(FALSE, FALSE, BLACK, WHITE),  createAttributes(FALSE, TRUE, YELLOW, BLACK)},_
-    {12,  4, 10, 45,  createAttributes(FALSE, FALSE, BLACK, BLUE),   createAttributes(FALSE, TRUE, WHITE, BLACK)},_
-    {1,   1, 10, 45,   createAttributes(FALSE, FALSE, BLACK, GREEN),  createAttributes(FALSE, TRUE, BLACK, BLACK)},_
-    {1,   1, 15, 60,    createAttributes(FALSE, TRUE, BLACK, WHITE),   createAttributes(FALSE, FALSE, BLUE, BLACK)},_ 'Level 9
-    {22,  1, 15, 60,    createAttributes(FALSE, TRUE, BLACK, YELLOW),  createAttributes(FALSE, FALSE, RED, BLACK)},_
-    {11,   11, 15, 60,    createAttributes(FALSE, TRUE, BLACK, BLUE),    createAttributes(FALSE, FALSE, PURPLE, BLACK)},_
-    {12,   10, 15, 60,    createAttributes(FALSE, TRUE, BLACK, PURPLE),  createAttributes(FALSE, FALSE, GREEN, BLACK)},_
-    {1,   5, 20, 75,    createAttributes(FALSE, TRUE, BLACK, GREEN),   createAttributes(FALSE, FALSE, CYAN, BLACK)},_
-    {11,   12, 5, 75,    createAttributes(FALSE, TRUE, BLACK, BLUE),    createAttributes(FALSE, FALSE, YELLOW, BLACK)},_
-    {20,   11, 15, 75,    createAttributes(FALSE, TRUE, BLACK, RED),     createAttributes(FALSE, FALSE, WHITE, BLACK)},_
-    {1,   1, 10, 75,    createAttributes(FALSE, TRUE, BLACK, CYAN),    createAttributes(FALSE, FALSE, BLACK, BLACK)}_
+    {11, 12, 5, 30, createAttributes(FALSE, FALSE, BLACK, RED), createAttributes(FALSE, TRUE, BLACK, BLACK)},_
+    {1 ,  1, 5, 30, createAttributes(FALSE, FALSE, BLACK, YELLOW), createAttributes(FALSE, TRUE, BLACK, RED)},_
+    {11, 15, 5, 30, createAttributes(FALSE, FALSE, BLACK, GREEN), createAttributes(FALSE, TRUE, BLACK, CYAN)},_
+    {1,   1, 5, 30, createAttributes(FALSE, FALSE, BLACK, CYAN), createAttributes(FALSE, TRUE, BLACK, GREEN)},_
+    {1,   1, 10, 45, createAttributes(FALSE, FALSE, BLACK, PURPLE), createAttributes(FALSE, TRUE, BLACK, CYAN)},_
+    {1,   1, 10, 45, createAttributes(FALSE, FALSE, BLACK, WHITE), createAttributes(FALSE, TRUE, BLACK, RED)},_
+    {12,  4, 10, 45, createAttributes(FALSE, FALSE, BLACK, BLUE), createAttributes(FALSE, TRUE, BLACK, WHITE)},_
+    {1,   1, 10, 45, createAttributes(FALSE, FALSE, BLACK, GREEN), createAttributes(FALSE, TRUE, BLACK, PURPLE)},_
+    {1,   1, 15, 60, createAttributes(FALSE, TRUE, BLACK, WHITE), createAttributes(FALSE, FALSE, BLACK, BLUE)},_ 'Level 9
+    {22,  1, 15, 60, createAttributes(FALSE, TRUE, BLACK, YELLOW), createAttributes(FALSE, FALSE, BLACK, RED)},_
+    {11,   11, 15, 60, createAttributes(FALSE, TRUE, BLACK, BLUE), createAttributes(FALSE, FALSE, BLACK, PURPLE)},_
+    {12,   10, 15, 60, createAttributes(FALSE, TRUE, BLACK, PURPLE), createAttributes(FALSE, FALSE, BLACK, GREEN)},_
+    {1,   5, 20, 75, createAttributes(FALSE, TRUE, BLACK, GREEN), createAttributes(FALSE, FALSE, BLACK, CYAN)},_
+    {11,   12, 5, 75, createAttributes(FALSE, TRUE, BLACK, BLUE), createAttributes(FALSE, FALSE, BLACK, YELLOW)},_
+    {20,   11, 15, 75, createAttributes(FALSE, TRUE, BLACK, RED), createAttributes(FALSE, FALSE, BLACK, PURPLE)},_
+    {1,   1, 10, 75, createAttributes(FALSE, TRUE, BLACK, CYAN), createAttributes(FALSE, FALSE, BLACK, BLACK)}_
 }
 
 'Level item data type, xPos, yPos
