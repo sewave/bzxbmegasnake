@@ -1,5 +1,5 @@
 {
-  "MainFile": "main.zxbas",
+  "MainFile": "src\\main.zxbas",
   "OptimizationLevel": 3,
   "Origin": null,
   "ArrayBase": null,

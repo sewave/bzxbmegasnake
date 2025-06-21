@@ -2,7 +2,7 @@
   "ExportType": 6,
   "ExportDataType": 0,
   "AutoExport": true,
-  "ExportFilePath": "gfx\\sprites.spr.zxbas",
+  "ExportFilePath": "..\\..\\src\\game\\gfx\\sprites.spr.zxbas",
   "LabelName": "sprites_",
   "ZXFileName": "",
   "ZXAddress": 0,
