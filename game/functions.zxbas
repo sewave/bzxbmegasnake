@@ -5,7 +5,7 @@ END FUNCTION
 
 'Returns the substage equivalent
 FUNCTION getSubstage() AS UBYTE
-    RETURN level MOD 4
+    RETURN level bAND 3
 END FUNCTION
 
 'Returns true if the new key is not already defined and is on the printable
