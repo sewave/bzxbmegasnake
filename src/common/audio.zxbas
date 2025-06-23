@@ -66,7 +66,7 @@ DIM _fastBeepSubroutines(_LAST_NOTE) AS UINTEGER => { _
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
-'Pitch -60 - 127, BEEP -24 - 35, Notes 0-593
+'Pitch -60 - 127, BEEP -24 - 35, Notes 0-59
 #define _fastBeep(note) BEEP .006, note
 '******************PRIVATE DEFINES AREA END*****************
 
