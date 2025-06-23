@@ -84,6 +84,7 @@ SUB stateStartTitle()
    
     printTitleScroller()
     initKempstonProbe()
+    playMusic(@musicData)
     setGameState(STATE_START_MENU)
 END SUB
 
@@ -245,7 +246,6 @@ SUB stateStartMenu()
     setupPrint(PRINT_MODE_TALL)
     setTallAttributes(TITLE_MAX_SCORE_NUM_UP_ATTR, TITLE_MAX_SCORE_NUM_DOWN_ATTR)
     printUIntegerAt(TITLE_MAX_SCORE_X + LEN(TITLE_MAX_SCORE_STRING), TITLE_MAX_SCORE_Y, maxScore)
-    playMusic(@musicData)
     setStateWaitNoKey(STATE_WAIT_MENU)
 END SUB
 
