@@ -1,9 +1,9 @@
 'Kills the snake, showing GAME OVER
 SUB stateStartGameOver()
+    drawDeadSnakeHead()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(GAME_OVER_ATTRIBUTES)
     printStringAt(centerBoardX(GAME_OVER_STRING), GAME_OVER_Y, GAME_OVER_STRING)
-    drawDeadSnakeHead()
     setStateWaitFrames(DIE_FRAMES, STATE_WAIT_KEY_GAME_OVER)
 END SUB
 
