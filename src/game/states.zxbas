@@ -103,9 +103,11 @@ SUB stateWaitMenu()
     END IF
 
     IF getFirstKeyPressed() = SELECT_INPUT_KEY THEN
+        playMenuSelectSound()
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
         IF getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
+            playMenuSelectSound()
             setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, GAME_FADE, STATE_START_GAME)
         END IF
     END IF
@@ -179,18 +181,23 @@ SUB stateWaitSelectInput()
     printTitleScroller()
     DIM frameKey AS UBYTE = getFirstKeyPressed()
     IF frameKey = SELECT_INPUT_ENTRY_1_KEY THEN
+        playMenuSelectSound()
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEYBOARD)
         setGameState(STATE_START_SELECT_KEYS)
     ELSEIF frameKey = SELECT_INPUT_ENTRY_2_KEY THEN
+        playMenuSelectSound()
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_1)
         setGameState(STATE_START_MENU)
     ELSEIF frameKey = SELECT_INPUT_ENTRY_3_KEY THEN
+        playMenuSelectSound()
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_SINCLAIR_2)
         setGameState(STATE_START_MENU)
     ELSEIF frameKey = SELECT_INPUT_ENTRY_4_KEY THEN
+        playMenuSelectSound()
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_CURSOR)
         setGameState(STATE_START_MENU)
     ELSEIF frameKey = SELECT_INPUT_ENTRY_5_KEY THEN
+        playMenuSelectSound()
         setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
         'This is to protect against random values on Kempston unconnected port
         'as it can block the program
@@ -228,6 +235,7 @@ SUB stateWaitSelectKeys()
             CHR(getKeyIndexAscii(keyCode)))
         setPlayerKey(PLAYER_1_INDEX, redefinedKeys, keyCode)
         redefinedKeys = redefinedKeys + 1
+        playMenuSelectSound()
         setStateWaitNoKey(getGameState())
     END IF
 END SUB

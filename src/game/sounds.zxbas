@@ -37,3 +37,8 @@ END SUB
 SUB playEndLevelSound()
     playSoundEffect(@effect8)
 END SUB
+
+'Beeps the menu select sound
+SUB playMenuSelectSound()
+    playSoundEffect(@effect9)
+END SUB
