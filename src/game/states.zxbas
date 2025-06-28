@@ -95,6 +95,8 @@ SUB stateWaitMenu()
     IF isKempstonStable() THEN
         IF readKempston() = CONTROL_FIRE THEN
             'Set player to kempston and start game
+            stopAudio()
+            playGameStartSound()
             setControlType(PLAYER_1_INDEX, CONTROL_TYPE_KEMPSTON)
             setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, GAME_FADE, STATE_START_GAME)
         END IF
@@ -107,7 +109,8 @@ SUB stateWaitMenu()
         setGameState(STATE_START_SELECT_INPUT)
     ELSE
         IF getControls(PLAYER_1_INDEX) bAND CONTROL_FIRE THEN
-            playMenuSelectSound()
+            stopAudio()
+            playGameStartSound()
             setStateFadeTo(FADE_TO_CLOSE_HOR, TOTAL_BLACK_ATTRIBUTES, GAME_FADE, STATE_START_GAME)
         END IF
     END IF

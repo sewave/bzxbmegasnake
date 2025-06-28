@@ -66,7 +66,7 @@ DIM _fastBeepSubroutines(_LAST_NOTE) AS UINTEGER => { _
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
-'Pitch -60 - 127, BEEP -24 - 35, Notes 0-59
+'Pitch -60 - 127, BEEP -25 - 69 usable, Notes 0-59
 #define _fastBeep(note) BEEP .006, note
 '******************PRIVATE DEFINES AREA END*****************
 
@@ -221,7 +221,7 @@ END SUB
 'This consumes less frame time and sounds similar.
 'The engine is shifted up an octave or more due to ROM BEEP limitations, more
 'than the other engines. Octave 5 is not human-audible.
-'Notes go from C-1 to A#5.
+'Notes go from C-1 (60) to A#5 (118).
 SUB updateAudio()
     IF _musicPlaying = TRUE THEN
         _tmpAudioNote = PEEK(_musicPatternAddress)

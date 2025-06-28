@@ -42,3 +42,8 @@ END SUB
 SUB playMenuSelectSound()
     playSoundEffect(@effect9)
 END SUB
+
+'Beeps the game start sound
+SUB playGameStartSound()
+    playSoundEffect(@effect10)
+END SUB

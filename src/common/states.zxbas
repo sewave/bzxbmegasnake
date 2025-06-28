@@ -167,9 +167,21 @@ SUB initStatesAndRun(startingState AS UBYTE)
     setStateWaitNoKey(startingState)
     DO
         waitVsync()
+#ifdef DEBUG       
+        BORDER BLACK
+#endIf
         updateAudio()
+#ifdef DEBUG
+        BORDER RED
+#endIf
         updateControls()
+#ifdef DEBUG
+        BORDER BLUE
+#endIf
         executeSub(getCurrentStateSubroutine())
+#ifdef DEBUG
+        BORDER WHITE
+#endIf
     LOOP
 END SUB
 
