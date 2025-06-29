@@ -52,6 +52,9 @@ SUB _stateVsync()
         BORDER BLUE
     #endIf
     stateVsync()
+    #ifdef BORDER_DEBUG
+        BORDER WHITE
+    #endIf
 END SUB
 '******************PRIVATE DEFINES AREA END*****************
 
@@ -186,17 +189,17 @@ SUB initStatesAndRun(startingState AS UBYTE)
     setStateWaitNoKey(startingState)
     DO
         waitVsync()
-#ifdef BORDER_DEBUG
+    #ifdef BORDER_DEBUG
         BORDER RED
-#endIf
+    #endIf
         updateControls()
-#ifdef BORDER_DEBUG
+    #ifdef BORDER_DEBUG
         BORDER PURPLE
-#endIf
+    #endIf
         executeSub(getCurrentStateSubroutine())
-#ifdef BORDER_DEBUG
+    #ifdef BORDER_DEBUG
         BORDER WHITE
-#endIf
+    #endIf
     LOOP
 END SUB
 
