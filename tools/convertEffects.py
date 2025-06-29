@@ -22,7 +22,7 @@ def parse_input_file(input_file):
             current_pattern = line.split(':')[0].strip()
 
         elif line.startswith("DEFB") and current_pattern:
-            current_values.append(line.split()[1].replace('$', ''))
+            current_values.append(line.split()[1].replace('$', '').split(sep = ',')[0])
 
     if current_pattern:
         patterns[current_pattern] = current_values
@@ -35,7 +35,7 @@ def convert_to_new_format(patterns):
 
     for pattern_name, values in patterns.items():
         effect_name = f"effect{pattern_index}"
-        array_size = (len(values) - 1) * 2 - 1  # Utilizar el tamaño correcto
+        array_size = len(values) - 1  # Utilizar el tamaño correcto
         formatted_values = ', '.join(values)
         output_lines.append(f"DIM {effect_name}({array_size}) AS UBYTE => {{{formatted_values}}}")
         pattern_index += 1

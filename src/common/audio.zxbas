@@ -8,6 +8,7 @@ CONST _MUSIC_HEADER_PATTERN_LENGHT_INDEX AS UBYTE = 1
 CONST _MUSIC_HEADER_PATTERN_TABLE_INDEX AS UBYTE = 2
 CONST _MUSIC_PATTERN_TEMPO_LENGTH AS UBYTE = 1
 CONST _MUSIC_PATTERN_NOTES_LENGTH AS UBYTE = 2
+CONST _EFFECT_PATTERN_NOTES_LENGTH AS UBYTE = 1
 CONST _MUSIC_PATTERN_ADDRESS_LENGTH AS UBYTE = 2
 CONST _NO_AUDIO_ADDRESS AS UINTEGER = 0
 CONST _END_PATTERN_NOTE AS UBYTE = 0
@@ -42,6 +43,7 @@ DIM _musicTempoAdjustment AS BYTE
 DIM _musicNoteAdjustment AS BYTE
 DIM _musicLooping AS BYTE
 DIM _musicContinueOnEffect AS BYTE
+DIM _musicArpeggio AS BYTE
 
 'Effect vars
 DIM _effectTempo AS UBYTE
@@ -79,6 +81,7 @@ SUB initAudio()
     resetSoundEffectTempoAdjustment()
     enableMusicLooping()
     enableMusicContinueOnEffect()
+    enableMusicArpeggio()
     _currentChannel = _CHANNEL_ONE
 END SUB
 
@@ -166,6 +169,16 @@ SUB disableMusicContinueOnEffect()
     _musicContinueOnEffect = FALSE
 END SUB
 
+'Enables music arpeggio
+SUB enableMusicArpeggio()
+    _musicArpeggio = TRUE
+END SUB
+
+'Disables music arpeggio
+SUB disableMusicArpeggio()
+    _musicArpeggio = FALSE
+END SUB
+
 'Sets the music tempo adjustment
 SUB setMusicTempoAdjustment(tempoAdjustment AS BYTE)
     _musicTempoAdjustment = tempoAdjustment
@@ -216,9 +229,10 @@ END SUB
 'Beepola ROM Beep compatible player
 'Tempo is from 16 to 1, maps in Beepola to 1 to 20.
 'Frames per row is the double of tempo.
-'This player instead of arpeggio alternates channel note each frame.
+'This player can use arpeggio or alternates channel note each frame.
 'Distributes channel 1 note for frame 1 and channel 2 note for frame 2.
 'This consumes less frame time and sounds similar.
+'Effects use only channel 1.
 'The engine is shifted up an octave or more due to ROM BEEP limitations, more
 'than the other engines. Octave 5 is not human-audible.
 'Notes go from C-1 (60) to A#5 (118).
@@ -245,7 +259,8 @@ SUB _updateMusic()
         END IF
     ELSE
         IF _effectPlaying = FALSE THEN
-            IF _currentChannel = _CHANNEL_TWO THEN
+            IF _currentChannel = _CHANNEL_TWO OR _musicArpeggio THEN
+                IF _musicArpeggio THEN _playAdjustedNote(_musicNoteAdjustment)
                 _tmpAudioNote = PEEK(_musicPatternAddress + 1)
             END IF
             _playAdjustedNote(_musicNoteAdjustment)
@@ -261,20 +276,17 @@ SUB _updateMusic()
     END IF
 END SUB
 
-'Updates the current sound effect
+'Updates the current sound effect, only one channel
 SUB _updateSoundEffect()
     _tmpAudioNote = PEEK(_effectAddress)
     IF _tmpAudioNote = _END_PATTERN_NOTE THEN
         stopSoundEffect()
     ELSE
-        IF _currentChannel = _CHANNEL_TWO THEN
-            _tmpAudioNote = PEEK(_effectAddress + 1)
-        END IF
         _playAdjustedNote(_effectNoteAdjustment)
         _effectTempoCounter = _effectTempoCounter - 1
         IF _effectTempoCounter = 0 THEN
             _loadAdjustedSoundEffectTempoCounter()
-            _effectAddress = _effectAddress + _MUSIC_PATTERN_NOTES_LENGTH
+            _effectAddress = _effectAddress + _EFFECT_PATTERN_NOTES_LENGTH
         END IF
     END IF
 END SUB

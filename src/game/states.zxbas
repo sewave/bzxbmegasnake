@@ -266,12 +266,12 @@ END SUB
 SUB stateStartLoseLive()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(LOSE_LIVE_ATTRIBUTES)
+    drawDeadSnakeHead()
     IF remainingTime > 0 THEN
         printStringAt(centerBoardX(LOSE_LIVE_STRING), LOSE_LIVE_Y, LOSE_LIVE_STRING)
     ELSE
         printStringAt(centerBoardX(LOSE_LIVE_TIME_STRING), LOSE_LIVE_TIME_Y, LOSE_LIVE_TIME_STRING)
     END IF
-    drawDeadSnakeHead()
     setStateWaitFrames(LOSE_LIVE_FRAMES, STATE_RESTART_LEVEL)
 END SUB
 
