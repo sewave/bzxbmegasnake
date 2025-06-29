@@ -12,7 +12,7 @@ CONST _MUSIC_PATTERN_ADDRESS_LENGTH AS UBYTE = 2
 CONST _NO_AUDIO_ADDRESS AS UINTEGER = 0
 CONST _END_PATTERN_NOTE AS UBYTE = 0
 CONST _REST_CHANNEL_NOTE AS UBYTE = 1
-CONST _BEEPOLA_NOTES_OFFSET AS UBYTE = 48
+CONST _BEEPOLA_NOTES_OFFSET AS UBYTE = 60
 CONST _CHANNEL_ONE AS UBYTE = 0
 CONST _CHANNEL_TWO AS UBYTE = 1
 CONST _INITIAL_TEMPO_ADJUSTMENT AS BYTE = 0
@@ -51,30 +51,28 @@ DIM _effectPlaying AS UBYTE
 DIM _effectTempoAdjustment AS BYTE
 DIM _effectNoteAdjustment AS BYTE
 
-DIM _fastBeepSubroutines(_LAST_NOTE) AS UINTEGER => { _
-    @_fastBeep00, @_fastBeep01, @_fastBeep02, @_fastBeep03, @_fastBeep04, @_fastBeep05, _
-    @_fastBeep06, @_fastBeep07, @_fastBeep08, @_fastBeep09, @_fastBeep10, @_fastBeep11, _
-    @_fastBeep12, @_fastBeep13, @_fastBeep14, @_fastBeep15, @_fastBeep16, @_fastBeep17, _
-    @_fastBeep18, @_fastBeep19, @_fastBeep20, @_fastBeep21, @_fastBeep22, @_fastBeep23, _
-    @_fastBeep24, @_fastBeep25, @_fastBeep26, @_fastBeep27, @_fastBeep28, @_fastBeep29, _
-    @_fastBeep30, @_fastBeep31, @_fastBeep32, @_fastBeep33, @_fastBeep34, @_fastBeep35, _
-    @_fastBeep36, @_fastBeep37, @_fastBeep38, @_fastBeep39, @_fastBeep40, @_fastBeep41, _
-    @_fastBeep42, @_fastBeep43, @_fastBeep44, @_fastBeep45, @_fastBeep46, @_fastBeep47, _
-    @_fastBeep48, @_fastBeep49, @_fastBeep50, @_fastBeep51, @_fastBeep52, @_fastBeep53, _
-    @_fastBeep54, @_fastBeep55, @_fastBeep56, @_fastBeep57, @_fastBeep58, @_fastBeep59 _
-}
 '*********************VARS AREA END*************************
 
 '********************PRIVATE DEFINES AREA*******************
 'Pitch -60 - 127, BEEP -25 - 69 usable, Notes 0-59
 #define _fastBeep(note) BEEP .006, note
+
+#define _eightBeeps(number) \
+    IF _tmpAudioNote = number + 0 THEN _fastBeep(number + 0) \
+    IF _tmpAudioNote = number + 1 THEN _fastBeep(number + 1) \
+    IF _tmpAudioNote = number + 2 THEN _fastBeep(number + 2) \
+    IF _tmpAudioNote = number + 3 THEN _fastBeep(number + 3) \
+    IF _tmpAudioNote = number + 4 THEN _fastBeep(number + 4) \
+    IF _tmpAudioNote = number + 5 THEN _fastBeep(number + 5) \
+    IF _tmpAudioNote = number + 6 THEN _fastBeep(number + 6) \
+    IF _tmpAudioNote = number + 7 THEN _fastBeep(number + 7)
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
 'Inits the audio system
 SUB initAudio()
-    pauseMusic()
-    pauseSoundEffect()
+    stopMusic()
+    stopSoundEffect()
     resetMusicNoteAdjustment()
     resetSoundEffectNoteAdjustment()
     resetMusicTempoAdjustment()
@@ -84,19 +82,21 @@ SUB initAudio()
     _currentChannel = _CHANNEL_ONE
 END SUB
 
-'Plays the selected music in loop
+'Plays the selected music
 SUB playMusic(playMusicAddress AS UINTEGER)
+    stopMusic()
     _musicAddress = playMusicAddress
     _musicLoopPatternIndex = PEEK(_musicAddress)
     _musicPatternLength = PEEK(_musicAddress + _MUSIC_HEADER_PATTERN_LENGHT_INDEX)
     _musicPatternIndex = 0
     _musicInitialPatternAddress = PEEK(UINTEGER, _musicAddress + _MUSIC_HEADER_PATTERN_TABLE_INDEX)
-    _prepareMusicPattern()    
+    _prepareMusicPattern()
     unpauseMusic()
 END SUB
 
-'Plays the selected music in loop
+'Plays the selected effect
 SUB playSoundEffect(playSoundEffectAddress AS UINTEGER)
+    stopSoundEffect()
     _effectAddress = playSoundEffectAddress
     _effectTempo = (PEEK(_effectAddress) << 2) - 1
     _loadAdjustedSoundEffectTempoCounter()
@@ -131,7 +131,7 @@ SUB unpauseMusic()
     _musicPlaying = _musicAddress <> _NO_AUDIO_ADDRESS
 END SUB
 
-'Unpauses current effect
+'Unpauses current effect, cannot unpause without address
 SUB unpauseEffect()
     _effectPlaying = _effectAddress <> _NO_AUDIO_ADDRESS
 END SUB
@@ -223,56 +223,62 @@ END SUB
 'than the other engines. Octave 5 is not human-audible.
 'Notes go from C-1 (60) to A#5 (118).
 SUB updateAudio()
-    IF _musicPlaying = TRUE THEN
-        _tmpAudioNote = PEEK(_musicPatternAddress)
-        IF _tmpAudioNote = _END_PATTERN_NOTE THEN
-            IF _musicLooping = TRUE THEN
-                _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
-                IF _musicPatternIndex = _musicPatternLength THEN
-                    _musicPatternIndex = _musicLoopPatternIndex
-                END IF
-                _prepareMusicPattern()
-            ELSE
-                stopMusic()
-            END IF
-        ELSE
-            IF _effectPlaying = FALSE THEN
-                IF _currentChannel = _CHANNEL_TWO THEN
-                    _tmpAudioNote = PEEK(_musicPatternAddress + 1)
-                END IF
-                _playAdjustedNote(_musicNoteAdjustment)
-            END IF
-            IF _effectPlaying = FALSE OR _musicContinueOnEffect = TRUE THEN
-                _musicPatternTempoCounter = _musicPatternTempoCounter - 1
-                IF _musicPatternTempoCounter = 0 THEN
-                    _currentChannel = 0
-                    _loadAdjustedMusicTempoCounter()
-                    _musicPatternAddress = _musicPatternAddress + _MUSIC_PATTERN_NOTES_LENGTH
-                END IF
-            END IF
-        END IF
-    END IF
-    IF _effectPlaying = TRUE THEN
-        _tmpAudioNote = PEEK(_effectAddress)
-        IF _tmpAudioNote = _END_PATTERN_NOTE THEN
-            stopSoundEffect()
-        ELSE
-            IF _currentChannel = _CHANNEL_TWO THEN
-                _tmpAudioNote = PEEK(_effectAddress + 1)
-            END IF
-            _playAdjustedNote(_effectNoteAdjustment)
-            _effectTempoCounter = _effectTempoCounter - 1
-            IF _effectTempoCounter = 0 THEN
-                _loadAdjustedSoundEffectTempoCounter()
-                _effectAddress = _effectAddress + _MUSIC_PATTERN_NOTES_LENGTH
-            END IF
-        END IF
-    END IF
+    IF _musicPlaying = TRUE THEN _updateMusic()
+    IF _effectPlaying = TRUE THEN _updateSoundEffect()
     _currentChannel = _currentChannel bXOR _CHANNEL_TWO
 END SUB
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************
+'Updates the current music
+SUB _updateMusic()
+    _tmpAudioNote = PEEK(_musicPatternAddress)
+    IF _tmpAudioNote = _END_PATTERN_NOTE THEN
+        IF _musicLooping = TRUE THEN
+            _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
+            IF _musicPatternIndex = _musicPatternLength THEN
+                _musicPatternIndex = _musicLoopPatternIndex
+            END IF
+            _prepareMusicPattern()
+        ELSE
+            stopMusic()
+        END IF
+    ELSE
+        IF _effectPlaying = FALSE THEN
+            IF _currentChannel = _CHANNEL_TWO THEN
+                _tmpAudioNote = PEEK(_musicPatternAddress + 1)
+            END IF
+            _playAdjustedNote(_musicNoteAdjustment)
+        END IF
+        IF _effectPlaying = FALSE OR _musicContinueOnEffect = TRUE THEN
+            _musicPatternTempoCounter = _musicPatternTempoCounter - 1
+            IF _musicPatternTempoCounter = 0 THEN
+                _currentChannel = 0
+                _loadAdjustedMusicTempoCounter()
+                _musicPatternAddress = _musicPatternAddress + _MUSIC_PATTERN_NOTES_LENGTH
+            END IF
+        END IF
+    END IF
+END SUB
+
+'Updates the current sound effect
+SUB _updateSoundEffect()
+    _tmpAudioNote = PEEK(_effectAddress)
+    IF _tmpAudioNote = _END_PATTERN_NOTE THEN
+        stopSoundEffect()
+    ELSE
+        IF _currentChannel = _CHANNEL_TWO THEN
+            _tmpAudioNote = PEEK(_effectAddress + 1)
+        END IF
+        _playAdjustedNote(_effectNoteAdjustment)
+        _effectTempoCounter = _effectTempoCounter - 1
+        IF _effectTempoCounter = 0 THEN
+            _loadAdjustedSoundEffectTempoCounter()
+            _effectAddress = _effectAddress + _MUSIC_PATTERN_NOTES_LENGTH
+        END IF
+    END IF
+END SUB
+
 'Play adjusted music note
 SUB _playAdjustedNote(adjustment AS BYTE)
     IF _tmpAudioNote > _REST_CHANNEL_NOTE THEN
@@ -282,7 +288,44 @@ SUB _playAdjustedNote(adjustment AS BYTE)
         ELSEIF _tmpAudioNote > _MAX_NOTE THEN
             _tmpAudioNote = _MAX_NOTE
         END IF
-        executeSub(_fastBeepSubroutines(_tmpAudioNote))
+        _ifBeep()
+    END IF
+END SUB
+
+'Sound beep based on _tmpAudioNote
+SUB _ifBeep()
+    IF _tmpAudioNote < 32 THEN
+        IF _tmpAudioNote < 16 THEN
+            '00-15
+            IF _tmpAudioNote < 8 THEN
+                _eightBeeps(0)
+            ELSE
+                _eightBeeps(8)
+            END IF
+        ELSE
+            '16-31
+            IF _tmpAudioNote < 24 THEN
+                _eightBeeps(16)
+            ELSE
+                _eightBeeps(24)
+            END IF
+        END IF
+    ELSE
+        IF _tmpAudioNote < 48 THEN
+            '32-47
+            IF _tmpAudioNote < 40 THEN
+                _eightBeeps(32)
+            ELSE
+                _eightBeeps(40)
+            END IF
+        ELSE
+            '48-59
+            IF _tmpAudioNote < 56 THEN
+                _eightBeeps(48)
+            ELSE
+                _eightBeeps(56)
+            END IF
+        END IF
     END IF
 END SUB
 
@@ -312,187 +355,5 @@ SUB _prepareMusicPattern()
     _musicPatternTempo = (PEEK(_musicPatternAddress) << 2) - 1
     _loadAdjustedMusicTempoCounter()
     _musicPatternAddress =_musicPatternAddress + _MUSIC_PATTERN_TEMPO_LENGTH
-END SUB
-
-'Collection of precalculated fast beeps
-SUB _fastBeep00()
-    _fastBeep(0)
-END SUB
-SUB _fastBeep01()
-    _fastBeep(1)
-END SUB
-SUB _fastBeep02()
-    _fastBeep(2)
-END SUB
-SUB _fastBeep03()
-    _fastBeep(3)
-END SUB
-SUB _fastBeep04()
-    _fastBeep(4)
-END SUB
-SUB _fastBeep05()
-    _fastBeep(5)
-END SUB
-SUB _fastBeep06()
-    _fastBeep(6)
-END SUB
-SUB _fastBeep07()
-    _fastBeep(7)
-END SUB
-SUB _fastBeep08()
-    _fastBeep(8)
-END SUB
-SUB _fastBeep09()
-    _fastBeep(9)
-END SUB
-SUB _fastBeep10()
-    _fastBeep(10)
-END SUB
-SUB _fastBeep11()
-    _fastBeep(11)
-END SUB
-SUB _fastBeep12()
-    _fastBeep(12)
-END SUB
-SUB _fastBeep13()
-    _fastBeep(13)
-END SUB
-SUB _fastBeep14()
-    _fastBeep(14)
-END SUB
-SUB _fastBeep15()
-    _fastBeep(15)
-END SUB
-SUB _fastBeep16()
-    _fastBeep(16)
-END SUB
-SUB _fastBeep17()
-    _fastBeep(17)
-END SUB
-SUB _fastBeep18()
-    _fastBeep(18)
-END SUB
-SUB _fastBeep19()
-    _fastBeep(19)
-END SUB
-SUB _fastBeep20()
-    _fastBeep(20)
-END SUB
-SUB _fastBeep21()
-    _fastBeep(21)
-END SUB
-SUB _fastBeep22()
-    _fastBeep(22)
-END SUB
-SUB _fastBeep23()
-    _fastBeep(23)
-END SUB
-SUB _fastBeep24()
-    _fastBeep(24)
-END SUB
-SUB _fastBeep25()
-    _fastBeep(25)
-END SUB
-SUB _fastBeep26()
-    _fastBeep(26)
-END SUB
-SUB _fastBeep27()
-    _fastBeep(27)
-END SUB
-SUB _fastBeep28()
-    _fastBeep(28)
-END SUB
-SUB _fastBeep29()
-    _fastBeep(29)
-END SUB
-SUB _fastBeep30()
-    _fastBeep(30)
-END SUB
-SUB _fastBeep31()
-    _fastBeep(31)
-END SUB
-SUB _fastBeep32()
-    _fastBeep(32)
-END SUB
-SUB _fastBeep33()
-    _fastBeep(33)
-END SUB
-SUB _fastBeep34()
-    _fastBeep(34)
-END SUB
-SUB _fastBeep35()
-    _fastBeep(35)
-END SUB
-SUB _fastBeep36()
-    _fastBeep(36)
-END SUB
-SUB _fastBeep37()
-    _fastBeep(37)
-END SUB
-SUB _fastBeep38()
-    _fastBeep(38)
-END SUB
-SUB _fastBeep39()
-    _fastBeep(39)
-END SUB
-SUB _fastBeep40()
-    _fastBeep(40)
-END SUB
-SUB _fastBeep41()
-    _fastBeep(41)
-END SUB
-SUB _fastBeep42()
-    _fastBeep(42)
-END SUB
-SUB _fastBeep43()
-    _fastBeep(43)
-END SUB
-SUB _fastBeep44()
-    _fastBeep(44)
-END SUB
-SUB _fastBeep45()
-    _fastBeep(45)
-END SUB
-SUB _fastBeep46()
-    _fastBeep(46)
-END SUB
-SUB _fastBeep47()
-    _fastBeep(47)
-END SUB
-SUB _fastBeep48()
-    _fastBeep(48)
-END SUB
-SUB _fastBeep49()
-    _fastBeep(49)
-END SUB
-SUB _fastBeep50()
-    _fastBeep(50)
-END SUB
-SUB _fastBeep51()
-    _fastBeep(51)
-END SUB
-SUB _fastBeep52()
-    _fastBeep(52)
-END SUB
-SUB _fastBeep53()
-    _fastBeep(53)
-END SUB
-SUB _fastBeep54()
-    _fastBeep(54)
-END SUB
-SUB _fastBeep55()
-    _fastBeep(55)
-END SUB
-SUB _fastBeep56()
-    _fastBeep(56)
-END SUB
-SUB _fastBeep57()
-    _fastBeep(57)
-END SUB
-SUB _fastBeep58()
-    _fastBeep(58)
-END SUB
-SUB _fastBeep59()
-    _fastBeep(59)
 END SUB
 '*********************PRIVATE AREA END**********************

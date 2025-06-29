@@ -1,3 +1,5 @@
+#include <retrace.bas>
+
 '*******************PUBLIC CONSTANTS AREA*******************
 CONST CHAR_SHIFT_BITS AS UBYTE = 3
 
@@ -70,10 +72,6 @@ CONST _ATTR_ROW_INC AS UBYTE = %00100000
 'Common constants
 CONST _ROW_DEC AS UINTEGER = %0000000000100000
 
-'Spectrum frame counter bytes
-CONST _FRAME_LOW_BYTE AS UINTEGER = 23672
-CONST _FRAME_HI_BYTE AS UINTEGER = 23674
-
 CONST _FADE_TO_COLOR_STEPS     AS UBYTE = 10
 CONST _FADE_TO_CLOSE_HOR_STEPS AS UBYTE = 16
 CONST _FADE_TO_OPEN_HOR_STEPS  AS UBYTE = 16
@@ -91,10 +89,6 @@ DIM remainingFadeSteps AS UBYTE
 DIM currentCharAddr AS UINTEGER
 DIM currentCharAttrAddr AS UINTEGER
 DIM tmpAddr AS UINTEGER
-'System Counter
-DIM byteFrameCounter AS UBYTE AT _FRAME_LOW_BYTE
-DIM integerFrameCounter AS UINTEGER AT _FRAME_LOW_BYTE
-DIM highFrameCounter AS UBYTE AT _FRAME_HI_BYTE
 
 'Private
 DIM _fadeToAttributes AS UBYTE
@@ -159,13 +153,6 @@ DIM _fadeAttrInc AS UINTEGER
 
 'Puts chars at (x, y) incrementing row
 #define putRowCharsAt(x, y, numChars, charAddress) setCharPosition(x, y): putRowChars(numChars, charAddress)
-
-'Get the 24 bit frame counter
-FUNCTION getfullFrameCounter() AS ULONG
-    POKE(UINTEGER, @_customFullFrameCounter, integerFrameCounter)
-    POKE(UBYTE, @_customFullFrameCounter + INTEGER_BYTES, highFrameCounter)
-    RETURN _customFullFrameCounter
-END FUNCTION
 
 'Updates char addresses to next column
 SUB nextCharColumn()
@@ -290,11 +277,7 @@ END SUB
 
 'Wait vsync
 SUB waitVsync()
-    DIM currentFrame AS UBYTE = byteFrameCounter
-    DIM newFrame AS UBYTE
-    DO
-        newFrame = byteFrameCounter
-    LOOP WHILE newFrame = currentFrame
+    waitretrace
 END SUB
 
 'Draws a window using the string characters to cover all possibilities like:

@@ -10,7 +10,8 @@
   "EnableBreak": false,
   "Explicit": false,
   "Defines": [
-    "DEBUG=1"
+    "DEBUG",
+    "BORDER_DEBUG"
   ],
   "IgnoreCase": false,
   "Strict": false,
@@ -19,7 +20,7 @@
   "PreBuild": false,
   "PreBuildValue": "",
   "CustomCompiler": false,
-  "CustomCompilerValue": "-O 3 -S 32768 -H 1024 -D DEBUG=1",
+  "CustomCompilerValue": "-O 3 -S 32768 -H 1024 -D DEBUG -D BORDER_DEBUG",
   "PostBuild": false,
   "PostBuildValue": "",
   "ExternalEmulator": false,

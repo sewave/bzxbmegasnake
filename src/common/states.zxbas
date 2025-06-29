@@ -1,3 +1,11 @@
+#include <IM2.bas>
+
+'This function has to be implemented by the actual game
+DECLARE FUNCTION getCurrentStateSubroutine() AS UINTEGER
+
+'This sub has to be implemented by the actual game
+DECLARE SUB stateVsync()
+
 '*******************PUBLIC CONSTANTS AREA*******************
 CONST FIRST_UNUSED_STATE AS UBYTE = 8
 '*****************PUBLIC CONSTANTS AREA END*****************
@@ -33,6 +41,18 @@ DIM _printStringFireEnds AS UBYTE
 FUNCTION _getNextGameState() AS UBYTE
     RETURN _nextGameState
 END FUNCTION
+
+'Updated on each vsync
+SUB _stateVsync()
+    #ifdef BORDER_DEBUG
+        BORDER BLACK
+    #endIf
+    updateAudio()
+    #ifdef BORDER_DEBUG
+        BORDER BLUE
+    #endIf
+    stateVsync()
+END SUB
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
@@ -157,29 +177,24 @@ SUB statePrintStringChar()
     END IF
 END SUB
 
-'This function has to be implemented by the actual game
-DECLARE FUNCTION getCurrentStateSubroutine() AS UINTEGER
-
 'Inits the system and starts the states and runs
 SUB initStatesAndRun(startingState AS UBYTE)
     initInput()
     initAudio()
+    _stateVsync() ' Must have one call or optimizer deletes it
+    IM2Start(@_stateVsync)
     setStateWaitNoKey(startingState)
     DO
         waitVsync()
-#ifdef DEBUG       
-        BORDER BLACK
-#endIf
-        updateAudio()
-#ifdef DEBUG
+#ifdef BORDER_DEBUG
         BORDER RED
 #endIf
         updateControls()
-#ifdef DEBUG
-        BORDER BLUE
+#ifdef BORDER_DEBUG
+        BORDER PURPLE
 #endIf
         executeSub(getCurrentStateSubroutine())
-#ifdef DEBUG
+#ifdef BORDER_DEBUG
         BORDER WHITE
 #endIf
     LOOP

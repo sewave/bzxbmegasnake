@@ -464,6 +464,11 @@ DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateStartMenu _
 }
 
+'The custom vsync stuff
+SUB stateVsync()
+    'Nothing for now
+END SUB
+
 'Returns the current state subroutine
 FUNCTION getCurrentStateSubroutine() AS UINTEGER
     RETURN stateSubroutines(getGameState())
