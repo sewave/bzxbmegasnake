@@ -22,6 +22,7 @@ SUB stateStartPause()
     printPauseContinue()
     pauseExits = FALSE
     pauseCounter = 0
+    playPauseSound()
     setStateWaitNoKey(STATE_WAIT_UNPAUSE)
 END SUB
 
@@ -38,6 +39,7 @@ SUB stateWaitUnpause()
         ELSE
             clearCharsAt(PAUSE_X, PAUSE_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
             clearCharsAt(PAUSE_X, PAUSE_EXIT_Y, BOARD_ATTRIBUTES, STATUS_WINDOW_PRINT_WIDTH)
+            playUnpauseSound()
             setStateWaitNoKey(STATE_GAME_PLAYING)
         END IF
     ELSEIF control bAND CONTROL_LEFT THEN

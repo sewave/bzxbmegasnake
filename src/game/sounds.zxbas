@@ -47,3 +47,13 @@ END SUB
 SUB playGameStartSound()
     playSoundEffect(@effect10)
 END SUB
+
+'Beeps the game pause sound
+SUB playPauseSound()
+    playSoundEffect(@effect11)
+END SUB
+
+'Beeps the game unpause sound
+SUB playUnpauseSound()
+    playSoundEffect(@effect12)
+END SUB

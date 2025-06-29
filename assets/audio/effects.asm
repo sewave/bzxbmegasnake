@@ -1,7 +1,7 @@
                 ORG 40000
 MUSICDATA:
                           DEFB 0   ; Loop start point * 2
-                          DEFB 20   ; Song Length * 2
+                          DEFB 24   ; Song Length * 2
 PATTERNDATA:              DEFW PAT0
                           DEFW PAT1
                           DEFW PAT2
@@ -12,6 +12,8 @@ PATTERNDATA:              DEFW PAT0
                           DEFW PAT7
                           DEFW PAT8
                           DEFW PAT9
+                          DEFW PAT10
+                          DEFW PAT11
 
 ; *** Pattern data consists of pairs of note values CH1,CH2 with a single $0 to
 ; *** mark the end of the pattern, and $01 for a rest
@@ -103,4 +105,23 @@ PAT9:
                           DEFB 89,91
                           DEFB 89,1
                           DEFB 89,91
+                          DEFB $0
+PAT10:
+                          DEFB 1  ; Pattern tempo
+                          DEFB 84,1
+                          DEFB 99,1
+                          DEFB 86,1
+                          DEFB 88,1
+                          DEFB 102,1
+                          DEFB $0
+PAT11:
+                          DEFB 1  ; Pattern tempo
+                          DEFB 102,1
+                          DEFB 102,1
+                          DEFB 1,1
+                          DEFB 92,1
+                          DEFB 92,1
+                          DEFB 1,1
+                          DEFB 93,1
+                          DEFB 93,1
                           DEFB $0
