@@ -264,9 +264,9 @@ END SUB
 
 'State to start to lose a live
 SUB stateStartLoseLive()
-    setupPrint(PRINT_MODE_NORMAL)
-    setAttributes(LOSE_LIVE_ATTRIBUTES)
     drawDeadSnakeHead()
+    setupPrint(PRINT_MODE_TALL)
+    setTallAttributes(LOSE_LIVE_ATTRIBUTES, LOSE_LIVE_ATTRIBUTES)
     IF remainingTime > 0 THEN
         printStringAt(centerBoardX(LOSE_LIVE_STRING), LOSE_LIVE_Y, LOSE_LIVE_STRING)
     ELSE
