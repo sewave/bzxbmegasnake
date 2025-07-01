@@ -4541,7 +4541,7 @@
     "Width": 8,
     "Height": 8,
     "Masked": false,
-    "Frames": 4,
+    "Frames": 5,
     "CurrentFrame": 0,
     "Patterns": [
       {
@@ -4695,55 +4695,6 @@
             "Bright": false,
             "Flash": false,
             "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
           }
         ]
       },
@@ -4819,55 +4770,6 @@
           1
         ],
         "Attributes": [
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
           {
             "Ink": 1,
             "Paper": 0,
@@ -4955,49 +4857,81 @@
             "Bright": false,
             "Flash": false,
             "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
+          }
+        ]
+      },
+      {
+        "Id": 0,
+        "Number": "0",
+        "Name": "",
+        "Data": null,
+        "RawData": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "Attributes": [
           {
             "Ink": 1,
             "Paper": 0,
@@ -5033,7 +4967,7 @@
     "Height": 8,
     "Masked": false,
     "Frames": 4,
-    "CurrentFrame": 1,
+    "CurrentFrame": 0,
     "Patterns": [
       {
         "Id": 0,
@@ -5186,55 +5120,6 @@
             "Bright": false,
             "Flash": false,
             "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
           }
         ]
       },
@@ -5310,55 +5195,6 @@
           1
         ],
         "Attributes": [
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
-          {
-            "Ink": 1,
-            "Paper": 0,
-            "Bright": false,
-            "Flash": false,
-            "Attribute": 1
-          },
           {
             "Ink": 1,
             "Paper": 0,
@@ -5446,6 +5282,188 @@
             "Bright": false,
             "Flash": false,
             "Attribute": 1
+          }
+        ]
+      }
+    ],
+    "DefaultColor": 0,
+    "Palette": [
+      {
+        "Red": 160,
+        "Green": 160,
+        "Blue": 160,
+        "HasPriority": false
+      },
+      {
+        "Red": 0,
+        "Green": 0,
+        "Blue": 0,
+        "HasPriority": false
+      }
+    ],
+    "Export": true
+  },
+  {
+    "Id": 22,
+    "Name": "Boss Laser",
+    "GraphicMode": 0,
+    "Width": 8,
+    "Height": 8,
+    "Masked": false,
+    "Frames": 2,
+    "CurrentFrame": 0,
+    "Patterns": [
+      {
+        "Id": 0,
+        "Number": "0",
+        "Name": "",
+        "Data": null,
+        "RawData": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "Attributes": null
+      },
+      {
+        "Id": 0,
+        "Number": "0",
+        "Name": "",
+        "Data": null,
+        "RawData": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "Attributes": [
+          {
+            "Ink": 1,
+            "Paper": 0,
+            "Bright": false,
+            "Flash": false,
+            "Attribute": 1
           },
           {
             "Ink": 1,
@@ -5497,6 +5515,107 @@
             "Attribute": 1
           }
         ]
+      }
+    ],
+    "DefaultColor": 0,
+    "Palette": [
+      {
+        "Red": 160,
+        "Green": 160,
+        "Blue": 160,
+        "HasPriority": false
+      },
+      {
+        "Red": 0,
+        "Green": 0,
+        "Blue": 0,
+        "HasPriority": false
+      }
+    ],
+    "Export": true
+  },
+  {
+    "Id": 23,
+    "Name": "Boss Ray",
+    "GraphicMode": 0,
+    "Width": 8,
+    "Height": 8,
+    "Masked": false,
+    "Frames": 1,
+    "CurrentFrame": 0,
+    "Patterns": [
+      {
+        "Id": 0,
+        "Number": "0",
+        "Name": "",
+        "Data": null,
+        "RawData": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "Attributes": null
       }
     ],
     "DefaultColor": 0,

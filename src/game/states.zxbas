@@ -125,6 +125,7 @@ SUB stateStartGame()
     score = START_SCORE
     lives = START_LIVES
     level = START_LEVEL
+    inBoss = FALSE
     inBonus = FALSE
     snakeLength = INITIAL_SNAKE_LENGTH
     reloadTime = TRUE
@@ -162,6 +163,9 @@ SUB stateGamePlaying()
         checkFruit()
         checkDeath()
     ELSE
+        IF inBoss THEN
+            bossLogic()
+        END IF
         moveEnemies()
     END IF
     #ifdef DEBUG

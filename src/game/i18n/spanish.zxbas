@@ -42,6 +42,7 @@ CONST PRESS_TO_START_KEY_STRING     AS STRING = "PULSA UNA TECLA PARA EMPEZAR"
 CONST END_GAME_COMPLETED_STRING     AS STRING = START_EXCL+"FELICIDADES!"
 CONST END_GAME_SCORE_STRING         AS STRING = "Puntuaci"+ACUTE_LC_O+"n final"
 CONST END_GAME_RETURN_STRING        AS STRING = "Pulsa fuego para ir al t"+ACUTE_LC_I+"tulo "
+CONST BOSS_LEVEL_STRING             AS STRING = "JEFE"
 
 CONST TITLE_TEXT_SCROLLER           AS STRING = "                              "+START_EXCL+"Bienvenido a Mega Serpiente!    Tu misi"+ACUTE_LC_O+"n es completar los 16 niveles comi"+ACUTE_LC_E+"ndote todas las frutas. "+START_EXCL+"No te choques con las paredes!    "+START_EXCL+"Y cuidado! Los bichos no te lo pondr"+ACUTE_LC_A+"n nada f"+ACUTE_LC_A+"cil.   "+START_EXCL+"Intenta conseguir la mejor puntuaci"+ACUTE_LC_O+"n usando el menor tiempo posible!                              "
 

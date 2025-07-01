@@ -179,7 +179,7 @@ DIM sprites_Counter_Clockwise_Bug(1,7) AS UByte => { _
 		$00,$3C,$5A,$7E,$7E,$5A,$3C,$00 _
 	} _
 }
-DIM sprites_Play_Background(3,7) AS UByte => { _
+DIM sprites_Play_Background(4,7) AS UByte => { _
 	{ _
 		$08,$10,$20,$40,$A0,$11,$0A,$04 _
 	}, _
@@ -191,6 +191,9 @@ DIM sprites_Play_Background(3,7) AS UByte => { _
 	}, _
 	{ _
 		$08,$10,$20,$40,$E0,$11,$0E,$04 _
+	}, _
+	{ _
+		$24,$24,$FF,$24,$24,$FF,$24,$24 _
 	} _
 }
 DIM sprites_Board_Background(3,7) AS UByte => { _
@@ -206,4 +209,15 @@ DIM sprites_Board_Background(3,7) AS UByte => { _
 	{ _
 		$55,$DF,$50,$DF,$55,$FD,$05,$FD _
 	} _
+}
+DIM sprites_Boss_Laser(1,7) AS UByte => { _
+	{ _
+		$18,$18,$18,$18,$3C,$3C,$3C,$18 _
+	}, _
+	{ _
+		$18,$3C,$3C,$3C,$18,$18,$18,$18 _
+	} _
+}
+DIM sprites_Boss_Ray(7) AS UByte => { _
+	$30,$70,$F9,$DB,$9F,$0F,$0E,$04 _
 }

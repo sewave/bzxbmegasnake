@@ -11,4 +11,5 @@
 #include "functions.zxbas"
 #include "board.zxbas"
 #include "enemies.zxbas"
+#include "boss.zxbas"
 #include "states.zxbas"

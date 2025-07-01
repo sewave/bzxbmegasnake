@@ -178,11 +178,12 @@ DIM levelsEnemiesData(LAST_LEVEL_INDEX, LAST_ENEMY_INDEX, LAST_ENEMY_PROPERTY_IN
     }_
 }
 
-DIM backgroundAttributesArray(3) AS UBYTE => {_
+DIM backgroundAttributesArray(4) AS UBYTE => {_
     createAttributes(FALSE, FALSE, BLACK, PURPLE),_
     createAttributes(FALSE, FALSE, BLACK, YELLOW),_
     createAttributes(FALSE, FALSE, BLACK, CYAN),_
-    createAttributes(FALSE, FALSE, BLACK, WHITE)_
+    createAttributes(FALSE, FALSE, BLACK, WHITE),_
+    createAttributes(FALSE, FALSE, BLACK, BLUE)_
 }
 
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_

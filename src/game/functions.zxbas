@@ -86,7 +86,7 @@ END SUB
 SUB drawFruits()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
-    IF inBonus THEN
+    IF inBonus OR inBoss THEN
         printStringAt(BONUS_FRUITS_X, BONUS_FRUITS_Y, BONUS_FRUITS_STRING)
     ELSE
         printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
@@ -106,6 +106,8 @@ SUB drawLevelValue()
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
     IF inBonus THEN
         printStringAt(LEVEL_BONUS_STRING_X, LEVEL_BONUS_STRING_Y, BONUS_LEVEL_STRING)
+    ELSEIF inBoss THEN
+        printStringAt(LEVEL_BONUS_STRING_X, LEVEL_BONUS_STRING_Y, BOSS_LEVEL_STRING)
     ELSE
         setCharPosition(LEVEL_NUM_X, LEVEL_NUM_Y)
         printUByte(getStage() + 1)
@@ -439,6 +441,9 @@ SUB resetGameLevel()
 
     clearScreen(GAME_CLEAR_ATTRIBUTES)
 
+    'TODO remove
+    inBoss = TRUE
+
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES
@@ -448,7 +453,10 @@ SUB resetGameLevel()
         reloadTime = FALSE
     END IF
     initBoard()
-    IF inBonus THEN
+    IF inBoss THEN
+        bossInit()
+    END IF
+    IF inBonus OR inBoss THEN
         clearEnemies()
     ELSE
         initEnemies()
@@ -457,7 +465,7 @@ SUB resetGameLevel()
     initSnake()
     drawStatusWindow()
     drawStatusValues()
-    IF inBonus THEN
+    IF inBonus OR inBoss THEN
         putFruit()
     ELSE 
         'Puts the remaining fruits in the board
@@ -503,7 +511,12 @@ END SUB
 
 'Loads the address of the background character and attributes
 SUB loadLevelBackgroundData()
-    DIM stage AS UBYTE = getStage()
+    DIM stage AS UBYTE
+    IF inBoss THEN
+        stage = BOSS_BOARD_INDEX
+    ELSE
+        stage = getStage()
+    END IF
     backgroundCharacter = @sprites_Play_Background + (stage << 3)
     backgroundAttributes = backgroundAttributesArray(stage)
 END SUB

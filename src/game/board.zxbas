@@ -43,10 +43,14 @@ END SUB
 
 'Init the board
 SUB initBoard()
-    DIM i AS UBYTE
+    DIM i, j AS UBYTE
 
     clearBoard()
-    'Draw the board limits
+    loadLevelBackgroundData()
+    drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
+        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), backgroundAttributes, inWindowsCharacters,  backgroundCharacter)
+
+    'Fill the board limits
     FOR i = 0 TO PLAY_BOARD_MAX_X
         board(i, 0) = BOARD_TYPE_SOLID
         board(i, PLAY_BOARD_MAX_Y) = BOARD_TYPE_SOLID
@@ -55,10 +59,21 @@ SUB initBoard()
         board(0, i) = BOARD_TYPE_SOLID
         board(PLAY_BOARD_MAX_X, i) = BOARD_TYPE_SOLID
     NEXT i
-    loadLevelBackgroundData()
-    drawWindowFilled(MIN_BOARD_X, MIN_BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT,_
-        levelsMiscData(level, LEVEL_MISC_DATA_WIN_ATTR_INDEX), backgroundAttributes, inWindowsCharacters,  backgroundCharacter)
-    IF inBonus = FALSE THEN
+    IF inBoss THEN
+        FOR i = 0 TO PLAY_BOARD_MAX_X
+            FOR j = 0 TO BOSS_BOARD_FILL_MAX_Y
+                board(i, j) = BOARD_TYPE_SOLID
+            NEXT j
+        NEXT i
+        setCharPosition(BOSS_MIN_X, BOSS_Y + BOSS_HEIGHT - 1)
+        setAttributes(BOSS_RAY_ATTRIBUTES)
+        FOR i = BOSS_MIN_X TO BOSS_MAX_X + 1
+            putChar(@sprites_Boss_Ray)
+            nextCharColumn()
+        NEXT i
+    END IF
+
+    IF inBonus = FALSE AND inBoss = FALSE THEN
         'Draw the level layout
         DIM rectangle AS UBYTE = 0
         WHILE rectangle <= LAST_LEVEL_RECTANGLE_INDEX AND levelsBoardData(level, rectangle, 0) <> RECT_END
@@ -108,7 +123,7 @@ END SUB
 'put a new fruit
 SUB checkFruit()
     IF getBoardOnSnakePosition() = BOARD_TYPE_FRUIT THEN
-        IF inBonus THEN
+        IF inBonus OR inBoss THEN
             fruitSound()
             putFruit()
         ELSE

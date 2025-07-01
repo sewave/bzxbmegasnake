@@ -1,0 +1,83 @@
+'The final boss x from 1 to 1 - width
+DIM bossX AS UBYTE
+DIM bossDirection AS UBYTE
+DIM bossMoveTimer AS UBYTE
+DIM bossShootTimer AS UBYTE
+DIM bossShootSide AS UBYTE
+DIM bossEnergy AS UBYTE
+
+DIM bossRound(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_BACK_ATTRIBUTES, BOSS_BACK_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_BACK_ATTRIBUTES, BOSS_BACK_ATTRIBUTES }
+
+DIM bossFull(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_BACK_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_BACK_ATTRIBUTES}
+
+DIM bossEyes(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_BACK_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_EYES_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_EYES_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_BACK_ATTRIBUTES}
+
+DIM bossMouth(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_BACK_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_MOUTH_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_BACK_ATTRIBUTES}
+
+DIM bossRoundRay(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_RAY_ATTRIBUTES, BOSS_RAY_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_FACE_ATTRIBUTES, BOSS_RAY_ATTRIBUTES, BOSS_RAY_ATTRIBUTES }
+
+'Inits the boss enemy
+SUB bossInit()
+    IF inBoss THEN
+        bossX = BOSS_START_X
+        bossMoveTimer = BOSS_MOVE_FRAMES
+        bossShootTimer = BOSS_SHOOT_FRAMES
+        bossEnergy = BOSS_START_ENERGY
+        bossShootSide = BOSS_START_SHOOT_SIDE
+        bossDirection = DIRECTION_RIGHT
+        drawBoss()
+    END IF
+END SUB
+
+'Ejecutes the boss enemy logic
+SUB bossLogic()
+    bossMoveTimer = bossMoveTimer - 1
+    IF bossMoveTimer = 0 THEN
+        IF bossDirection = DIRECTION_RIGHT THEN
+            IF bossX + BOSS_WIDTH = BOSS_MAX_X THEN
+                bossDirection = DIRECTION_LEFT
+            ELSE
+                bossX = bossX + 1
+            END IF
+        END IF
+        IF bossDirection = DIRECTION_LEFT THEN
+            IF bossX = BOSS_MIN_X THEN
+                bossDirection = DIRECTION_RIGHT
+            ELSE
+                bossX = bossX - 1
+            END IF
+        END IF
+        drawBoss()
+        bossMoveTimer = BOSS_MOVE_FRAMES
+    END IF
+    bossShootTimer = bossShootTimer - 1
+    IF bossShootTimer = 0 THEN
+        bossShootSide = bossShootSide bXOR 1
+        'TODO spawn a LASER from the side
+        bossShootTimer = BOSS_SHOOT_FRAMES
+    END IF
+END SUB
+
+'Boss is ROUND-FULL-EYES-FULL-FULL-MOUTH-FULL-ROUND
+'Draws the last boss using attributes
+SUB drawBoss()
+    _printBossStrip(BOSS_Y, bossRound)
+    _printBossStrip(BOSS_Y + 1, bossFull)
+    _printBossStrip(BOSS_Y + 2, bossEyes)
+    _printBossStrip(BOSS_Y + 3, bossFull)
+    _printBossStrip(BOSS_Y + 4, bossFull)
+    _printBossStrip(BOSS_Y + 5, bossMouth)
+    _printBossStrip(BOSS_Y + 6, bossFull)
+    _printBossStrip(BOSS_Y + 7, bossRoundRay)
+END SUB
+
+'Prints a strip of the boss
+SUB _printBossStrip(y AS UBYTE, BYREF strip() AS UBYTE)
+    DIM i as UBYTE
+    setCharPosition(bossX, y)
+    FOR i = 0 TO BOSS_WIDTH_MAX_INDEX
+        setAttributes(strip(i))
+        setCharAttributes()
+        nextCharColumn()
+    NEXT i
+END SUB
