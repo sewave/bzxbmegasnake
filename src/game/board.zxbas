@@ -65,8 +65,13 @@ SUB initBoard()
                 board(i, j) = BOARD_TYPE_SOLID
             NEXT j
         NEXT i
-        setCharPosition(BOSS_MIN_X, BOSS_Y + BOSS_HEIGHT - 1)
         setAttributes(BOSS_RAY_ATTRIBUTES)
+        setCharPosition(BOSS_MIN_X, BOSS_Y + BOSS_HEIGHT - 1)
+        FOR i = BOSS_MIN_X TO BOSS_MAX_X + 1
+            putChar(@sprites_Boss_Ray)
+            nextCharColumn()
+        NEXT i
+        setCharPosition(BOSS_MIN_X, BOSS_BOTTON_LASER_Y)
         FOR i = BOSS_MIN_X TO BOSS_MAX_X + 1
             putChar(@sprites_Boss_Ray)
             nextCharColumn()
@@ -123,7 +128,7 @@ END SUB
 'put a new fruit
 SUB checkFruit()
     IF getBoardOnSnakePosition() = BOARD_TYPE_FRUIT THEN
-        IF inBonus OR inBoss THEN
+        IF inBonus THEN
             fruitSound()
             putFruit()
         ELSE

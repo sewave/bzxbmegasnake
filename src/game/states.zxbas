@@ -150,7 +150,7 @@ END SUB
 
 'Updates all the game status
 SUB stateGamePlaying()
-    checkTime()
+    IF inBoss = FALSE THEN checkTime()
     updateSnakeTailPosition()
     delayedFrames = delayedFrames + 1
     IF delayedFrames >= delayFrames THEN
@@ -338,8 +338,10 @@ SUB stateEndEndLevel()
         noDeathInLevel = TRUE
         snakeLength = INITIAL_SNAKE_LENGTH
         growth = START_GROWTH
-        
-        IF level MOD BONUS_LEVEL_MOD = 0 THEN
+        'TODO if next is boss fruits = boss energy
+        IF level = 1 THEN
+            setStateFadeTo(FADE_TO_CLOSE_VER, BOSS_START_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+        ELSEIF level MOD BONUS_LEVEL_MOD = 0 THEN
             setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_START_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_BONUS)
         ELSE
             initLevelFruits()

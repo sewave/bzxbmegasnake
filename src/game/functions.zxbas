@@ -63,7 +63,11 @@ END SUB
 
 'Draws the fruits number
 SUB drawFruitsText()
-    printVwfStringAt(FRUITS_STRING_X, FRUITS_STRING_Y, FRUITS_STRING)
+    IF inBoss THEN
+        printVwfStringAt(FRUITS_STRING_X, FRUITS_STRING_Y, BOSS_STRING)
+    ELSE
+        printVwfStringAt(FRUITS_STRING_X, FRUITS_STRING_Y, FRUITS_STRING)
+    END IF
 END SUB
 
 'Draws the status numbers
@@ -86,7 +90,7 @@ END SUB
 SUB drawFruits()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
-    IF inBonus OR inBoss THEN
+    IF inBonus THEN
         printStringAt(BONUS_FRUITS_X, BONUS_FRUITS_Y, BONUS_FRUITS_STRING)
     ELSE
         printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
@@ -97,7 +101,11 @@ END SUB
 SUB drawTime()
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
-    printPaddedNumberByteAt(TIME_BAR_X, TIME_BAR_Y, remainingTime, STATUS_NUM_PAD)
+    IF inBoss THEN
+        printStringAt(TIME_BOSS_X, TIME_BOSS_Y, BOSS_TIME_STRING)
+    ELSE 
+        printPaddedNumberByteAt(TIME_BAR_X, TIME_BAR_Y, remainingTime, STATUS_NUM_PAD)
+    END IF
 END SUB
 
 'Draw level value
@@ -402,7 +410,10 @@ SUB initSnake()
     snakeLength = INITIAL_SNAKE_LENGTH
     headPosition = HEAD_START_INDEX
     tailPosition = TAIL_START_INDEX
-    IF inBonus THEN
+    IF inBoss THEN
+        snakeX(headPosition) = IN_BOSS_SNAKE_INITIAL_X
+        snakeY(headPosition) = IN_BOSS_SNAKE_INITIAL_Y
+    ELSEIF inBonus THEN
         snakeX(headPosition) = IN_BONUS_SNAKE_INITIAL_X
         snakeY(headPosition) = IN_BONUS_SNAKE_INITIAL_Y
     ELSE
@@ -465,11 +476,15 @@ SUB resetGameLevel()
     initSnake()
     drawStatusWindow()
     drawStatusValues()
-    IF inBonus OR inBoss THEN
-        putFruit()
-    ELSE 
-        'Puts the remaining fruits in the board
-        FOR i = 0 TO fruits - 1: putFruit(): NEXT i
+    IF inBoss THEN
+
+    ELSE
+        IF inBonus THEN
+            putFruit()
+        ELSE 
+            'Puts the remaining fruits in the board
+            FOR i = 0 TO fruits - 1: putFruit(): NEXT i
+        END IF
     END IF
     startSound()
 END SUB

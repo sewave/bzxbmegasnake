@@ -43,6 +43,8 @@ CONST END_GAME_COMPLETED_STRING     AS STRING = "CONGRATULATIONS!"
 CONST END_GAME_SCORE_STRING         AS STRING = "Final score"
 CONST END_GAME_RETURN_STRING        AS STRING = "  Press fire to go to title   "
 CONST BOSS_LEVEL_STRING             AS STRING = "BOSS"
+CONST BOSS_TIME_STRING              AS STRING = "Inf."
+CONST BOSS_STRING                   AS STRING = "Enemigo"
 
 CONST TITLE_TEXT_SCROLLER           AS STRING = "                              Welcome to Mega Serpiente!    Your mission is to complete the 16 levels eating all the fruits. Do not hit the walls!    And be careful! The bugs will not make it easy.   Try to achieve the best score using the least time possible!                              "
 
