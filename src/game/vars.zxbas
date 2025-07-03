@@ -23,3 +23,12 @@ DIM inBonus AS UBYTE
 DIM inBoss AS UBYTE
 DIM backgroundCharacter AS UINTEGER
 DIM backgroundAttributes AS UBYTE
+'The final bosses
+DIM bossX AS UBYTE
+DIM bossDirection AS UBYTE
+DIM bossMoveTimer AS UBYTE
+DIM bossShootTimer AS UBYTE
+DIM bossShootSide AS UBYTE
+DIM bossEnergy AS UBYTE
+DIM bossMoveStartTimer AS UBYTE
+DIM bossShootStartTimer AS UBYTE

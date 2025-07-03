@@ -163,13 +163,13 @@ SUB stateGamePlaying()
         checkFruit()
         checkDeath()
     ELSE
-        IF inBoss THEN
-            bossLogic()
-        END IF
+        IF inBoss THEN bossLogic()
         moveEnemies()
     END IF
     #ifdef DEBUG
         IF (getControls(PLAYER_1_INDEX) & (CONTROL_DOWN | CONTROL_UP)) = (CONTROL_DOWN | CONTROL_UP) THEN
+            inBonus = FALSE
+            inBoss = FALSE
             setGameState(STATE_START_END_LEVEL)
         END IF
     #endif
@@ -289,9 +289,9 @@ END SUB
 SUB stateStartEndLevel()
     DIM timeBonus AS UINTEGER = remainingTime * LEVEL_TIME_BONUS
     DIM oldScore AS UINTEGER = score
-    score = score + timeBonus
     stopAudio()
 
+    score = score + timeBonus
     drawWindowFilled(END_LEVEL_BIG_WINDOW_X, END_LEVEL_BIG_WINDOW_Y,_
         END_LEVEL_BIG_WINDOW_WIDTH, END_LEVEL_BIG_WINDOW_HEIGHT,_
             END_LEVEL_BIG_WINDOW_COLOR, TOTAL_BLACK_ATTRIBUTES, outWindowsCharacters, CLEAR_CHARACTER)
@@ -338,9 +338,8 @@ SUB stateEndEndLevel()
         noDeathInLevel = TRUE
         snakeLength = INITIAL_SNAKE_LENGTH
         growth = START_GROWTH
-        'TODO if next is boss fruits = boss energy
-        IF level = 1 THEN
-            setStateFadeTo(FADE_TO_CLOSE_VER, BOSS_START_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+        IF level = BOSS_1_LEVEL OR level = BOSS_2_LEVEL THEN
+            setStateFadeTo(FADE_TO_CLOSE_VER, BOSS_START_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_START_BOSS)
         ELSEIF level MOD BONUS_LEVEL_MOD = 0 THEN
             setStateFadeTo(FADE_TO_OPEN_HOR, BONUS_START_FADE_ATTRIBUTES, BONUS_FADE_FRAMES, STATE_START_BONUS)
         ELSE
@@ -437,6 +436,65 @@ SUB stateWaitEndBonus()
     END IF
 END SUB
 
+'State to start the boss
+SUB stateStartBoss()
+    inBoss = TRUE
+    IF level = BOSS_1_LEVEL THEN
+        bossEnergy = BOSS_1_START_ENERGY
+    ELSE
+        bossEnergy = BOSS_2_START_ENERGY
+    END IF
+
+    fruits = IN_BOSS_FRUITS
+    remainingTime = IN_BOSS_TIME
+    reloadTime = FALSE
+    drawWindow(BOSS_LEVEL_WINDOW_X, BOSS_LEVEL_WINDOW_Y, BOSS_LEVEL_WINDOW_WIDTH,_
+        BOSS_LEVEL_WINDOW_HEIGTH, BOSS_LEVEL_WINDOW_ATTRIBUTES, inWindowsCharacters)
+    setupPrint(PRINT_MODE_TALL)
+    setTallAttributes(BOSS_START_UPPER_ATTRIBUTES, BOSS_START_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BOSS_START_1_STRING), BOSS_START_1_STRING_Y, BOSS_START_1_STRING)
+    printStringAt(centerScreenX(BOSS_START_2_STRING), BOSS_START_2_STRING_Y, BOSS_START_2_STRING)
+    setTallAttributes(BOSS_START_EXIT_UPPER_ATTRIBUTES, BOSS_START_EXIT_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BOSS_START_3_STRING), BOSS_START_3_STRING_Y, BOSS_START_3_STRING)
+    setStateWaitNoKey(STATE_WAIT_START_BOSS)
+END SUB
+
+'State to wait the start of the boss
+SUB stateWaitStartBoss()
+    IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
+        setStateFadeTo(FADE_TO_CLOSE_HOR, BOSS_END_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+    END IF
+END SUB
+
+'State to start the end of the boss
+SUB stateStartEndBoss()
+    drawWindow(BOSS_LEVEL_WINDOW_X, BOSS_LEVEL_WINDOW_Y, BOSS_LEVEL_WINDOW_WIDTH,_
+        BOSS_LEVEL_WINDOW_HEIGTH, BOSS_LEVEL_WINDOW_ATTRIBUTES, inWindowsCharacters)
+    setupPrint(PRINT_MODE_TALL)
+    setTallAttributes(BOSS_END_UPPER_ATTRIBUTES, BOSS_END_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BOSS_END_1_STRING), BOSS_END_1_STRING_Y, BOSS_END_1_STRING)
+    printStringAt(centerScreenX(BOSS_END_2_STRING), BOSS_END_2_STRING_Y, BOSS_END_2_STRING)
+    
+    printStringAt(centerScreenX(BOSS_END_3_STRING) - 2, BOSS_END_3_STRING_Y, BOSS_END_3_STRING)
+    printUByte(getStage() + 1)
+    printString(STAGE_SEPARATOR)
+    printUByte(getSubstage() + 1)
+    setTallAttributes(BOSS_END_EXIT_UPPER_ATTRIBUTES, BOSS_END_EXIT_LOWER_ATTRIBUTES)
+    printStringAt(centerScreenX(BOSS_END_4_STRING), BOSS_END_4_STRING_Y, BOSS_END_4_STRING)
+    setStateWaitNoKey(STATE_WAIT_END_BOSS)
+END SUB
+
+'State to wait the end of the boss
+SUB stateWaitEndBoss()
+    IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
+        inBoss = FALSE
+        reloadTime = TRUE
+        snakeLength = INITIAL_SNAKE_LENGTH
+        initLevelFruits()
+        setStateFadeTo(FADE_TO_OPEN_HOR, BOSS_END_LEVEL_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+    END IF
+END SUB
+
 'Slots 6-7 are reserved for future use
 DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateWaitFrames, _
@@ -469,6 +527,10 @@ DIM stateSubroutines(STATE_START_MENU) AS UINTEGER => { _
     @stateStartEndBonus, _
     @stateWaitEndBonus, _
     @stateEndEndLevel, _
+    @stateStartBoss, _
+    @stateWaitStartBoss, _
+    @stateStartEndBoss, _
+    @stateWaitEndBoss, _
     @stateStartMenu _
 }
 

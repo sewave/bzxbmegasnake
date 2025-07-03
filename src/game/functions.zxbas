@@ -93,13 +93,17 @@ SUB drawFruits()
     IF inBonus THEN
         printStringAt(BONUS_FRUITS_X, BONUS_FRUITS_Y, BONUS_FRUITS_STRING)
     ELSE
-        printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
+        IF inBoss THEN
+            printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, bossEnergy, STATUS_NUM_PAD)
+        ELSE
+            printPaddedNumberTensAt(FRUITS_NUM_X, FRUITS_NUM_Y, fruits, STATUS_NUM_PAD)
+        END IF
     END IF
 END SUB
 
 'Draws the Time
 SUB drawTime()
-    setupPrint(PRINT_MODE_NORMAL)
+        setupPrint(PRINT_MODE_NORMAL)
     setAttributes(STATUS_NUMBER_ATTRIBUTES)
     IF inBoss THEN
         printStringAt(TIME_BOSS_X, TIME_BOSS_Y, BOSS_TIME_STRING)
@@ -452,9 +456,6 @@ SUB resetGameLevel()
 
     clearScreen(GAME_CLEAR_ATTRIBUTES)
 
-    'TODO remove
-    inBoss = TRUE
-
     RANDOMIZE timeRemainingFrames
     delayedFrames = 0
     delayFrames = INITIAL_GAME_FRAMES
@@ -476,9 +477,7 @@ SUB resetGameLevel()
     initSnake()
     drawStatusWindow()
     drawStatusValues()
-    IF inBoss THEN
-
-    ELSE
+    IF inBoss = FALSE THEN
         IF inBonus THEN
             putFruit()
         ELSE 
@@ -528,7 +527,11 @@ END SUB
 SUB loadLevelBackgroundData()
     DIM stage AS UBYTE
     IF inBoss THEN
-        stage = BOSS_BOARD_INDEX
+        IF level = BOSS_1_LEVEL THEN
+            stage = BOSS_1_BOARD_INDEX
+        ELSE
+            stage = BOSS_2_BOARD_INDEX
+        END IF
     ELSE
         stage = getStage()
     END IF

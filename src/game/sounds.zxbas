@@ -57,3 +57,18 @@ END SUB
 SUB playUnpauseSound()
     playSoundEffect(@effect12)
 END SUB
+
+'Beeps the game boss laser sound
+SUB playBossLaserSound()
+    playSoundEffect(@effect13)
+END SUB
+
+'Beeps the game laser rebound sound
+SUB playLaserReboundSound()
+    playSoundEffect(@effect14)
+END SUB
+
+'Beeps the game boss damage sound
+SUB playBossDamageSound()
+    playSoundEffect(@effect15)
+END SUB
