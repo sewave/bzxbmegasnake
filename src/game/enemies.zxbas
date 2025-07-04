@@ -14,7 +14,7 @@ DIM enemySpeed(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyWait(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyFrame(LAST_ENEMY_INDEX) AS UBYTE
 DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
-    DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_NONE, DIRECTION_NONE _
+    DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_DOWN _
 }
 DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
     @font,_
@@ -23,7 +23,8 @@ DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
     @sprites_Diagonal_Left_Bug(0, 0),_
     @sprites_Diagonal_Right_Bug(0, 0),_
     @sprites_Clockwise_Bug(0, 0),_
-    @sprites_Counter_Clockwise_Bug(0, 0)_
+    @sprites_Counter_Clockwise_Bug(0, 0),_
+    @sprites_Boss_Laser(0, 0)_
 }
 DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     createAttributes(FALSE, TRUE, BLACK, BLACK),_
@@ -32,11 +33,12 @@ DIM enemyAttributes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     createAttributes(FALSE, TRUE, BLACK, WHITE),_
     createAttributes(FALSE, TRUE, BLACK, BLUE),_
     createAttributes(FALSE, TRUE, BLACK, CYAN),_
-    createAttributes(FALSE, TRUE, BLACK, GREEN)_
+    createAttributes(FALSE, TRUE, BLACK, GREEN),_
+    createAttributes(TRUE, TRUE, BLUE, YELLOW)_
 }
 DIM enemyBoardTypes(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     BOARD_TYPE_EMPTY, BOARD_TYPE_ENEMY_U_D, BOARD_TYPE_ENEMY_L_R, BOARD_TYPE_ENEMY_DIAL,_
-    BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO  _
+    BOARD_TYPE_ENEMY_DIAR, BOARD_TYPE_ENEMY_CLO, BOARD_TYPE_ENEMY_CCLO, BOARD_TYPE_LASER _
 }
 
 'Put all enemies type NONE
@@ -67,13 +69,14 @@ END SUB
 'Moves the active enemies
 SUB moveEnemies()
     FOR tmpEnemyNumber = 0 TO LAST_ENEMY_INDEX
-        IF enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE THEN EXIT FOR
-        IF enemyWait(tmpEnemyNumber) THEN
-            enemyWait(tmpEnemyNumber) = enemyWait(tmpEnemyNumber) - 1
-        ELSE
-            enemyWait(tmpEnemyNumber) = enemySpeed(tmpEnemyNumber)
-            enemyFrame(tmpEnemyNumber) = enemyFrame(tmpEnemyNumber) bXOR 1
-            moveEnemy()
+        IF enemyType(tmpEnemyNumber) <> ENEMY_TYPE_NONE THEN
+            IF enemyWait(tmpEnemyNumber) THEN
+                enemyWait(tmpEnemyNumber) = enemyWait(tmpEnemyNumber) - 1
+            ELSE
+                enemyWait(tmpEnemyNumber) = enemySpeed(tmpEnemyNumber)
+                enemyFrame(tmpEnemyNumber) = enemyFrame(tmpEnemyNumber) bXOR 1
+                moveEnemy()
+            END IF
         END IF
     NEXT tmpEnemyNumber
 END SUB
@@ -104,13 +107,17 @@ SUB moveEnemy()
         moveClockwiseEnemy() 
     ELSEIF tmpEnemyType = ENEMY_TYPE_CCLO THEN
         moveCounterClockwiseEnemy()
+    ELSEIF tmpEnemyType = ENEMY_TYPE_LASER THEN
+        moveUpDownLaserEnemy()
     END IF
-    board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
-    enemyX(tmpEnemyNumber) = tmpEnemyX
-    enemyY(tmpEnemyNumber) = tmpEnemyY
-
     drawBackgroundCharacter(tmpOldEnemyX, tmpOldEnemyY)
-    putCharAt(tmpEnemyX, tmpEnemyY, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
+
+    IF enemyType(tmpEnemyNumber) <> ENEMY_TYPE_NONE THEN
+        board(tmpEnemyX, tmpEnemyY) = enemyBoardTypes(tmpEnemyType)
+        enemyX(tmpEnemyNumber) = tmpEnemyX
+        enemyY(tmpEnemyNumber) = tmpEnemyY
+        putCharAt(tmpEnemyX, tmpEnemyY, enemyAttributes(tmpEnemyType), tmpEnemyCharacter)
+    END IF
     IF snakeX(headPosition) = tmpEnemyX AND snakeY(headPosition) = tmpEnemyY THEN loseLive()
 END SUB
 
@@ -268,3 +275,69 @@ SUB moveUpDownEnemy()
         END IF
     END IF
 END SUB
+
+'Moves an "UP-DOWN" laser enemy
+SUB moveUpDownLaserEnemy()
+    DIM tmpBoard AS UBYTE
+    IF tmpEnemyDirection = DIRECTION_UP THEN
+        tmpBoard = board(tmpEnemyX, tmpEnemyY - 1)
+        IF tmpBoard = BOARD_TYPE_EMPTY OR tmpBoard = BOARD_TYPE_SOLID THEN
+            tmpEnemyY = tmpEnemyY - 1
+            IF tmpEnemyY < BOSS_LASER_Y THEN
+                enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE
+                IF tmpEnemyX > bossX + 1 AND tmpEnemyX < bossX + BOSS_WIDTH - 1 THEN
+                    playBossDamageSound()
+                    bossEnergy = bossEnergy - 1
+                    IF bossEnergy THEN
+                        drawFruits()
+                    ELSE
+                        playEndLevelSound()
+                        setStateFadeTo(FADE_TO_OPEN_VER, BOSS_END_FADE_ATTRIBUTES,_
+                            BOSS_FADE_FRAMES, STATE_START_END_BOSS)
+                    END IF
+                END IF
+            END IF
+        ELSE
+            playLaserReboundSound()
+            enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN    
+        END IF
+    ELSEIF tmpEnemyDirection = DIRECTION_DOWN THEN
+        tmpBoard = board(tmpEnemyX, tmpEnemyY + 1)
+        IF tmpBoard = BOARD_TYPE_EMPTY THEN
+            tmpEnemyY = tmpEnemyY + 1
+        ELSEIF tmpBoard = BOARD_TYPE_SOLID THEN
+            enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE
+            'TODO laser destruction sound
+            playBossLaserSound()
+        ELSE
+            playLaserReboundSound()
+            enemyDirection(tmpEnemyNumber) = DIRECTION_UP
+        END IF
+    END IF
+END SUB
+
+'Spawns a new enemy if there are slots, returns the slot used or
+'255 if no space
+FUNCTION spawnEnemy(pEnemyType AS UBYTE, pEnemyX AS UBYTE, pEnemyY AS UBYTE, pEnemySpeed AS UBYTE) AS UBYTE
+    DIM idxEnemyNumber AS UBYTE
+    tmpEnemyNumber = VOID_ENEMY_NUMBER
+
+    FOR idxEnemyNumber = 0 TO LAST_ENEMY_INDEX
+        IF enemyType(idxEnemyNumber) = ENEMY_TYPE_NONE THEN tmpEnemyNumber = idxEnemyNumber
+    NEXT idxEnemyNumber
+
+    IF tmpEnemyNumber <> VOID_ENEMY_NUMBER THEN
+        tmpEnemyType = pEnemyType
+        enemyType(tmpEnemyNumber) = tmpEnemyType
+        enemyX(tmpEnemyNumber) = pEnemyX
+        enemyY(tmpEnemyNumber) = pEnemyY
+        enemySpeed(tmpEnemyNumber) = pEnemySpeed
+        enemyWait(tmpEnemyNumber) = 0
+        enemyDirection(tmpEnemyNumber) = enemyInitialDirection(tmpEnemyType)
+        enemyFrame(tmpEnemyNumber) = 0
+        board(enemyX(tmpEnemyNumber), enemyY(tmpEnemyNumber)) = enemyBoardTypes(tmpEnemyType)
+        putCharAt(enemyX(tmpEnemyNumber), enemyY(tmpEnemyNumber), enemyAttributes(tmpEnemyType), enemyCharacters(tmpEnemyType))
+    END IF
+
+    RETURN tmpEnemyNumber
+END FUNCTION

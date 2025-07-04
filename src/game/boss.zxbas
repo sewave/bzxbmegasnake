@@ -102,9 +102,11 @@ SUB bossLogic()
     END IF
     bossShootTimer = bossShootTimer - 1
     IF bossShootTimer = 0 THEN
+        'TODO boss sides
+        IF spawnEnemy(ENEMY_TYPE_LASER, bossX + 2, BOSS_LASER_Y, 5) <> VOID_ENEMY_NUMBER THEN
+            playBossLaserSound()
+        END IF
         bossShootSide = bossShootSide bXOR 1
-        'TODO spawn a LASER from the side
-        playBossLaserSound()
         bossShootTimer = bossShootStartTimer
     END IF
 END SUB
