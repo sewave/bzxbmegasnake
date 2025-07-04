@@ -99,7 +99,6 @@ DIM _fadeToFunction AS UINTEGER
 DIM _prevCharAddr AS UINTEGER
 DIM _prevCharAttrAddr AS UINTEGER
 DIM _currentAttributes AS UBYTE
-DIM _customFullFrameCounter AS ULONG
 
 'To speed up processing
 DIM _tmpAttribute AS UBYTE
