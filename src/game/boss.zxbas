@@ -67,11 +67,9 @@ SUB bossInit()
         IF level = BOSS_1_LEVEL THEN
             bossMoveStartTimer = BOSS_1_MOVE_FRAMES
             bossShootStartTimer = BOSS_1_SHOOT_FRAMES
-            bossEnergy = BOSS_1_START_ENERGY
         ELSE
             bossMoveStartTimer = BOSS_2_MOVE_FRAMES
             bossShootStartTimer = BOSS_2_SHOOT_FRAMES
-            bossEnergy = BOSS_2_START_ENERGY
         END IF
         bossMoveTimer = bossMoveStartTimer
         bossShootTimer = bossShootStartTimer
@@ -102,11 +100,10 @@ SUB bossLogic()
     END IF
     bossShootTimer = bossShootTimer - 1
     IF bossShootTimer = 0 THEN
-        'TODO boss sides
-        IF spawnEnemy(ENEMY_TYPE_LASER, bossX + 2, BOSS_LASER_Y, 5) <> VOID_ENEMY_NUMBER THEN
+        IF spawnEnemy(ENEMY_TYPE_LASER, bossX + BOSS_LASER_SHOOT_START + BOSS_LASER_SHOOT_WIDTH * bossShootSide, BOSS_LASER_Y, BOSS_LASER_SPEED) <> VOID_ENEMY_NUMBER THEN
             playBossLaserSound()
+            bossShootSide = bossShootSide bXOR 1
         END IF
-        bossShootSide = bossShootSide bXOR 1
         bossShootTimer = bossShootStartTimer
     END IF
 END SUB
