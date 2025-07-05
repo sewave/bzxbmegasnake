@@ -448,6 +448,7 @@ SUB stateStartBoss()
     fruits = IN_BOSS_FRUITS
     remainingTime = IN_BOSS_TIME
     reloadTime = FALSE
+
     drawWindow(BOSS_LEVEL_WINDOW_X, BOSS_LEVEL_WINDOW_Y, BOSS_LEVEL_WINDOW_WIDTH,_
         BOSS_LEVEL_WINDOW_HEIGTH, BOSS_LEVEL_WINDOW_ATTRIBUTES, inWindowsCharacters)
     setupPrint(PRINT_MODE_TALL)
@@ -462,12 +463,18 @@ END SUB
 'State to wait the start of the boss
 SUB stateWaitStartBoss()
     IF getControls(PLAYER_1_INDEX) & CONTROL_FIRE THEN
-        setStateFadeTo(FADE_TO_CLOSE_HOR, BOSS_END_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+        IF level = BOSS_1_LEVEL THEN
+            setStateFadeTo(FADE_TO_CLOSE_HOR, BOSS_END_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_RESTART_LEVEL)
+        ELSE
+            setStateFadeTo(FADE_TO_OPEN_HOR, BOSS_END_LEVEL_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_END_END_LEVEL)
+        END IF
     END IF
 END SUB
 
 'State to start the end of the boss
 SUB stateStartEndBoss()
+    'Skip current level, boss is a substitute
+    level = level + 1
     drawWindow(BOSS_LEVEL_WINDOW_X, BOSS_LEVEL_WINDOW_Y, BOSS_LEVEL_WINDOW_WIDTH,_
         BOSS_LEVEL_WINDOW_HEIGTH, BOSS_LEVEL_WINDOW_ATTRIBUTES, inWindowsCharacters)
     setupPrint(PRINT_MODE_TALL)

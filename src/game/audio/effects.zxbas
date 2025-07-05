@@ -13,3 +13,4 @@ DIM effect12(9) AS UBYTE => {1, 102, 102, 1, 92, 92, 1, 93, 93, 0}
 DIM effect13(7) AS UBYTE => {1, 106, 104, 106, 104, 106, 104, 0}
 DIM effect14(8) AS UBYTE => {1, 60, 62, 64, 65, 64, 62, 60, 0}
 DIM effect15(5) AS UBYTE => {1, 60, 67, 62, 65, 0}
+DIM effect16(5) AS UBYTE => {1, 88, 88, 87, 100, 0}

@@ -290,9 +290,11 @@ SUB moveUpDownLaserEnemy()
                 IF tmpEnemyX > bossX + 1 AND tmpEnemyX < bossX + BOSS_WIDTH - 1 THEN
                     playBossDamageSound()
                     bossEnergy = bossEnergy - 1
-                    IF bossEnergy THEN
-                        drawFruits()
-                    ELSE
+                    score = score + BOSS_INC_SCORE
+                    checkMaxScore()
+                    drawScores()
+                    drawFruits()
+                    IF bossEnergy = 0 THEN
                         playEndLevelSound()
                         setStateFadeTo(FADE_TO_OPEN_VER, BOSS_END_FADE_ATTRIBUTES,_
                             BOSS_FADE_FRAMES, STATE_START_END_BOSS)
@@ -309,8 +311,7 @@ SUB moveUpDownLaserEnemy()
             tmpEnemyY = tmpEnemyY + 1
         ELSEIF tmpBoard = BOARD_TYPE_SOLID THEN
             enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE
-            'TODO laser destruction sound
-            playBossLaserSound()
+            playBossLaserDestroyedSound()
         ELSE
             playLaserReboundSound()
             enemyType(tmpEnemyNumber) = ENEMY_TYPE_LASER_R

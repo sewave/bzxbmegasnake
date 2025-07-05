@@ -72,3 +72,8 @@ END SUB
 SUB playBossDamageSound()
     playSoundEffect(@effect15)
 END SUB
+
+'Beeps the game boss laser destroyed sound
+SUB playBossLaserDestroyedSound()
+    playSoundEffect(@effect16)
+END SUB

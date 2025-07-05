@@ -1,3 +1,5 @@
+DIM tmpStripAddr AS UINTEGER
+
 DIM boss1Round(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_1_BACK_ATTRIBUTES, BOSS_1_BACK_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_BACK_ATTRIBUTES, BOSS_1_BACK_ATTRIBUTES }
 
 DIM boss1Full(BOSS_WIDTH_MAX_INDEX) AS UBYTE => {BOSS_1_BACK_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_FACE_ATTRIBUTES, BOSS_1_BACK_ATTRIBUTES}
@@ -112,33 +114,35 @@ END SUB
 'Draws the last boss using attributes
 SUB drawBoss()
     IF level = BOSS_1_LEVEL THEN
-        _printBossStrip(BOSS_Y, boss1Round)
-        _printBossStrip(BOSS_Y + 1, boss1Full)
-        _printBossStrip(BOSS_Y + 2, boss1Eyes)
-        _printBossStrip(BOSS_Y + 3, boss1Full)
-        _printBossStrip(BOSS_Y + 4, boss1Full)
-        _printBossStrip(BOSS_Y + 5, boss1Mouth)
-        _printBossStrip(BOSS_Y + 6, boss1Full)
-        _printBossStrip(BOSS_Y + 7, boss1RoundRay)
+        _printBossStrip(BOSS_Y, @boss1Round)
+        _printBossStrip(BOSS_Y + 1, @boss1Full)
+        _printBossStrip(BOSS_Y + 2, @boss1Eyes)
+        _printBossStrip(BOSS_Y + 3, @boss1Full)
+        _printBossStrip(BOSS_Y + 4, @boss1Full)
+        _printBossStrip(BOSS_Y + 5, @boss1Mouth)
+        _printBossStrip(BOSS_Y + 6, @boss1Full)
+        _printBossStrip(BOSS_Y + 7, @boss1RoundRay)
     ELSE
-        _printBossStrip(BOSS_Y, boss2_1)
-        _printBossStrip(BOSS_Y + 1, boss2_2)
-        _printBossStrip(BOSS_Y + 2, boss2_3)
-        _printBossStrip(BOSS_Y + 3, boss2_4)
-        _printBossStrip(BOSS_Y + 4, boss2_5)
-        _printBossStrip(BOSS_Y + 5, boss2_6)
-        _printBossStrip(BOSS_Y + 6, boss2_7)
-        _printBossStrip(BOSS_Y + 7, boss2_8)    
+        _printBossStrip(BOSS_Y, @boss2_1)
+        _printBossStrip(BOSS_Y + 1, @boss2_2)
+        _printBossStrip(BOSS_Y + 2, @boss2_3)
+        _printBossStrip(BOSS_Y + 3, @boss2_4)
+        _printBossStrip(BOSS_Y + 4, @boss2_5)
+        _printBossStrip(BOSS_Y + 5, @boss2_6)
+        _printBossStrip(BOSS_Y + 6, @boss2_7)
+        _printBossStrip(BOSS_Y + 7, @boss2_8)
     END IF
 END SUB
 
 'Prints a strip of the boss
-SUB _printBossStrip(y AS UBYTE, BYREF strip() AS UBYTE)
+SUB _printBossStrip(y AS UBYTE, strip AS UINTEGER)
     DIM i as UBYTE
+    tmpStripAddr = strip
     setCharPosition(bossX, y)
     FOR i = 0 TO BOSS_WIDTH_MAX_INDEX
-        setAttributes(strip(i))
+        setAttributes(PEEK(tmpStripAddr))
         setCharAttributes()
         nextCharColumn()
+        tmpStripAddr = tmpStripAddr+ 1
     NEXT i
 END SUB
