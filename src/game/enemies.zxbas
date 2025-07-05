@@ -294,11 +294,6 @@ SUB moveUpDownLaserEnemy()
                     checkMaxScore()
                     drawScores()
                     drawFruits()
-                    IF bossEnergy = 0 THEN
-                        playEndLevelSound()
-                        setStateFadeTo(FADE_TO_OPEN_VER, BOSS_END_FADE_ATTRIBUTES,_
-                            BOSS_FADE_FRAMES, STATE_START_END_BOSS)
-                    END IF
                 END IF
             END IF
         ELSE

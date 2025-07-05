@@ -108,6 +108,15 @@ SUB bossLogic()
         END IF
         bossShootTimer = bossShootStartTimer
     END IF
+    IF bossEnergy = 0 THEN
+        playEndLevelSound()
+        IF level = BOSS_1_LEVEL THEN
+            setStateFadeTo(FADE_TO_OPEN_VER, BOSS_END_FADE_ATTRIBUTES,_
+            BOSS_FADE_FRAMES, STATE_START_END_BOSS)
+        ELSE
+            setStateFadeTo(FADE_TO_COLOR, BOSS_END_GAME_FADE_ATTRIBUTES, BOSS_FADE_FRAMES, STATE_END_END_LEVEL)
+        END IF
+    END IF
 END SUB
 
 'Boss is ROUND-FULL-EYES-FULL-FULL-MOUTH-FULL-ROUND
