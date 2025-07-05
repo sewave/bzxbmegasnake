@@ -169,6 +169,18 @@ DIM _keyboardPortsAddr AS UINTEGER
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
+'Returns non zero if the key is pressed
+#define isKeyPressed(keyIndex) PEEK(@_keyboardKeysStatus + keyIndex)
+
+'Get a key index ascii
+#define getKeyIndexAscii(keyIndex) PEEK(@_keyboardValues + keyIndex)
+
+'Gets the control type of a player
+#define getControlType(playerIndex) PEEK(@_controlTypes + playerIndex)
+
+'Returns the controls readed for the frame for the selected player
+#define getControls(playerIndex) PEEK(@_controls + playerIndex)
+
 'Get a player key
 FUNCTION getPlayerKey(playerIndex AS UBYTE, keyIndex AS UBYTE) AS UBYTE
     RETURN _playerKeys(playerIndex, keyIndex)
@@ -179,11 +191,6 @@ SUB setPlayerKey(playerIndex AS UBYTE, keyIndex AS UBYTE, value AS UBYTE)
     _playerKeys(playerIndex, keyIndex) = value
 END SUB
 
-'Get a key index ascii
-FUNCTION getKeyIndexAscii(keyIndex AS UBYTE) AS UBYTE
-    RETURN _keyboardValues(keyIndex)
-END FUNCTION
-
 'Returns the index of the first key pressed from top to bottom, left to right on the keyboard
 'Returns 255 if no key pressed
 FUNCTION getFirstKeyPressed() AS UBYTE
@@ -193,14 +200,9 @@ FUNCTION getFirstKeyPressed() AS UBYTE
     RETURN NO_KEYBOARD_KEY_PRESSED
 END FUNCTION
 
-'Returns the controls readed for the frame for the selected player
-FUNCTION getControls(playerIndex AS UBYTE) AS UBYTE
-    RETURN _controls(playerIndex)
-END FUNCTION
-
 'Returns the control char for the selected player
 FUNCTION getControlChar(playerIndex AS UBYTE, controlIndex AS UBYTE) AS STRING
-    RETURN CHR(_keyboardValues(_playerKeys(playerIndex, controlIndex)))
+    RETURN CHR(getKeyIndexAscii(_playerKeys(playerIndex, controlIndex)))
 END FUNCTION
 
 'Returns the miscKeys readed for the frame
@@ -230,11 +232,6 @@ SUB setControlType(playerIndex AS UBYTE, controlType AS UBYTE)
         _copyKeys(playerIndex, _cursorKeys)
     END IF
 END SUB
-
-'Gets the control type of a player
-FUNCTION getControlType(playerIndex AS UBYTE) AS UBYTE
-    RETURN _controlTypes(playerIndex)
-END FUNCTION
 
 'Reads the Kempston joystick
 FUNCTION readKempston() AS UBYTE
@@ -292,6 +289,7 @@ END SUB
 FUNCTION isKempstonStable() AS UBYTE
     RETURN _kempstonStableFrames >= _KEMPSTON_MIN_STABLE_FRAMES
 END FUNCTION
+
 '*********************PUBLIC AREA END***********************
 
 '***********************PRIVATE AREA************************

@@ -117,12 +117,6 @@ DIM _fadeAttrInc AS UINTEGER
 'Returns the X position for the string to be centered on the screen
 #define centerScreenX(str) ((32 - LEN(str)) >> 1)
 
-'Loads [udgs] address into system to switch udgs graphics
-#define loadUdgs(udgs) POKE UINTEGER _UDG_ADDRESS, udgs
-
-'Loads [font] address into system to switch font graphics
-#define loadFont(font) POKE UINTEGER _FONT_ADDRESS, font - FONT_OFFSET
-
 'Creates a new attributes byte
 #define createAttributes(flash, bright, paper, ink) ((flash << 7) | (bright << 6) | (paper << PAPER_SHIFT_BITS) | ink)
 
