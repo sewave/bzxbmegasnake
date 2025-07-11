@@ -123,27 +123,30 @@ SUB moveEnemy()
     IF snakeX(headPosition) = tmpEnemyX AND snakeY(headPosition) = tmpEnemyY THEN loseLive()
 END SUB
 
+DIM tmpBoardAddr AS UINTEGER
 'Moves a clockwise enemy
 SUB moveClockwiseEnemy()
-    IF tmpEnemyDirection = DIRECTION_RIGHT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+    tmpBoardAddr = @board(tmpEnemyX, tmpEnemyY)
+
+    IF tmpEnemyDirection = DIRECTION_RIGHT AND PEEK(tmpBoardAddr + BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
         tmpEnemyX = tmpEnemyX + 1
-    ELSEIF tmpEnemyDirection = DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_DOWN AND PEEK(tmpBoardAddr + 1) = BOARD_TYPE_EMPTY THEN
         tmpEnemyY = tmpEnemyY + 1
-    ELSEIF tmpEnemyDirection = DIRECTION_LEFT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_LEFT AND PEEK(tmpBoardAddr - BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
         tmpEnemyX = tmpEnemyX - 1
-    ELSEIF tmpEnemyDirection = DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_UP AND PEEK(tmpBoardAddr - 1) = BOARD_TYPE_EMPTY THEN
         tmpEnemyY = tmpEnemyY - 1
     ELSE
-        IF tmpEnemyDirection <> DIRECTION_LEFT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+        IF tmpEnemyDirection <> DIRECTION_LEFT AND PEEK(tmpBoardAddr + BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
             tmpEnemyX = tmpEnemyX + 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_RIGHT
-        ELSEIF tmpEnemyDirection <> DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_UP AND PEEK(tmpBoardAddr + 1) = BOARD_TYPE_EMPTY THEN
             tmpEnemyY = tmpEnemyY + 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN
-        ELSEIF tmpEnemyDirection <> DIRECTION_RIGHT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_RIGHT AND PEEK(tmpBoardAddr - BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
             tmpEnemyX = tmpEnemyX - 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_LEFT
-        ELSEIF tmpEnemyDirection <> DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_DOWN AND PEEK(tmpBoardAddr - 1) = BOARD_TYPE_EMPTY THEN
             tmpEnemyY = tmpEnemyY - 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_UP
         END IF
@@ -152,26 +155,26 @@ END SUB
 
 'Moves a counter clockwise enemy
 SUB moveCounterClockwiseEnemy()
-    IF tmpEnemyDirection = DIRECTION_RIGHT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+    tmpBoardAddr = @board(tmpEnemyX, tmpEnemyY)
+    IF tmpEnemyDirection = DIRECTION_RIGHT AND PEEK(tmpBoardAddr + BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
         tmpEnemyX = tmpEnemyX + 1
-    ELSEIF tmpEnemyDirection = DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_DOWN AND PEEK(tmpBoardAddr + 1) = BOARD_TYPE_EMPTY THEN
         tmpEnemyY = tmpEnemyY + 1
-    ELSEIF tmpEnemyDirection = DIRECTION_LEFT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_LEFT AND PEEK(tmpBoardAddr - BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
         tmpEnemyX = tmpEnemyX - 1
-    ELSEIF tmpEnemyDirection = DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY THEN
+    ELSEIF tmpEnemyDirection = DIRECTION_UP AND PEEK(tmpBoardAddr - 1) = BOARD_TYPE_EMPTY THEN
         tmpEnemyY = tmpEnemyY - 1
     ELSE
-        IF tmpEnemyDirection <> DIRECTION_RIGHT AND board(tmpEnemyX - 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+        IF tmpEnemyDirection <> DIRECTION_RIGHT AND PEEK(tmpBoardAddr - BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
             tmpEnemyX = tmpEnemyX - 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_LEFT
-        ELSEIF tmpEnemyDirection <> DIRECTION_UP AND board(tmpEnemyX, tmpEnemyY + 1) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_UP AND PEEK(tmpBoardAddr + 1) = BOARD_TYPE_EMPTY THEN
             tmpEnemyY = tmpEnemyY + 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_DOWN
-
-        ELSEIF tmpEnemyDirection <> DIRECTION_LEFT AND board(tmpEnemyX + 1, tmpEnemyY) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_LEFT AND PEEK(tmpBoardAddr + BOARD_WIDTH) = BOARD_TYPE_EMPTY THEN
             tmpEnemyX = tmpEnemyX + 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_RIGHT
-        ELSEIF tmpEnemyDirection <> DIRECTION_DOWN AND board(tmpEnemyX, tmpEnemyY - 1) = BOARD_TYPE_EMPTY THEN
+        ELSEIF tmpEnemyDirection <> DIRECTION_DOWN AND PEEK(tmpBoardAddr - 1) = BOARD_TYPE_EMPTY THEN
             tmpEnemyY = tmpEnemyY - 1
             enemyDirection(tmpEnemyNumber) = DIRECTION_UP
         END IF
