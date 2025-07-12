@@ -290,7 +290,7 @@ SUB moveUpDownLaserEnemy()
             tmpEnemyY = tmpEnemyY - 1
             IF tmpEnemyY < BOSS_LASER_Y THEN
                 enemyType(tmpEnemyNumber) = ENEMY_TYPE_NONE
-                IF tmpEnemyX > bossX + 1 AND tmpEnemyX < bossX + BOSS_WIDTH - 1 THEN
+                IF tmpEnemyX > bossX + 1 AND tmpEnemyX < bossX + BOSS_WIDTH THEN
                     playBossDamageSound()
                     bossEnergy = bossEnergy - 1
                     score = score + BOSS_INC_SCORE
