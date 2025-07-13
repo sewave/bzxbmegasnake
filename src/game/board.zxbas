@@ -66,16 +66,8 @@ SUB initBoard()
             NEXT j
         NEXT i
         setAttributes(BOSS_RAY_ATTRIBUTES)
-        setCharPosition(BOSS_MIN_X, BOSS_Y + BOSS_HEIGHT - 1)
-        FOR i = BOSS_MIN_X TO BOSS_MAX_X + 1
-            putChar(@sprites_Boss_Ray)
-            nextCharColumn()
-        NEXT i
-        setCharPosition(BOSS_MIN_X, BOSS_BOTTON_LASER_Y)
-        FOR i = BOSS_MIN_X TO BOSS_MAX_X + 1
-            putChar(@sprites_Boss_Ray)
-            nextCharColumn()
-        NEXT i
+        putCharsAt(BOSS_MIN_X, BOSS_Y + BOSS_HEIGHT - 1, BOSS_MAX_X + 2 - BOSS_MIN_X, @sprites_Boss_Ray)
+        putCharsAt(BOSS_MIN_X, BOSS_BOTTON_LASER_Y, BOSS_MAX_X + 2 - BOSS_MIN_X, @sprites_Boss_Ray)
     END IF
 
     IF inBonus = FALSE AND inBoss = FALSE THEN
