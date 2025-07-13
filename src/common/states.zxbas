@@ -38,24 +38,7 @@ DIM _printStringFireEnds AS UBYTE
 
 '********************PRIVATE DEFINES AREA*******************
 'Gets the defined next game state
-FUNCTION _getNextGameState() AS UBYTE
-    RETURN _nextGameState
-END FUNCTION
-
-'Updated on each vsync
-SUB _stateVsync()
-    #ifdef BORDER_DEBUG
-        BORDER BLACK
-    #endIf
-    updateAudio()
-    #ifdef BORDER_DEBUG
-        BORDER BLUE
-    #endIf
-    stateVsync()
-    #ifdef BORDER_DEBUG
-        BORDER WHITE
-    #endIf
-END SUB
+DECLARE FUNCTION _getNextGameState() AS UBYTE
 '******************PRIVATE DEFINES AREA END*****************
 
 '***********************PUBLIC AREA*************************
@@ -209,5 +192,25 @@ END SUB
 'Copies the next game state to game state
 SUB _moveNextGameStateToGameState()
     setGameState(_getNextGameState())
+END SUB
+
+'Gets the defined next game state
+FUNCTION _getNextGameState() AS UBYTE
+    RETURN _nextGameState
+END FUNCTION
+
+'Updated on each vsync
+SUB _stateVsync()
+    #ifdef BORDER_DEBUG
+        BORDER BLACK
+    #endIf
+    updateAudio()
+    #ifdef BORDER_DEBUG
+        BORDER BLUE
+    #endIf
+    stateVsync()
+    #ifdef BORDER_DEBUG
+        BORDER WHITE
+    #endIf
 END SUB
 '*********************PRIVATE AREA END**********************
