@@ -8,5 +8,6 @@ Using Koncrete font (https://damieng.com/typography/zx-origins/koncrete/).
 
 Built using ZXBasic Studio.
 
-Wave 2025
+Build with -D DEBUG to enable level skip, -D DEBUG_BORDERS to enable time consumption of different functions and -D LANG=en to enable english.
 
+Wave 2025
