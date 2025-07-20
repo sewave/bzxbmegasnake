@@ -6,7 +6,7 @@
 Game written in **Boriel Basic** using **only** the Basic language.
 
 Special thanks to [DamienG](https://damieng.com/typography/zx-origins/) for the amazing fonts (I use the [Koncrete](https://damieng.com/typography/zx-origins/koncrete/) font) and to Andrew C. E. Dent for the [8x8.me](https://github.com/ace-dent/8x8.me) characters.
-The title screen and cover are created with the help of AI.
+The title screen was created with the help of AI.
 
 <div style="page-break-after: always; visibility: hidden">\pagebreak</div>
 
