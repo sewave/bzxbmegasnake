@@ -86,7 +86,7 @@ SUB stateStartTitle()
    
     printTitleScroller()
     initKempstonProbe()
-    playMusic(@musicData)
+    playMusic(@title_musicData)
     setGameState(STATE_START_MENU)
 END SUB
 
