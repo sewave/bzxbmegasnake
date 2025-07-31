@@ -29,7 +29,7 @@ PAT0:
                           DEFB 101,96
                           DEFB 1,88
                           DEFB 99,84
-                          DEFB 1,1
+                          DEFB 1,96
                           DEFB 95,83
                           DEFB 1,105
                           DEFB 104,84
@@ -86,7 +86,7 @@ PAT1:
                           DEFB 100,103
                           DEFB 1,1
                           DEFB 105,100
-                          DEFB 1,1
+                          DEFB 1,103
                           DEFB 101,88
                           DEFB 1,100
                           DEFB 98,95

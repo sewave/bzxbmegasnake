@@ -1,18 +1,18 @@
 # MEGA SERPIENTE
 
-!["Pantalla de carga"](assets/instructions/megaserpiente_01.png "Pantalla de carga")
+<span style="display:block;text-align:center">!["Pantalla de carga"](assets/instructions/megaserpiente_01.png "Pantalla de carga")</span>
 ©2025 Wave
 
 Juego escrito en **Boriel Basic** usando **únicamente** el lenguaje Basic.
 
-Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/) por las increíbles fuentes (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/)) y a Andrew C. E. Dent por los caracteres de [8x8.me](https://github.com/ace-dent/8x8.me).
+Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/) por las increíbles fuentes (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/)), a Andrew C. E. Dent por los caracteres de [8x8.me](https://github.com/ace-dent/8x8.me) y a RubenRetro por el arreglo de Alla Turca de Mozart para el tema del título.
 La pantalla de título fue creada con ayuda de la IA.
 
 <div style="page-break-after: always; visibility: hidden">\pagebreak</div>
 
 ## El juego
 
-!["Pantalla de juego"](assets/instructions/megaserpiente_02.png "Pantalla de juego")
+<span style="display:block;text-align:center">!["Pantalla de juego"](assets/instructions/megaserpiente_02.png "Pantalla de juego")</span>
 El objetivo del juego es comerte todas las frutas de cada uno de los niveles.
 
 Tras algunos niveles tendrás un nivel de bonificación para conseguir más puntos. Puedes seguir jugando mientras quede tiempo y no mueras.
@@ -32,7 +32,7 @@ Por defecto son:
 
 Pero se pueden redefinir o elegir Sinclair 1, Sinclair 2, Cursor o Kempston.
 
-!["Pantalla de selección de control"](assets/instructions/megaserpiente_03.png "Pantalla de selección de control")
+<span style="display:block;text-align:center">!["Pantalla de selección de control"](assets/instructions/megaserpiente_03.png "Pantalla de selección de control")</span>
 
 Puedes pulsar el botón 1 del Kempston para empezar automáticamente con él.
 
@@ -44,7 +44,7 @@ Para salir debes pulsar el botón de Elegir/Pausa un segundo sin soltarlo.
 
 ## LOS ÍTEMS
 
-!["Nivel con varios ítems"](assets/instructions/megaserpiente_04.png "Nivel con varios ítems")
+<span style="display:block;text-align:center">!["Nivel con varios ítems"](assets/instructions/megaserpiente_04.png "Nivel con varios ítems")</span>
 
 * Fruta: Incrementa el tamaño de la serpiente, da puntos y permite terminar el nivel
 * Fruta envenenada: Hace que la serpiente vuelva al tamaño original
@@ -86,7 +86,7 @@ Este bicho elige un nuevo camino cada vez que se topa con un obstáculo, pero su
 
 ## Algunas pistas
 
-!["Pantalla de fin de nivel"](assets/instructions/megaserpiente_05.png "Pantalla de fin de nivel")
+<span style="display:block;text-align:center">!["Pantalla de fin de nivel"](assets/instructions/megaserpiente_05.png "Pantalla de fin de nivel")</span>
 
 * Si mueres por chocarte, el tiempo no se reiniciará
 * Ganarás más puntos si no mueres en el nivel

@@ -262,7 +262,7 @@ END SUB
 SUB clearScreen(attributes AS UBYTE)
     DIM i AS UBYTE
     setAttributes(attributes)
-    FOR i = 0 TO SCREEN_ROWS
+    FOR i = 0 TO SCREEN_ROWS - 1
         setCharPosition(0, i)
         clearChars(SCREEN_COLUMNS)
     NEXT i
