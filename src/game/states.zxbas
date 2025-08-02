@@ -92,6 +92,7 @@ END SUB
 
 'Waits menu selection to change game state
 SUB stateWaitMenu()
+    resetMusicTempoAdjustment()
     printTitleScroller()
     
     IF isKempstonStable() THEN
@@ -182,6 +183,7 @@ SUB stateStartSelectInput()
     setAttributes(SELECT_INPUT_ATTRIBUTES)
     printStringAt(centerScreenX(SELECT_INPUT_TITLE), SELECT_INPUT_TITLE_Y, SELECT_INPUT_TITLE)
     printStringAt(SELECT_INPUT_ENTRY_X, SELECT_INPUT_ENTRY_Y, SELECT_INPUT_ENTRY)
+    setMusicTempoAdjustment(SELECT_INPUT_MUSIC_TEMPO)
     setStateWaitNoKey(STATE_WAIT_SELECT_INPUT)
 END SUB
 

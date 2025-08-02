@@ -159,6 +159,11 @@ SUB disableMusicLooping()
     _musicLooping = FALSE
 END SUB
 
+'Get is music looping
+FUNCTION isMusicLooping() AS UBYTE
+    RETURN _musicLooping
+END FUNCTION
+
 'Enables music continue on effect
 SUB enableMusicContinueOnEffect()
     _musicContinueOnEffect = TRUE
@@ -169,6 +174,11 @@ SUB disableMusicContinueOnEffect()
     _musicContinueOnEffect = FALSE
 END SUB
 
+'Get is music continue on effect
+FUNCTION isMusicContinueOnEffect() AS UBYTE
+    RETURN _musicContinueOnEffect
+END FUNCTION
+
 'Enables music arpeggio
 SUB enableMusicArpeggio()
     _musicArpeggio = TRUE
@@ -178,6 +188,11 @@ END SUB
 SUB disableMusicArpeggio()
     _musicArpeggio = FALSE
 END SUB
+
+'Get is music arpeggio
+FUNCTION isMusicArpeggio() AS UBYTE
+    RETURN _musicArpeggio
+END FUNCTION
 
 'Sets the music tempo adjustment
 SUB setMusicTempoAdjustment(tempoAdjustment AS BYTE)
@@ -248,14 +263,16 @@ END SUB
 SUB _updateMusic()
     _tmpAudioNote = PEEK(_musicPatternAddress)
     IF _tmpAudioNote = _END_PATTERN_NOTE THEN
-        IF _musicLooping = TRUE THEN
-            _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
-            IF _musicPatternIndex = _musicPatternLength THEN
+        _musicPatternIndex = _musicPatternIndex + _MUSIC_PATTERN_ADDRESS_LENGTH
+        IF _musicPatternIndex = _musicPatternLength THEN
+            IF _musicLooping = TRUE THEN
                 _musicPatternIndex = _musicLoopPatternIndex
+                _prepareMusicPattern()
+            ELSE
+                stopMusic()
             END IF
-            _prepareMusicPattern()
         ELSE
-            stopMusic()
+            _prepareMusicPattern()
         END IF
     ELSE
         IF _effectPlaying = FALSE THEN
