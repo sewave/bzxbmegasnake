@@ -6,7 +6,7 @@
 Juego escrito en **Boriel Basic** usando **únicamente** el lenguaje Basic.
 
 Gracias especiales a [DamienG](https://damieng.com/typography/zx-origins/) por las increíbles fuentes (Uso la fuente [Koncrete](https://damieng.com/typography/zx-origins/koncrete/)), a Andrew C. E. Dent por los caracteres de [8x8.me](https://github.com/ace-dent/8x8.me) y a RubenRetro por el arreglo de Alla Turca de Mozart para el tema del título.
-La pantalla de título fue creada con ayuda de la IA.
+La pantalla de carga fue creada con ayuda de la IA.
 
 <div style="page-break-after: always; visibility: hidden">\pagebreak</div>
 
