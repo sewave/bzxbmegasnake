@@ -1,79 +1,79 @@
 'Beeps the fruit sound
 SUB fruitSound()
-    playSoundEffect(@effect4)
+    playSoundEffect(@effect4(0))
 END SUB
 
 'Beeps the die sound
 SUB dieSound()
-    playSoundEffect(@effect1)
+    playSoundEffect(@effect1(0))
 END SUB
 
 'Beeps the start sound
 SUB startSound()
-    playSoundEffect(@effect2)
+    playSoundEffect(@effect2(0))
 END SUB
 
 'Beeps the ungrow sound
 SUB ungrowSound()
-    playSoundEffect(@effect3)
+    playSoundEffect(@effect3(0))
 END SUB
 
 'Beeps the speed up sound
 SUB speedUpSound()
-    playSoundEffect(@effect5)
+    playSoundEffect(@effect5(0))
 END SUB
 
 'Beeps the speed down sound
 SUB speedDownSound()
-    playSoundEffect(@effect6)
+    playSoundEffect(@effect6(0))
 END SUB
 
 'Beeps the go direction sound
 SUB goDirectionSound()
-    playSoundEffect(@effect7)
+    playSoundEffect(@effect7(0))
 END SUB
 
 'Beeps the end level sound
 SUB playEndLevelSound()
-    playSoundEffect(@effect8)
+    playSoundEffect(@effect8(0))
 END SUB
 
 'Beeps the menu select sound
 SUB playMenuSelectSound()
-    playSoundEffect(@effect9)
+    playSoundEffect(@effect9(0))
 END SUB
 
 'Beeps the game start sound
 SUB playGameStartSound()
-    playSoundEffect(@effect10)
+    playSoundEffect(@effect10(0))
 END SUB
 
 'Beeps the game pause sound
 SUB playPauseSound()
-    playSoundEffect(@effect11)
+    playSoundEffect(@effect11(0))
 END SUB
 
 'Beeps the game unpause sound
 SUB playUnpauseSound()
-    playSoundEffect(@effect12)
+    playSoundEffect(@effect12(0))
 END SUB
 
 'Beeps the game boss laser sound
 SUB playBossLaserSound()
-    playSoundEffect(@effect13)
+    playSoundEffect(@effect13(0))
 END SUB
 
 'Beeps the game laser rebound sound
 SUB playLaserReboundSound()
-    playSoundEffect(@effect14)
+    playSoundEffect(@effect14(0))
 END SUB
 
 'Beeps the game boss damage sound
 SUB playBossDamageSound()
-    playSoundEffect(@effect15)
+    playSoundEffect(@effect15(0))
 END SUB
 
 'Beeps the game boss laser destroyed sound
 SUB playBossLaserDestroyedSound()
-    playSoundEffect(@effect16)
+    playSoundEffect(@effect16(0))
 END SUB

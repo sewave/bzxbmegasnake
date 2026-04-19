@@ -86,7 +86,7 @@ SUB stateStartTitle()
    
     printTitleScroller()
     initKempstonProbe()
-    playMusic(@title_musicData)
+    playMusic(@title_musicData(0))
     setGameState(STATE_START_MENU)
 END SUB
 
@@ -140,7 +140,7 @@ END SUB
 'Inits the game
 SUB stateInitGame()
     BORDER GAME_BORDER
-    setupFont(@font, VWF_NULL_TABLE)
+    setupFont(@font(0, 0), VWF_NULL_TABLE)
     maxScore = INITIAL_MAX_SCORE
     setupPrint(PRINT_MODE_NORMAL)
     setAttributes(PRESS_TO_START_KEY_ATTRIBUTES)

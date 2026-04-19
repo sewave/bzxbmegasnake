@@ -30,14 +30,14 @@ END SUB
 'Draws the status texts
 SUB drawStatusTexts()
     setupPrint(PRINT_MODE_VWF)
-    setupFont(@vwfont, @vwfontWidths)
+    setupFont(@vwfont(0, 0), @vwfontWidths(0))
     setAttributes(STATUS_TEXT_ATTRIBUTES)
     drawLevelText()
     drawScoreTexts()
     drawFruitsText()
     drawLivesText() 
     drawTimeText()
-    setupFont(@font, VWF_NULL_TABLE)
+    setupFont(@font(0, 0), VWF_NULL_TABLE)
 END SUB
 
 'Draws the level text
@@ -535,7 +535,7 @@ SUB loadLevelBackgroundData()
     ELSE
         stage = getStage()
     END IF
-    backgroundCharacter = @sprites_Play_Background + (stage << 3)
+    backgroundCharacter = @sprites_Play_Background(0, 0) + (stage << 3)
     backgroundAttributes = backgroundAttributesArray(stage)
 END SUB
 

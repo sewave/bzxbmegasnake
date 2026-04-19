@@ -188,10 +188,10 @@ DIM backgroundAttributesArray(5) AS UBYTE => {_
 }
 
 DIM itemChars(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_
-    @sprites_Reduction, @sprites_Speed_Up,_
-    @sprites_Speed_Down, @sprites_Go_Up, _
-    @sprites_Go_Right, @sprites_Go_Down, _
-    @sprites_Go_Left _
+    @sprites_Reduction(0), @sprites_Speed_Up(0),_
+    @sprites_Speed_Down(0), @sprites_Go_Up(0), _
+    @sprites_Go_Right(0), @sprites_Go_Down(0), _
+    @sprites_Go_Left(0) _
 }
 
 DIM itemAttributes(LEVEL_ITEM_TYPES_LAST_INDEX) AS UINTEGER => {_

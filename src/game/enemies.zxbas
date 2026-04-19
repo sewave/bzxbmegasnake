@@ -17,7 +17,7 @@ DIM enemyInitialDirection(LAST_ENEMY_TYPE_INDEX) AS UBYTE => {_
     DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_U_R, DIRECTION_D_L, DIRECTION_NONE, DIRECTION_NONE, DIRECTION_DOWN, DIRECTION_DOWN _
 }
 DIM enemyCharacters(LAST_ENEMY_TYPE_INDEX) AS UINTEGER => {_
-    @font,_
+    @font(0, 0),_
     @sprites_Horizontal_Bug(0, 0),_
     @sprites_Vertical_Bug(0, 0),_
     @sprites_Diagonal_Left_Bug(0, 0),_

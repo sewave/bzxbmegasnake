@@ -170,16 +170,16 @@ DIM _keyboardPortsAddr AS UINTEGER
 
 '***********************PUBLIC AREA*************************
 'Returns non zero if the key is pressed
-#define isKeyPressed(keyIndex) PEEK(@_keyboardKeysStatus + keyIndex)
+#define isKeyPressed(keyIndex) PEEK(@_keyboardKeysStatus(0) + keyIndex)
 
 'Get a key index ascii
-#define getKeyIndexAscii(keyIndex) PEEK(@_keyboardValues + keyIndex)
+#define getKeyIndexAscii(keyIndex) PEEK(@_keyboardValues(0) + keyIndex)
 
 'Gets the control type of a player
-#define getControlType(playerIndex) PEEK(@_controlTypes + playerIndex)
+#define getControlType(playerIndex) PEEK(@_controlTypes(0) + playerIndex)
 
 'Returns the controls readed for the frame for the selected player
-#define getControls(playerIndex) PEEK(@_controls + playerIndex)
+#define getControls(playerIndex) PEEK(@_controls(0) + playerIndex)
 
 'Get a player key
 FUNCTION getPlayerKey(playerIndex AS UBYTE, keyIndex AS UBYTE) AS UBYTE
@@ -194,8 +194,8 @@ END SUB
 'Returns the index of the first key pressed from top to bottom, left to right on the keyboard
 'Returns 255 if no key pressed
 FUNCTION getFirstKeyPressed() AS UBYTE
-    FOR _keyboardAddr = @_keyboardKeysStatus TO @_keyboardKeysStatus + _LAST_KEYBOARD_KEY_INDEX
-        IF PEEK(_keyboardAddr) <> _KEYBOARD_KEY_NOT_PRESSED THEN RETURN _keyboardAddr - @_keyboardKeysStatus
+    FOR _keyboardAddr = @_keyboardKeysStatus(0) TO @_keyboardKeysStatus(_LAST_KEYBOARD_KEY_INDEX)
+        IF PEEK(_keyboardAddr) <> _KEYBOARD_KEY_NOT_PRESSED THEN RETURN _keyboardAddr - @_keyboardKeysStatus(0)
     NEXT _keyboardAddr
     RETURN NO_KEYBOARD_KEY_PRESSED
 END FUNCTION
@@ -304,9 +304,9 @@ END SUB
 
 'Reads all keyboard keys status
 SUB _readKeyboard()
-    _keyboardAddr = @_keyboardKeysStatus
-    FOR _keyboardPortsAddr = @_keyboardPorts TO _
-        @_keyboardPorts + _LAST_KEYBOARD_PORT_INDEX * _KEYBOARD_PORT_VALUE_SIZE _
+    _keyboardAddr = @_keyboardKeysStatus(0)
+    FOR _keyboardPortsAddr = @_keyboardPorts(0) TO _
+        @_keyboardPorts(0) + _LAST_KEYBOARD_PORT_INDEX * _KEYBOARD_PORT_VALUE_SIZE _
             STEP _KEYBOARD_PORT_VALUE_SIZE
         _portRead = IN(PEEK(UINTEGER, _keyboardPortsAddr)) bXOR _KEYBOARD_PORT_INVERT_VALUE
         _readHalfKeyboardRow()
@@ -327,11 +327,11 @@ END SUB
 SUB _readPlayerKeyboard(playerIndex AS UBYTE)
     _tmpControl = CONTROL_NONE
     _keyboardAddr = @_playerKeys(playerIndex, 0)
-    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_LEFT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_LEFT
-    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_RIGHT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_RIGHT
-    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_UP_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_UP
-    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_DOWN_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_DOWN
-    IF PEEK(@_keyboardKeysStatus + PEEK(_keyboardAddr + CONTROL_FIRE_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_FIRE
+    IF PEEK(@_keyboardKeysStatus(0) + PEEK(_keyboardAddr + CONTROL_LEFT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_LEFT
+    IF PEEK(@_keyboardKeysStatus(0) + PEEK(_keyboardAddr + CONTROL_RIGHT_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_RIGHT
+    IF PEEK(@_keyboardKeysStatus(0) + PEEK(_keyboardAddr + CONTROL_UP_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_UP
+    IF PEEK(@_keyboardKeysStatus(0) + PEEK(_keyboardAddr + CONTROL_DOWN_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_DOWN
+    IF PEEK(@_keyboardKeysStatus(0) + PEEK(_keyboardAddr + CONTROL_FIRE_INDEX)) THEN _tmpControl = _tmpControl + CONTROL_FIRE
     _controls(playerIndex) = _tmpControl
 END SUB
 '*********************PRIVATE AREA END**********************

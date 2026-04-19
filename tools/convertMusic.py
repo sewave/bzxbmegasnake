@@ -53,14 +53,14 @@ def convert_to_new_format(name, music_data, pattern_data, patterns):
     output_lines = []
 
     # Convert MUSICDATA
-    pattern_data_address = f"@{name}_patternData"
+    pattern_data_address = f"(@{name}_patternData + 8)"
     music_data.append(f"CAST(UBYTE, {pattern_data_address})")
     music_data.append(f"CAST(UBYTE, {pattern_data_address} / 256)")
     music_data_str = ', '.join(music_data)
     output_lines.append(f"DIM {name}_musicData({len(music_data) - 1}) AS UBYTE => {{{music_data_str}}}")
 
     # Convert PATTERNDATA
-    pattern_data_str = ', '.join(f"@{name}_{pat.lower()}" for pat in pattern_data)
+    pattern_data_str = ', '.join(f"(@{name}_{pat.lower()} + 8)" for pat in pattern_data)
     output_lines.append(f"DIM {name}_patternData({len(pattern_data) - 1}) AS UINTEGER => {{{pattern_data_str}}}")
 
     # Convert individual patterns

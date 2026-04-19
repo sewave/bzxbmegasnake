@@ -267,14 +267,14 @@ END SUB
 '***********************PRIVATE AREA************************
 'Join current char with _tmpVwf
 SUB _joinVwfChar()
-    uIntegerOrEquals(@_tmpVwf, uByteShiftUInteger(tmpAddr, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 2, uByteShiftUInteger(tmpAddr + 1, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 4, uByteShiftUInteger(tmpAddr + 2, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 6, uByteShiftUInteger(tmpAddr + 3, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 8, uByteShiftUInteger(tmpAddr + 4, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 10, uByteShiftUInteger(tmpAddr + 5, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 12, uByteShiftUInteger(tmpAddr + 6, _tmpVwfOffset))
-    uIntegerOrEquals(@_tmpVwf + 14, uByteShiftUInteger(tmpAddr + 7, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0), uByteShiftUInteger(tmpAddr, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 2, uByteShiftUInteger(tmpAddr + 1, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 4, uByteShiftUInteger(tmpAddr + 2, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 6, uByteShiftUInteger(tmpAddr + 3, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 8, uByteShiftUInteger(tmpAddr + 4, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 10, uByteShiftUInteger(tmpAddr + 5, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 12, uByteShiftUInteger(tmpAddr + 6, _tmpVwfOffset))
+    uIntegerOrEquals(@_tmpVwf(0) + 14, uByteShiftUInteger(tmpAddr + 7, _tmpVwfOffset))
 END SUB
 
 'Join current char with _tmpVwf
@@ -285,14 +285,14 @@ FUNCTION _postVwfChar() AS UBYTE
     IF _tmpVwfOffset >= UBYTE_BITS THEN
         _tmpVwfOffset = _tmpVwfOffset - UBYTE_BITS
         'Clean and switch bytes
-        uIntegerSwitchAndClear(@_tmpVwf)
-        uIntegerSwitchAndClear(@_tmpVwf + 2)
-        uIntegerSwitchAndClear(@_tmpVwf + 4)
-        uIntegerSwitchAndClear(@_tmpVwf + 6)
-        uIntegerSwitchAndClear(@_tmpVwf + 8)
-        uIntegerSwitchAndClear(@_tmpVwf + 10)
-        uIntegerSwitchAndClear(@_tmpVwf + 12)
-        uIntegerSwitchAndClear(@_tmpVwf + 14)
+        uIntegerSwitchAndClear(@_tmpVwf(0))
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 2)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 4)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 6)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 8)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 10)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 12)
+        uIntegerSwitchAndClear(@_tmpVwf(0) + 14)
         nextCharColumn()
         RETURN TRUE
     END IF
@@ -308,14 +308,14 @@ END SUB
 
 'Prints current vwf char to screen
 SUB _commitVwfChar()
-    POKE(currentCharAddr, PEEK(@_tmpVwf + 1))
-    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(@_tmpVwf + 3))
-    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(@_tmpVwf + 5))
-    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(@_tmpVwf + 7))
-    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(@_tmpVwf + 9))
-    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(@_tmpVwf + 11))
-    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(@_tmpVwf + 13))
-    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(@_tmpVwf + 15))
+    POKE(currentCharAddr, PEEK(@_tmpVwf(0) + 1))
+    POKE(currentCharAddr + SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 3))
+    POKE(currentCharAddr + 2 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 5))
+    POKE(currentCharAddr + 3 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 7))
+    POKE(currentCharAddr + 4 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 9))
+    POKE(currentCharAddr + 5 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 11))
+    POKE(currentCharAddr + 6 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 13))
+    POKE(currentCharAddr + 7 * SCAN_LINE_INC, PEEK(@_tmpVwf(0) + 15))
     setCharAttributes()
 END SUB
 
@@ -380,11 +380,11 @@ END SUB
 'Puts one tall char of the VWF tall character
 SUB _putOneVwfCharTall()
     setAttributes(_upperAttributes)
-    tmpAddr = @_tmpVwf
+    tmpAddr = @_tmpVwf(0)
     executeSub(_putHalfCharFunction)
     nextCharRow()
     setAttributes(_lowerAttributes)
-    tmpAddr = @_tmpVwf + 8
+    tmpAddr = @_tmpVwf(0) + 8
     executeSub(_putHalfCharFunction)
     prevCharRow()
 END SUB

@@ -14,6 +14,8 @@
 'Trick to execute subroutine at [subAddress], address 0 is rom so not writable
 #define executeSub(subAddress) POKE 0, USR subAddress
 
+#define getArrayConstDataAddress(array) (@array + 8)
+
 'Ors an address value with value argument
 SUB uIntegerOrEquals(addr AS UINTEGER, value AS UINTEGER)
     POKE(UINTEGER, addr, PEEK(UINTEGER, addr) | value)
